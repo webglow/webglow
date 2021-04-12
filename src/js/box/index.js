@@ -7,14 +7,33 @@ export default class Box extends GameObject {
 	constructor(gl, size = [1, 1, 1], colors) {
 		super(gl);
 
+		this.colors = colors;
+
 		mat4.scale(this.mScale, this.mScale, vec3.fromValues(...size));
 
-		// prettier-ignore
-		this.rawData = new Float32Array(this.getVertices(colors));
-
 		this.setup();
+	}
 
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.rawData, this.gl.STATIC_DRAW);
+	setup() {
+		super.setupProgram();
+
+		this.aPositions = new Float32Array(this.getVertices());
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.gl.bufferData(
+			this.gl.ARRAY_BUFFER,
+			this.aPositions,
+			this.gl.STATIC_DRAW
+		);
+
+		this.aColors = new Float32Array(this.aPositions.length);
+
+		for (let i = 0; i < this.aColors.length; i++) {
+			this.aColors[i] = this.colors[parseInt(i / 18)][i % 3];
+		}
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
 	createProgram() {
@@ -26,30 +45,17 @@ export default class Box extends GameObject {
 
 		this.updateMatrix();
 
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.rawData.length / 3);
+		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
 	}
 
-	getSegment(a, b, c, d, color) {
-		return [
-			...a,
-			...color,
-			...d,
-			...color,
-			...c,
-			...color,
-			...a,
-			...color,
-			...c,
-			...color,
-			...b,
-			...color,
-		];
+	getSegment(a, b, c, d) {
+		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
 	// prettier-ignore
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
-	getVertices(colors) {
+	getVertices() {
 		const p000 = [-1, -1, -1];
 		const p100 = [ 1, -1, -1];
 		const p101 = [ 1, -1,  1];
@@ -61,22 +67,22 @@ export default class Box extends GameObject {
 
 		return [
 			// bottom
-			...this.getSegment(p000, p001, p101, p100, colors[0]),
+			...this.getSegment(p000, p001, p101, p100),
 
 			// front
-			...this.getSegment(p001, p011, p111, p101, colors[1]),
+			...this.getSegment(p001, p011, p111, p101),
 
 			// top
-			...this.getSegment(p111, p011, p010, p110, colors[2]),
+			...this.getSegment(p111, p011, p010, p110),
 
 			// left
-			...this.getSegment(p010, p011, p001, p000, colors[3]),
+			...this.getSegment(p010, p011, p001, p000),
 
 			// right
-			...this.getSegment(p111, p110, p100, p101, colors[4]),
+			...this.getSegment(p111, p110, p100, p101),
 
 			// back
-			...this.getSegment(p010, p000, p100, p110, colors[5]),
+			...this.getSegment(p010, p000, p100, p110),
 		];
 	}
 	/* eslint-enable array-bracket-spacing */

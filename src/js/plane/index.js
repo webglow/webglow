@@ -11,7 +11,7 @@ export default class Plane extends GameObject {
 		widthSegments,
 		lengthSegments,
 		color = [1, 1, 1],
-		gap = 0.1,
+		gap = 0,
 		heightMap
 	) {
 		super(gl);
@@ -25,12 +25,31 @@ export default class Plane extends GameObject {
 		this.widthSegments = widthSegments;
 		this.lengthSegments = lengthSegments;
 		this.gap = gap;
-
-		this.rawData = new Float32Array(this.getVertices(color));
+		this.color = color;
 
 		this.setup();
+	}
 
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.rawData, this.gl.STATIC_DRAW);
+	setup() {
+		super.setupProgram();
+
+		this.aPositions = new Float32Array(this.getVertices());
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.gl.bufferData(
+			this.gl.ARRAY_BUFFER,
+			this.aPositions,
+			this.gl.STATIC_DRAW
+		);
+
+		this.aColors = new Float32Array(this.aPositions.length);
+
+		for (let i = 0; i < this.aColors.length; i++) {
+			this.aColors[i] = this.color[i % 3];
+		}
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
 	createProgram() {
@@ -42,27 +61,14 @@ export default class Plane extends GameObject {
 
 		this.updateMatrix();
 
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.rawData.length / 3);
+		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
 	}
 
-	getSegment(a, b, c, d, color) {
-		return [
-			...a,
-			...color,
-			...d,
-			...color,
-			...c,
-			...color,
-			...a,
-			...color,
-			...c,
-			...color,
-			...b,
-			...color,
-		];
+	getSegment(a, b, c, d) {
+		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
-	getVertices(color) {
+	getVertices() {
 		const vertices = [];
 		const segmentWidth = this.width / this.widthSegments;
 		const segmentLength = this.length / this.lengthSegments;
@@ -90,8 +96,7 @@ export default class Plane extends GameObject {
 							i * segmentWidth + this.gap,
 							this.heightMap[(j + 1) * this.widthSegments + i],
 							(j + 1) * segmentLength - this.gap,
-						],
-						color
+						]
 					)
 				);
 			}
@@ -104,7 +109,13 @@ export default class Plane extends GameObject {
 		this.gl.useProgram(this.program);
 
 		const uMatrix = mat4.create();
-		mat4.multiply(uMatrix, uMatrix, this.mProjection);
+		const mViewProjection = mat4.create();
+		mat4.multiply(
+			mViewProjection,
+			this.mProjection,
+			window.global.camera.viewMatrix
+		);
+		mat4.multiply(uMatrix, uMatrix, mViewProjection);
 		mat4.multiply(uMatrix, uMatrix, this.mTranslation);
 		mat4.multiply(uMatrix, uMatrix, this.mRotation);
 		mat4.multiply(uMatrix, uMatrix, this.mScale);

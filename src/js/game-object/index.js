@@ -5,6 +5,9 @@ export default class GameObject extends GLProgram {
 	constructor(gl) {
 		super(gl);
 
+		this.mTranslation = mat4.create();
+		this.mRotation = mat4.create();
+		this.mScale = mat4.create();
 		this.mProjection = mat4.create();
 		mat4.perspective(
 			this.mProjection,
@@ -12,13 +15,13 @@ export default class GameObject extends GLProgram {
 			this.gl.canvas.clientWidth / this.gl.canvas.clientHeight,
 			1
 		);
-		this.mTranslation = mat4.create();
-		this.mRotation = mat4.create();
-		this.mScale = mat4.create();
 	}
 
 	setupAttributes() {
 		super.setupAttributes();
+
+		this.positionBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
 
 		this.attributes.positionAttributeLocation = this.gl.getAttribLocation(
 			this.program,
@@ -30,9 +33,13 @@ export default class GameObject extends GLProgram {
 			3,
 			this.gl.FLOAT,
 			false,
-			6 * Float32Array.BYTES_PER_ELEMENT,
+			0,
 			0
 		);
+		this.gl.enableVertexAttribArray(this.attributes.positionAttributeLocation);
+
+		this.colorsBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
 
 		this.attributes.colorAttributeLocation = this.gl.getAttribLocation(
 			this.program,
@@ -44,11 +51,10 @@ export default class GameObject extends GLProgram {
 			3,
 			this.gl.FLOAT,
 			false,
-			6 * Float32Array.BYTES_PER_ELEMENT,
-			3 * Float32Array.BYTES_PER_ELEMENT
+			0,
+			0
 		);
 
-		this.gl.enableVertexAttribArray(this.attributes.positionAttributeLocation);
 		this.gl.enableVertexAttribArray(this.attributes.colorAttributeLocation);
 	}
 
@@ -67,6 +73,11 @@ export default class GameObject extends GLProgram {
 		mat4.translate(this.mTranslation, this.mTranslation, translation);
 	}
 
+	setPosition(position) {
+		this.mTranslation = mat4.create();
+		mat4.translate(this.mTranslation, this.mTranslation, position);
+	}
+
 	rotate(angle, axis) {
 		mat4.rotate(this.mRotation, this.mRotation, angle, axis);
 	}
@@ -79,7 +90,13 @@ export default class GameObject extends GLProgram {
 		this.gl.useProgram(this.program);
 
 		const uMatrix = mat4.create();
-		mat4.multiply(uMatrix, uMatrix, this.mProjection);
+		const mViewProjection = mat4.create();
+		mat4.multiply(
+			mViewProjection,
+			this.mProjection,
+			window.global.camera.viewMatrix
+		);
+		mat4.multiply(uMatrix, uMatrix, mViewProjection);
 		mat4.multiply(uMatrix, uMatrix, this.mTranslation);
 		mat4.multiply(uMatrix, uMatrix, this.mRotation);
 		mat4.multiply(uMatrix, uMatrix, this.mScale);

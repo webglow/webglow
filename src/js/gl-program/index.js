@@ -8,7 +8,7 @@ export default class GLProgram {
 		this.uniforms = {};
 	}
 
-	setup() {
+	setupProgram() {
 		this.createProgram();
 		this.setupAttributes();
 		this.setupUniforms();
@@ -28,9 +28,6 @@ export default class GLProgram {
 
 		this.program = createProgram(this.gl, vertexShader, fragmentShader);
 		this.gl.useProgram(this.program);
-
-		this.buffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
 	}
 
 	setupAttributes() {
@@ -43,6 +40,5 @@ export default class GLProgram {
 	draw() {
 		this.gl.useProgram(this.program);
 		this.gl.bindVertexArray(this.vao);
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
 	}
 }

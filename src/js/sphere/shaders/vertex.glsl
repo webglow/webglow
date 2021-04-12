@@ -9,6 +9,5 @@ out vec3 vColor;
 void main() {
 	gl_Position = uMatrix * aPosition;
 
-	gl_PointSize = 2.;
 	vColor = aColor;
 }

@@ -1,4 +1,3 @@
-import { vec3 } from 'gl-matrix';
 import GameObject from '../game-object';
 import vertexSource from './shaders/vertex.glsl';
 import fragmentSource from './shaders/fragment.glsl';
@@ -10,7 +9,8 @@ export default class Sphere extends GameObject {
 		heightSegments,
 		radius,
 		color = [1, 1, 1],
-		gap = 0
+		gap = 0,
+		innerFacing = false
 	) {
 		super(gl);
 
@@ -19,12 +19,31 @@ export default class Sphere extends GameObject {
 		this.radius = radius;
 		this.gap = gap;
 		this.color = color;
+		this.innerFacing = innerFacing;
 
 		this.setup();
+	}
 
-		this.rawData = new Float32Array(this.getVertices(this.color));
+	setup() {
+		super.setupProgram();
 
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.rawData, this.gl.STATIC_DRAW);
+		this.aPositions = new Float32Array(this.getVertices());
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.gl.bufferData(
+			this.gl.ARRAY_BUFFER,
+			this.aPositions,
+			this.gl.STATIC_DRAW
+		);
+
+		this.aColors = new Float32Array(this.aPositions.length);
+
+		for (let i = 0; i < this.aColors.length; i++) {
+			this.aColors[i] = this.color[i % 3];
+		}
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
 	createProgram() {
@@ -36,37 +55,30 @@ export default class Sphere extends GameObject {
 
 		this.updateMatrix();
 
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.rawData.length / 3);
+		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
 	}
 
-	getSegment(a, b, c, d, color) {
-		return [
-			...a,
-			...color,
-			...d,
-			...color,
-			...c,
-			...color,
-			...a,
-			...color,
-			...c,
-			...color,
-			...b,
-			...color,
-		];
+	getSegment(a, b, c, d) {
+		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
 	getPoint(i, j, width, height) {
 		const longitude = ((i % width) / width) * 2 * Math.PI;
-		const latitude = ((j % height) / height) * Math.PI;
-		return [
+		const latitude = (j / height) * Math.PI;
+		let point = [
 			this.radius * Math.sin(latitude) * Math.cos(longitude),
 			this.radius * Math.sin(latitude) * Math.sin(longitude),
 			this.radius * Math.cos(latitude),
 		];
+
+		if (this.innerFacing) {
+			point = [point[0], point[2], point[1]];
+		}
+
+		return point;
 	}
 
-	getVertices(color) {
+	getVertices() {
 		const vertices = [];
 		for (let i = 0; i < this.widthSegments; i++) {
 			for (let j = 0; j < this.heightSegments; j++) {
@@ -95,8 +107,7 @@ export default class Sphere extends GameObject {
 							j + 1 - this.gap,
 							this.widthSegments,
 							this.heightSegments
-						),
-						color
+						)
 					)
 				);
 			}

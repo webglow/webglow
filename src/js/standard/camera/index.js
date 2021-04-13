@@ -1,7 +1,22 @@
 import { mat4, vec3 } from 'gl-matrix';
 
 export default class Camera {
-	constructor(movementSpeed) {
+	constructor(gl, movementSpeed, initialPosition = [0, 0, 0]) {
+		this.gl = gl;
+
+		this.sensor = {
+			width: 36,
+			height: 24,
+		};
+
+		this.sensor.diagonal = Math.sqrt(
+			this.sensor.width ** 2 + this.sensor.height ** 2
+		);
+		this.focalLength = 35;
+		this.zoomStep = 5;
+
+		this.setProjectionMatrix();
+
 		this.mRotation = mat4.create();
 		this.mTranslation = mat4.create();
 
@@ -12,7 +27,27 @@ export default class Camera {
 		this.isMoving = false;
 		this.direction = vec3.create();
 
+		this.translate(initialPosition);
+
 		this.updateViewMatrix();
+	}
+
+	setProjectionMatrix() {
+		this.mProjection = mat4.create();
+		mat4.perspective(
+			this.mProjection,
+			2 * Math.atan(this.sensor.diagonal / (2 * this.focalLength)),
+			this.gl.canvas.clientWidth / this.gl.canvas.clientHeight,
+			1
+		);
+	}
+
+	zoom(direction) {
+		if (this.focalLength + direction * this.zoomStep > 1 || direction > 0) {
+			this.focalLength += direction * this.zoomStep;
+		}
+
+		this.setProjectionMatrix();
 	}
 
 	translate(translation) {

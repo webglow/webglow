@@ -1,7 +1,7 @@
 import Stats from 'stats.js';
 import { resizeCanvasToDisplaySize, hexToRgb } from './helpers';
-import Camera from './camera';
-import CameraMovement from './camera-movement';
+import Camera from './standard/camera';
+import CameraMovement from './standard/camera-movement';
 import MainScene from './main-scene';
 
 class Game {
@@ -11,7 +11,7 @@ class Game {
 		/** @type {WebGL2RenderingContext} */
 		this.gl = this.canvas.getContext('webgl2');
 		this.global = {
-			camera: new Camera(50),
+			camera: new Camera(this.gl, 50, [0, 0, 5000]),
 		};
 		window.global = this.global;
 
@@ -51,6 +51,10 @@ class Game {
 			document.exitPointerLock();
 			this.globalCameraMovement.setIsRotating(false);
 		});
+
+		this.canvas.addEventListener('wheel', (event) => {
+			this.global.camera.zoom(-Math.sign(event.deltaY));
+		});
 	}
 
 	async start() {
@@ -60,7 +64,7 @@ class Game {
 		this.stats.showPanel(0);
 		document.body.appendChild(this.stats.dom);
 
-		const backgroundColorRgb = hexToRgb('#000000');
+		const backgroundColorRgb = hexToRgb('#48dbfb').rgb;
 		this.gl.clearColor(
 			backgroundColorRgb.r,
 			backgroundColorRgb.g,

@@ -1,4 +1,4 @@
-import { createShader, createProgram } from '../helpers';
+import { createShader, createProgram } from '../../helpers';
 
 export default class GLProgram {
 	constructor(gl) {
@@ -6,6 +6,7 @@ export default class GLProgram {
 		this.gl = gl;
 		this.attributes = {};
 		this.uniforms = {};
+		this.buffers = {};
 	}
 
 	setupProgram() {

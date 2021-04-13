@@ -1,7 +1,8 @@
 import { vec3, mat4 } from 'gl-matrix';
 import vertexSource from './shaders/vertex.glsl';
 import fragmentSource from './shaders/fragment.glsl';
-import GameObject from '../game-object';
+import GameObject from '../../standard/game-object';
+import { getSegment } from '../helpers';
 
 export default class Box extends GameObject {
 	constructor(gl, size = [1, 1, 1], colors) {
@@ -19,7 +20,7 @@ export default class Box extends GameObject {
 
 		this.aPositions = new Float32Array(this.getVertices());
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
 		this.gl.bufferData(
 			this.gl.ARRAY_BUFFER,
 			this.aPositions,
@@ -32,7 +33,7 @@ export default class Box extends GameObject {
 			this.aColors[i] = this.colors[parseInt(i / 18)][i % 3];
 		}
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.color);
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
@@ -46,10 +47,6 @@ export default class Box extends GameObject {
 		this.updateMatrix();
 
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
-	}
-
-	getSegment(a, b, c, d) {
-		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
 	// prettier-ignore
@@ -67,22 +64,22 @@ export default class Box extends GameObject {
 
 		return [
 			// bottom
-			...this.getSegment(p000, p001, p101, p100),
+			...getSegment(p000, p001, p101, p100),
 
 			// front
-			...this.getSegment(p001, p011, p111, p101),
+			...getSegment(p001, p011, p111, p101),
 
 			// top
-			...this.getSegment(p111, p011, p010, p110),
+			...getSegment(p111, p011, p010, p110),
 
 			// left
-			...this.getSegment(p010, p011, p001, p000),
+			...getSegment(p010, p011, p001, p000),
 
 			// right
-			...this.getSegment(p111, p110, p100, p101),
+			...getSegment(p111, p110, p100, p101),
 
 			// back
-			...this.getSegment(p010, p000, p100, p110),
+			...getSegment(p010, p000, p100, p110),
 		];
 	}
 	/* eslint-enable array-bracket-spacing */

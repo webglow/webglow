@@ -1,10 +1,10 @@
 import { vec3 } from 'gl-matrix';
-import Box from './box';
+import Box from './primitives/box';
 import { hexToRgb } from './helpers';
-import Plane from './plane';
-import Scene from './scene';
-import SkyBox from './skybox';
-import Sphere from './sphere';
+import Plane from './primitives/plane';
+import Scene from './standard/scene';
+import SkyBox from './standard/skybox';
+import Sphere from './primitives/sphere';
 
 export default class MainScene extends Scene {
 	constructor(gl) {
@@ -36,11 +36,11 @@ export default class MainScene extends Scene {
 		);
 		const sphere = new Sphere(
 			this.gl,
-			10,
-			10,
+			100,
+			100,
 			1000,
 			hexToRgb('#e67e22').vec3,
-			0.01,
+			0,
 			false
 		);
 
@@ -53,10 +53,8 @@ export default class MainScene extends Scene {
 			hexToRgb('#576574').vec3
 		);
 
-		cube.translate([0, 2000, -1500]);
-		plane.translate([0, -1000, -1500]);
-		sphere.translate([0, 0, -1500]);
-		skyBox.translate([0, 0, -1500]);
+		cube.translate([0, 2000, 0]);
+		plane.translate([0, -1000, 0]);
 
 		this.addObject('cube', cube);
 		this.addObject('sphere', sphere);

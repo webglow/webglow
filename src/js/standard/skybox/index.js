@@ -1,4 +1,4 @@
-import Sphere from '../sphere';
+import Sphere from '../../primitives/sphere';
 
 export default class SkyBox extends Sphere {
 	constructor(
@@ -24,9 +24,11 @@ export default class SkyBox extends Sphere {
 	setupSkyBox() {
 		super.setupProgram();
 
-		this.aPositions = new Float32Array(this.getVertices(this.color));
+		const { vertices } = this.getVertices();
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.aPositions = new Float32Array(vertices);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
 		this.gl.bufferData(
 			this.gl.ARRAY_BUFFER,
 			this.aPositions,
@@ -47,7 +49,7 @@ export default class SkyBox extends Sphere {
 			}
 		}
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.color);
 		this.gl.bufferData(
 			this.gl.ARRAY_BUFFER,
 			new Float32Array(this.aColors.flat()),

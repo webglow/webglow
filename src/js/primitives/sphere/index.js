@@ -1,6 +1,8 @@
-import GameObject from '../game-object';
+import { vec3 } from 'gl-matrix';
+import GameObject from '../../standard/game-object';
 import vertexSource from './shaders/vertex.glsl';
 import fragmentSource from './shaders/fragment.glsl';
+import { getNormalsForSegment, getSegment } from '../helpers';
 
 export default class Sphere extends GameObject {
 	constructor(
@@ -27,12 +29,22 @@ export default class Sphere extends GameObject {
 	setup() {
 		super.setupProgram();
 
-		this.aPositions = new Float32Array(this.getVertices());
+		const { normals, vertices } = this.getVertices();
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.aPositions = new Float32Array(vertices);
+		this.aNormals = new Float32Array(normals);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
 		this.gl.bufferData(
 			this.gl.ARRAY_BUFFER,
 			this.aPositions,
+			this.gl.STATIC_DRAW
+		);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.normal);
+		this.gl.bufferData(
+			this.gl.ARRAY_BUFFER,
+			this.aNormals,
 			this.gl.STATIC_DRAW
 		);
 
@@ -42,12 +54,25 @@ export default class Sphere extends GameObject {
 			this.aColors[i] = this.color[i % 3];
 		}
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.color);
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
 	createProgram() {
 		super.createProgram(vertexSource, fragmentSource);
+	}
+
+	setupUniforms() {
+		super.setupUniforms();
+
+		this.uniforms.lightSourceLocation = this.gl.getUniformLocation(
+			this.program,
+			'uLightSource'
+		);
+		this.gl.uniform3f(
+			this.uniforms.lightSourceLocation,
+			...vec3.normalize(vec3.create(), [0, 0, 1])
+		);
 	}
 
 	draw() {
@@ -56,10 +81,6 @@ export default class Sphere extends GameObject {
 		this.updateMatrix();
 
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
-	}
-
-	getSegment(a, b, c, d) {
-		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
 	getPoint(i, j, width, height) {
@@ -80,39 +101,42 @@ export default class Sphere extends GameObject {
 
 	getVertices() {
 		const vertices = [];
+		const normals = [];
 		for (let i = 0; i < this.widthSegments; i++) {
 			for (let j = 0; j < this.heightSegments; j++) {
-				vertices.push(
-					this.getSegment(
-						this.getPoint(
-							i + this.gap,
-							j + this.gap,
-							this.widthSegments,
-							this.heightSegments
-						),
-						this.getPoint(
-							i + 1 - this.gap,
-							j + this.gap,
-							this.widthSegments,
-							this.heightSegments
-						),
-						this.getPoint(
-							i + 1 - this.gap,
-							j + 1 - this.gap,
-							this.widthSegments,
-							this.heightSegments
-						),
-						this.getPoint(
-							i + this.gap,
-							j + 1 - this.gap,
-							this.widthSegments,
-							this.heightSegments
-						)
-					)
+				const p00 = this.getPoint(
+					i + this.gap,
+					j + this.gap,
+					this.widthSegments,
+					this.heightSegments
 				);
+				const p10 = this.getPoint(
+					i + 1 - this.gap,
+					j + this.gap,
+					this.widthSegments,
+					this.heightSegments
+				);
+				const p01 = this.getPoint(
+					i + this.gap,
+					j + 1 - this.gap,
+					this.widthSegments,
+					this.heightSegments
+				);
+				const p11 = this.getPoint(
+					i + 1 - this.gap,
+					j + 1 - this.gap,
+					this.widthSegments,
+					this.heightSegments
+				);
+				const vertex = getSegment(p00, p10, p11, p01);
+				normals.push(getNormalsForSegment(p00, p01, p10));
+				vertices.push(vertex);
 			}
 		}
 
-		return vertices.flat();
+		return {
+			vertices: vertices.flat(),
+			normals: normals.flat(),
+		};
 	}
 }

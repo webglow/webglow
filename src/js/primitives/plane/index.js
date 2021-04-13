@@ -1,7 +1,8 @@
 import { mat4 } from 'gl-matrix';
-import GameObject from '../game-object';
+import GameObject from '../../standard/game-object';
 import vertexSource from './shaders/vertex.glsl';
 import fragmentSource from './shaders/fragment.glsl';
+import { getSegment } from '../helpers';
 
 export default class Plane extends GameObject {
 	constructor(
@@ -35,7 +36,7 @@ export default class Plane extends GameObject {
 
 		this.aPositions = new Float32Array(this.getVertices());
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
 		this.gl.bufferData(
 			this.gl.ARRAY_BUFFER,
 			this.aPositions,
@@ -48,7 +49,7 @@ export default class Plane extends GameObject {
 			this.aColors[i] = this.color[i % 3];
 		}
 
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorsBuffer);
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.color);
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
@@ -64,10 +65,6 @@ export default class Plane extends GameObject {
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
 	}
 
-	getSegment(a, b, c, d) {
-		return [...a, ...d, ...c, ...a, ...c, ...b];
-	}
-
 	getVertices() {
 		const vertices = [];
 		const segmentWidth = this.width / this.widthSegments;
@@ -76,7 +73,7 @@ export default class Plane extends GameObject {
 		for (let i = 0; i < this.widthSegments; i++) {
 			for (let j = 0; j < this.lengthSegments; j++) {
 				vertices.push(
-					this.getSegment(
+					getSegment(
 						[
 							i * segmentWidth + this.gap,
 							this.heightMap[j * this.widthSegments + i],
@@ -108,20 +105,24 @@ export default class Plane extends GameObject {
 	updateMatrix() {
 		this.gl.useProgram(this.program);
 
-		const uMatrix = mat4.create();
+		const uWorldViewProjection = mat4.create();
 		const mViewProjection = mat4.create();
 		mat4.multiply(
 			mViewProjection,
-			this.mProjection,
+			window.global.camera.mProjection,
 			window.global.camera.viewMatrix
 		);
-		mat4.multiply(uMatrix, uMatrix, mViewProjection);
-		mat4.multiply(uMatrix, uMatrix, this.mTranslation);
-		mat4.multiply(uMatrix, uMatrix, this.mRotation);
-		mat4.multiply(uMatrix, uMatrix, this.mScale);
+		mat4.multiply(uWorldViewProjection, uWorldViewProjection, mViewProjection);
 		mat4.multiply(
-			uMatrix,
-			uMatrix,
+			uWorldViewProjection,
+			uWorldViewProjection,
+			this.mTranslation
+		);
+		mat4.multiply(uWorldViewProjection, uWorldViewProjection, this.mRotation);
+		mat4.multiply(uWorldViewProjection, uWorldViewProjection, this.mScale);
+		mat4.multiply(
+			uWorldViewProjection,
+			uWorldViewProjection,
 			mat4.translate(mat4.create(), mat4.create(), [
 				-this.width / 2,
 				0,
@@ -129,6 +130,10 @@ export default class Plane extends GameObject {
 			])
 		);
 
-		this.gl.uniformMatrix4fv(this.uniforms.matrixLocation, false, uMatrix);
+		this.gl.uniformMatrix4fv(
+			this.uniforms.worldViewProjection,
+			false,
+			uWorldViewProjection
+		);
 	}
 }

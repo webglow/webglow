@@ -1,4 +1,4 @@
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import GLProgram from '../gl-program';
 
 export default class GameObject extends GLProgram {
@@ -76,7 +76,22 @@ export default class GameObject extends GLProgram {
 			'uWorldMatrix'
 		);
 
+		this.uniforms.lightSource = this.gl.getUniformLocation(
+			this.program,
+			'uLightSource'
+		);
+
 		this.updateMatrix();
+	}
+
+	setupLight(lightDirection) {
+		this.gl.useProgram(this.program);
+		this.gl.bindVertexArray(this.vao);
+
+		this.gl.uniform3f(
+			this.uniforms.lightSource,
+			...vec3.normalize(vec3.create(), lightDirection)
+		);
 	}
 
 	translate(translation) {
@@ -123,7 +138,11 @@ export default class GameObject extends GLProgram {
 		mat4.multiply(uWorldMatrix, uWorldMatrix, this.mRotation);
 		mat4.multiply(uWorldMatrix, uWorldMatrix, this.mScale);
 
-		this.gl.uniformMatrix4fv(this.uniforms.worldMatrix, false, uWorldMatrix);
+		this.gl.uniformMatrix4fv(
+			this.uniforms.worldMatrix,
+			false,
+			mat4.transpose(mat4.create(), mat4.invert(mat4.create(), uWorldMatrix))
+		);
 
 		return uWorldMatrix;
 	}

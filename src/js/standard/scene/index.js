@@ -2,6 +2,9 @@ export default class Scene {
 	constructor(gl) {
 		this.gl = gl;
 		this.objects = {};
+		this.lightSources = {
+			directional: [],
+		};
 	}
 
 	addObject(name, obj) {
@@ -10,6 +13,12 @@ export default class Scene {
 
 	getObject(name) {
 		return this.objects[name];
+	}
+
+	setupLight() {
+		Object.values(this.objects).forEach((obj) =>
+			obj.setupLight(this.lightSources.directional[0].direction)
+		);
 	}
 
 	draw() {

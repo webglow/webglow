@@ -3,10 +3,9 @@
 precision highp float;
 
 out vec4 outColor;
-
-in vec3 vColor;
 in vec3 vNormal;
 
+in vec3 vColor;
 uniform vec3 uLightSource;
 
 void main() {

@@ -1,10 +1,8 @@
 import { vec3 } from 'gl-matrix';
-import GameObject from '../../standard/game-object';
-import vertexSource from './shaders/vertex.glsl';
-import fragmentSource from './shaders/fragment.glsl';
-import { getNormalsForSegment, getSegment } from '../helpers';
+import { getSegment } from '../helpers';
+import Primitive from '../primitive';
 
-export default class Sphere extends GameObject {
+export default class Sphere extends Primitive {
 	constructor(
 		gl,
 		widthSegments,
@@ -58,23 +56,6 @@ export default class Sphere extends GameObject {
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, this.aColors, this.gl.STATIC_DRAW);
 	}
 
-	createProgram() {
-		super.createProgram(vertexSource, fragmentSource);
-	}
-
-	setupUniforms() {
-		super.setupUniforms();
-
-		this.uniforms.lightSourceLocation = this.gl.getUniformLocation(
-			this.program,
-			'uLightSource'
-		);
-		this.gl.uniform3f(
-			this.uniforms.lightSourceLocation,
-			...vec3.normalize(vec3.create(), [0, 0, 1])
-		);
-	}
-
 	draw() {
 		super.draw();
 
@@ -97,6 +78,15 @@ export default class Sphere extends GameObject {
 		}
 
 		return point;
+	}
+
+	getNormalsForSegment(a, b, c, d) {
+		const nA = vec3.normalize(vec3.create(), a);
+		const nB = vec3.normalize(vec3.create(), b);
+		const nC = vec3.normalize(vec3.create(), c);
+		const nD = vec3.normalize(vec3.create(), d);
+
+		return [...nA, ...nD, ...nC, ...nA, ...nC, ...nB];
 	}
 
 	getVertices() {
@@ -129,7 +119,9 @@ export default class Sphere extends GameObject {
 					this.heightSegments
 				);
 				const vertex = getSegment(p00, p10, p11, p01);
-				normals.push(getNormalsForSegment(p00, p01, p10));
+				normals.push(
+					this.getNormalsForSegment(p00, p10, p11, p01, this.innerFacing)
+				);
 				vertices.push(vertex);
 			}
 		}

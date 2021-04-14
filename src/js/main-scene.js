@@ -5,11 +5,13 @@ import Plane from './primitives/plane';
 import Scene from './standard/scene';
 import SkyBox from './standard/skybox';
 import Sphere from './primitives/sphere';
+import DirectionalLight from './standard/light/directional';
 
 export default class MainScene extends Scene {
 	constructor(gl) {
 		super(gl);
 
+		this.lightSources.directional.push(new DirectionalLight([0, 1, 1]));
 		this.setup();
 	}
 
@@ -36,22 +38,15 @@ export default class MainScene extends Scene {
 		);
 		const sphere = new Sphere(
 			this.gl,
-			100,
-			100,
+			32,
+			32,
 			1000,
 			hexToRgb('#e67e22').vec3,
 			0,
 			false
 		);
 
-		const skyBox = new SkyBox(
-			this.gl,
-			10,
-			10,
-			50000,
-			hexToRgb('#48dbfb').vec3,
-			hexToRgb('#576574').vec3
-		);
+		const skyBox = new SkyBox(this.gl, 3, 3, 50000, hexToRgb('#48dbfb').vec3);
 
 		cube.translate([0, 2000, 0]);
 		plane.translate([0, -1000, 0]);
@@ -63,6 +58,13 @@ export default class MainScene extends Scene {
 	}
 
 	draw() {
+		vec3.rotateY(
+			this.lightSources.directional[0].direction,
+			this.lightSources.directional[0].direction,
+			[0, 0, 0],
+			0.001
+		);
+		this.setupLight();
 		const cube = this.getObject('cube');
 		const plane = this.getObject('plane');
 		const sphere = this.getObject('sphere');

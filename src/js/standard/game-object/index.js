@@ -1,4 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix';
+import { hexToRgb } from '../../helpers';
 import GLProgram from '../gl-program';
 
 export default class GameObject extends GLProgram {
@@ -76,22 +77,39 @@ export default class GameObject extends GLProgram {
 			'uWorldMatrix'
 		);
 
-		this.uniforms.lightSource = this.gl.getUniformLocation(
+		this.uniforms.directionalLight = this.gl.getUniformLocation(
 			this.program,
-			'uLightSource'
+			'uDirectionalLight'
 		);
 
+		this.uniforms.directionalLightNumber = this.gl.getUniformLocation(
+			this.program,
+			'uDirectionalLightNumber'
+		);
+
+		this.uniforms.shadowColor = this.gl.getUniformLocation(
+			this.program,
+			'uShadowColor'
+		);
+
+		this.gl.uniform3f(
+			this.uniforms.shadowColor,
+			...vec3.scale(vec3.create(), hexToRgb('#48dbfb').vec3, 0.05)
+		);
 		this.updateMatrix();
 	}
 
-	setupLight(lightDirection) {
+	setupDirectionalLight(light) {
 		this.gl.useProgram(this.program);
 		this.gl.bindVertexArray(this.vao);
-
-		this.gl.uniform3f(
-			this.uniforms.lightSource,
-			...vec3.normalize(vec3.create(), lightDirection)
+		this.gl.uniformMatrix3fv(
+			this.uniforms.directionalLight,
+			false,
+			new Float32Array(light.map((l) => l.toMat3Array()).flat()),
+			0,
+			light.length * 3 * 3
 		);
+		this.gl.uniform1ui(this.uniforms.directionalLightNumber, light.length);
 	}
 
 	translate(translation) {

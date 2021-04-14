@@ -17,7 +17,7 @@ export default class Scene {
 
 	setupLight() {
 		Object.values(this.objects).forEach((obj) =>
-			obj.setupLight(this.lightSources.directional[0].direction)
+			obj.setupDirectionalLight(this.lightSources.directional)
 		);
 	}
 

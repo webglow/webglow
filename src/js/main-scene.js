@@ -11,7 +11,10 @@ export default class MainScene extends Scene {
 	constructor(gl) {
 		super(gl);
 
-		this.lightSources.directional.push(new DirectionalLight([0, 1, 1]));
+		this.lightSources.directional.push(
+			new DirectionalLight([0, 1, 0], 1, hexToRgb('#fff4d6').vec3),
+			new DirectionalLight([1, 0, 0], 1.2, hexToRgb('#fff4d6').vec3)
+		);
 		this.setup();
 	}
 
@@ -59,10 +62,10 @@ export default class MainScene extends Scene {
 
 	draw() {
 		vec3.rotateY(
-			this.lightSources.directional[0].direction,
-			this.lightSources.directional[0].direction,
+			this.lightSources.directional[1].direction,
+			this.lightSources.directional[1].direction,
 			[0, 0, 0],
-			0.001
+			0.01
 		);
 		this.setupLight();
 		const cube = this.getObject('cube');

@@ -6,9 +6,20 @@ out vec4 outColor;
 in vec3 vNormal;
 
 in vec3 vColor;
-uniform vec3 uLightSource;
+uniform mat3 uDirectionalLight[10];
+uniform uint uDirectionalLightNumber;
+uniform vec3 uShadowColor;
 
 void main() {
 	vec3 normal = normalize(vNormal);
-	outColor = vec4(vColor.xyz * dot(normal, uLightSource), 1);
+	vec3 color = uShadowColor;
+
+	for (uint i = 0u; i < uDirectionalLightNumber; i++) {
+		color += vColor.xyz *
+					clamp(dot(normal, uDirectionalLight[i][0]), 0., 1.) *
+					uDirectionalLight[i][1][0] *
+					uDirectionalLight[i][2];
+	}
+
+	outColor = vec4(color, 1);
 }

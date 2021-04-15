@@ -3,12 +3,15 @@ import { hexToRgb } from '../../helpers';
 import GLProgram from '../gl-program';
 
 export default class GameObject extends GLProgram {
-	constructor(gl) {
+	constructor(gl, enableSpecular = false, specularStrength = 80) {
 		super(gl);
 
 		this.mTranslation = mat4.create();
 		this.mRotation = mat4.create();
 		this.mScale = mat4.create();
+
+		this.enableSpecular = enableSpecular;
+		this.specularStrength = specularStrength;
 	}
 
 	setupAttributes() {
@@ -72,9 +75,15 @@ export default class GameObject extends GLProgram {
 			'uWorldViewProjection'
 		);
 
-		this.uniforms.worldMatrix = this.gl.getUniformLocation(
+		this.uniforms.viewWorldPosition = this.gl.getUniformLocation(
 			this.program,
-			'uWorldMatrix'
+			'uViewWorldPosition'
+		);
+
+		this.uniforms.world = this.gl.getUniformLocation(this.program, 'uWorld');
+		this.uniforms.worldInverseTranspose = this.gl.getUniformLocation(
+			this.program,
+			'uWorldInverseTranspose'
 		);
 
 		this.uniforms.directionalLight = this.gl.getUniformLocation(
@@ -87,29 +96,77 @@ export default class GameObject extends GLProgram {
 			'uDirectionalLightNumber'
 		);
 
-		this.uniforms.shadowColor = this.gl.getUniformLocation(
+		this.uniforms.shadeColor = this.gl.getUniformLocation(
 			this.program,
-			'uShadowColor'
+			'uShadeColor'
+		);
+
+		this.uniforms.pointLight = this.gl.getUniformLocation(
+			this.program,
+			'uPointLight'
+		);
+
+		this.uniforms.pointLightNumber = this.gl.getUniformLocation(
+			this.program,
+			'uPointLightNumber'
+		);
+
+		this.uniforms.enableSpecular = this.gl.getUniformLocation(
+			this.program,
+			'uEnableSpecular'
+		);
+
+		this.uniforms.specularStrength = this.gl.getUniformLocation(
+			this.program,
+			'uSpecularStrength'
 		);
 
 		this.gl.uniform3f(
-			this.uniforms.shadowColor,
+			this.uniforms.shadeColor,
 			...vec3.scale(vec3.create(), hexToRgb('#48dbfb').vec3, 0.05)
 		);
+
+		this.gl.uniform1f(this.uniforms.enableSpecular, this.enableSpecular);
+		this.gl.uniform1f(this.uniforms.specularStrength, this.specularStrength);
+
 		this.updateMatrix();
 	}
 
-	setupDirectionalLight(light) {
+	setupDirectionalLight(lightSources) {
+		if (!lightSources || !lightSources.length) {
+			return;
+		}
+
 		this.gl.useProgram(this.program);
 		this.gl.bindVertexArray(this.vao);
 		this.gl.uniformMatrix3fv(
 			this.uniforms.directionalLight,
 			false,
-			new Float32Array(light.map((l) => l.toMat3Array()).flat()),
+			new Float32Array(lightSources.map((l) => l.toMat3Array()).flat()),
 			0,
-			light.length * 3 * 3
+			lightSources.length * 3 * 3
 		);
-		this.gl.uniform1ui(this.uniforms.directionalLightNumber, light.length);
+		this.gl.uniform1ui(
+			this.uniforms.directionalLightNumber,
+			lightSources.length
+		);
+	}
+
+	setupPointLight(lightSources) {
+		if (!lightSources || !lightSources.length) {
+			return;
+		}
+
+		this.gl.useProgram(this.program);
+		this.gl.bindVertexArray(this.vao);
+		this.gl.uniformMatrix3fv(
+			this.uniforms.pointLight,
+			false,
+			new Float32Array(lightSources.map((l) => l.toMat3Array()).flat()),
+			0,
+			lightSources.length * 3 * 3
+		);
+		this.gl.uniform1ui(this.uniforms.pointLightNumber, lightSources.length);
 	}
 
 	translate(translation) {
@@ -151,17 +208,22 @@ export default class GameObject extends GLProgram {
 	}
 
 	updateWorldMatrix() {
-		const uWorldMatrix = mat4.create();
-		mat4.multiply(uWorldMatrix, uWorldMatrix, this.mTranslation);
-		mat4.multiply(uWorldMatrix, uWorldMatrix, this.mRotation);
-		mat4.multiply(uWorldMatrix, uWorldMatrix, this.mScale);
+		const uWorld = mat4.create();
+		mat4.multiply(uWorld, uWorld, this.mTranslation);
+		mat4.multiply(uWorld, uWorld, this.mRotation);
+		mat4.multiply(uWorld, uWorld, this.mScale);
 
+		this.gl.uniformMatrix4fv(this.uniforms.world, false, uWorld);
 		this.gl.uniformMatrix4fv(
-			this.uniforms.worldMatrix,
+			this.uniforms.worldInverseTranspose,
 			false,
-			mat4.transpose(mat4.create(), mat4.invert(mat4.create(), uWorldMatrix))
+			mat4.transpose(mat4.create(), mat4.invert(mat4.create(), uWorld))
+		);
+		this.gl.uniform3f(
+			this.uniforms.viewWorldPosition,
+			...window.global.camera.vPosition
 		);
 
-		return uWorldMatrix;
+		return uWorld;
 	}
 }

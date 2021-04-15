@@ -4,6 +4,7 @@ export default class Scene {
 		this.objects = {};
 		this.lightSources = {
 			directional: [],
+			point: [],
 		};
 	}
 
@@ -16,9 +17,10 @@ export default class Scene {
 	}
 
 	setupLight() {
-		Object.values(this.objects).forEach((obj) =>
-			obj.setupDirectionalLight(this.lightSources.directional)
-		);
+		Object.values(this.objects).forEach((obj) => {
+			obj.setupDirectionalLight(this.lightSources.directional);
+			obj.setupPointLight(this.lightSources.point);
+		});
 	}
 
 	draw() {

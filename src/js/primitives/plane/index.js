@@ -121,6 +121,31 @@ export default class Plane extends Primitive {
 		};
 	}
 
+	updateWorldMatrix() {
+		const uWorld = mat4.create();
+		mat4.multiply(uWorld, uWorld, this.mTranslation);
+		mat4.multiply(uWorld, uWorld, this.mRotation);
+		mat4.multiply(uWorld, uWorld, this.mScale);
+		mat4.multiply(
+			uWorld,
+			uWorld,
+			mat4.translate(mat4.create(), mat4.create(), [
+				-this.width / 2,
+				0,
+				-this.length / 2,
+			])
+		);
+
+		this.gl.uniformMatrix4fv(this.uniforms.world, false, uWorld);
+		this.gl.uniformMatrix4fv(
+			this.uniforms.worldInverseTranspose,
+			false,
+			mat4.transpose(mat4.create(), mat4.invert(mat4.create(), uWorld))
+		);
+
+		return uWorld;
+	}
+
 	updateMatrix() {
 		this.gl.useProgram(this.program);
 		const uWorldMatrix = this.updateWorldMatrix();
@@ -134,15 +159,6 @@ export default class Plane extends Primitive {
 		);
 		mat4.multiply(uWorldViewProjection, uWorldViewProjection, mViewProjection);
 		mat4.multiply(uWorldViewProjection, uWorldViewProjection, uWorldMatrix);
-		mat4.multiply(
-			uWorldViewProjection,
-			uWorldViewProjection,
-			mat4.translate(mat4.create(), mat4.create(), [
-				-this.width / 2,
-				0,
-				-this.length / 2,
-			])
-		);
 
 		this.gl.uniformMatrix4fv(
 			this.uniforms.worldViewProjection,

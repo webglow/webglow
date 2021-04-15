@@ -10,9 +10,12 @@ export default class Sphere extends Primitive {
 		radius,
 		color = [1, 1, 1],
 		gap = 0,
-		innerFacing = false
+		innerFacing = false,
+		polygonal = false,
+		enableSpecular,
+		specularStrength
 	) {
-		super(gl);
+		super(gl, enableSpecular, specularStrength);
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;
@@ -20,6 +23,7 @@ export default class Sphere extends Primitive {
 		this.gap = gap;
 		this.color = color;
 		this.innerFacing = innerFacing;
+		this.polygonal = polygonal;
 
 		this.setup();
 	}
@@ -81,6 +85,18 @@ export default class Sphere extends Primitive {
 	}
 
 	getNormalsForSegment(a, b, c, d) {
+		if (this.polygonal) {
+			const n = vec3.normalize(
+				vec3.create(),
+				vec3.cross(
+					vec3.create(),
+					vec3.subtract(vec3.create(), d, a),
+					vec3.subtract(vec3.create(), vec3.exactEquals(b, a) ? c : b, a)
+				)
+			);
+			// debugger;
+			return [...n, ...n, ...n, ...n, ...n, ...n];
+		}
 		const nA = vec3.normalize(vec3.create(), a);
 		const nB = vec3.normalize(vec3.create(), b);
 		const nC = vec3.normalize(vec3.create(), c);

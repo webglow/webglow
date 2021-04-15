@@ -3,8 +3,8 @@ import { getSegment } from '../helpers';
 import Primitive from '../primitive';
 
 export default class Box extends Primitive {
-	constructor(gl, size = [1, 1, 1], colors) {
-		super(gl);
+	constructor(gl, size = [1, 1, 1], colors, enableSpecular, specularStrength) {
+		super(gl, enableSpecular, specularStrength);
 
 		this.colors = colors;
 

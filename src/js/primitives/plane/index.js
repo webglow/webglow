@@ -1,10 +1,11 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { getSegment } from '../helpers';
 import Primitive from '../primitive';
 
 export default class Plane extends Primitive {
 	constructor(
 		gl,
+		name,
 		width,
 		length,
 		widthSegments,
@@ -13,7 +14,7 @@ export default class Plane extends Primitive {
 		gap = 0,
 		heightMap
 	) {
-		super(gl);
+		super(gl, name);
 
 		this.heightMap =
 			heightMap ||
@@ -89,25 +90,28 @@ export default class Plane extends Primitive {
 
 		for (let i = 0; i < this.widthSegments; i++) {
 			for (let j = 0; j < this.lengthSegments; j++) {
+				const x = i - this.widthSegments / 2;
+				const y = j - this.lengthSegments / 2;
+
 				const p00 = [
-					i * segmentWidth + this.gap,
+					x * segmentWidth + this.gap,
 					this.heightMap[j * this.widthSegments + i],
-					j * segmentLength + this.gap,
+					y * segmentLength + this.gap,
 				];
 				const p10 = [
-					(i + 1) * segmentWidth - this.gap,
+					(x + 1) * segmentWidth - this.gap,
 					this.heightMap[j * this.widthSegments + (i + 1)],
-					j * segmentLength + this.gap,
+					y * segmentLength + this.gap,
 				];
 				const p11 = [
-					(i + 1) * segmentWidth - this.gap,
+					(x + 1) * segmentWidth - this.gap,
 					this.heightMap[(j + 1) * this.widthSegments + (i + 1)],
-					(j + 1) * segmentLength - this.gap,
+					(y + 1) * segmentLength - this.gap,
 				];
 				const p01 = [
-					i * segmentWidth + this.gap,
+					x * segmentWidth + this.gap,
 					this.heightMap[(j + 1) * this.widthSegments + i],
-					(j + 1) * segmentLength - this.gap,
+					(y + 1) * segmentLength - this.gap,
 				];
 				vertices.push(getSegment(p00, p10, p11, p01));
 
@@ -119,51 +123,5 @@ export default class Plane extends Primitive {
 			vertices: vertices.flat(),
 			normals: normals.flat(),
 		};
-	}
-
-	updateWorldMatrix() {
-		const uWorld = mat4.create();
-		mat4.multiply(uWorld, uWorld, this.mTranslation);
-		mat4.multiply(uWorld, uWorld, this.mRotation);
-		mat4.multiply(uWorld, uWorld, this.mScale);
-		mat4.multiply(
-			uWorld,
-			uWorld,
-			mat4.translate(mat4.create(), mat4.create(), [
-				-this.width / 2,
-				0,
-				-this.length / 2,
-			])
-		);
-
-		this.gl.uniformMatrix4fv(this.uniforms.world, false, uWorld);
-		this.gl.uniformMatrix4fv(
-			this.uniforms.worldInverseTranspose,
-			false,
-			mat4.transpose(mat4.create(), mat4.invert(mat4.create(), uWorld))
-		);
-
-		return uWorld;
-	}
-
-	updateMatrix() {
-		this.gl.useProgram(this.program);
-		const uWorldMatrix = this.updateWorldMatrix();
-
-		const uWorldViewProjection = mat4.create();
-		const mViewProjection = mat4.create();
-		mat4.multiply(
-			mViewProjection,
-			window.global.camera.mProjection,
-			window.global.camera.viewMatrix
-		);
-		mat4.multiply(uWorldViewProjection, uWorldViewProjection, mViewProjection);
-		mat4.multiply(uWorldViewProjection, uWorldViewProjection, uWorldMatrix);
-
-		this.gl.uniformMatrix4fv(
-			this.uniforms.worldViewProjection,
-			false,
-			uWorldViewProjection
-		);
 	}
 }

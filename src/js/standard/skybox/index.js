@@ -5,6 +5,7 @@ import fragmentSource from './shaders/fragment.glsl';
 export default class SkyBox extends Sphere {
 	constructor(
 		gl,
+		name,
 		widthSegments,
 		heightSegments,
 		radius,
@@ -12,7 +13,16 @@ export default class SkyBox extends Sphere {
 		gap = 0,
 		innerFacing = true
 	) {
-		super(gl, widthSegments, heightSegments, radius, color, gap, innerFacing);
+		super(
+			gl,
+			name,
+			widthSegments,
+			heightSegments,
+			radius,
+			color,
+			gap,
+			innerFacing
+		);
 	}
 
 	createProgram() {

@@ -42,7 +42,7 @@ void main() {
 		if (uEnableSpecular == 1.) {
 			vec3 halfVector = normalize(viewDirection + pointLightDirection);
 			if (light > 0.0) {
-				color += pow(dot(normal, halfVector), uSpecularStrength) * uPointLight[i][2];
+				color += smoothstep(0., 1., light) * pow(dot(normal, halfVector), uSpecularStrength) * uPointLight[i][2];
 			}
 		}
 	}

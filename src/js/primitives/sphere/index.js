@@ -5,6 +5,7 @@ import Primitive from '../primitive';
 export default class Sphere extends Primitive {
 	constructor(
 		gl,
+		name,
 		widthSegments,
 		heightSegments,
 		radius,
@@ -15,7 +16,7 @@ export default class Sphere extends Primitive {
 		enableSpecular,
 		specularStrength
 	) {
-		super(gl, enableSpecular, specularStrength);
+		super(gl, name, enableSpecular, specularStrength);
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;

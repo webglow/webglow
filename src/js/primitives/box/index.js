@@ -1,14 +1,20 @@
-import { vec3, mat4 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { getSegment } from '../helpers';
 import Primitive from '../primitive';
 
 export default class Box extends Primitive {
-	constructor(gl, size = [1, 1, 1], colors, enableSpecular, specularStrength) {
-		super(gl, enableSpecular, specularStrength);
+	constructor(
+		gl,
+		name,
+		size = [1, 1, 1],
+		colors,
+		enableSpecular,
+		specularStrength
+	) {
+		super(gl, name, enableSpecular, specularStrength);
 
 		this.colors = colors;
-
-		mat4.scale(this.mScale, this.mScale, vec3.fromValues(...size));
+		this.size = size;
 
 		this.setup();
 	}
@@ -16,7 +22,7 @@ export default class Box extends Primitive {
 	setup() {
 		super.setupProgram();
 
-		const { vertices, normals } = this.getVertices();
+		const { vertices, normals } = this.getVertices(this.size);
 		this.aPositions = new Float32Array(vertices);
 		this.aNormals = new Float32Array(normals);
 
@@ -67,15 +73,15 @@ export default class Box extends Primitive {
 	// prettier-ignore
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
-	getVertices() {
-		const p000 = [-1, -1, -1];
-		const p100 = [ 1, -1, -1];
-		const p101 = [ 1, -1,  1];
-		const p001 = [-1, -1,  1];
-		const p010 = [-1,  1, -1];
-		const p110 = [ 1,  1, -1];
-		const p111 = [ 1,  1,  1];
-		const p011 = [-1,  1,  1];
+	getVertices(size) {
+		const p000 = [-size[0], -size[1], -size[2]];
+		const p100 = [ size[0], -size[1], -size[2]];
+		const p101 = [ size[0], -size[1],  size[2]];
+		const p001 = [-size[0], -size[1],  size[2]];
+		const p010 = [-size[0],  size[1], -size[2]];
+		const p110 = [ size[0],  size[1], -size[2]];
+		const p111 = [ size[0],  size[1],  size[2]];
+		const p011 = [-size[0],  size[1],  size[2]];
 
 		return {
 			vertices: [

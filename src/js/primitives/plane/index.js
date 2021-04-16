@@ -6,15 +6,20 @@ export default class Plane extends Primitive {
 	constructor(
 		gl,
 		name,
-		width,
-		length,
-		widthSegments,
-		lengthSegments,
-		color = [1, 1, 1],
-		gap = 0,
-		heightMap
+		{
+			width,
+			length,
+			widthSegments,
+			lengthSegments,
+			color = [1, 1, 1],
+			gap = 0,
+			heightMap,
+			enableLighting,
+			enableSpecular,
+			specularStrength,
+		}
 	) {
-		super(gl, name);
+		super(gl, name, { enableLighting, enableSpecular, specularStrength });
 
 		this.heightMap =
 			heightMap ||

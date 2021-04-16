@@ -11,7 +11,7 @@ class Game {
 		/** @type {WebGL2RenderingContext} */
 		this.gl = this.canvas.getContext('webgl2');
 		this.global = {
-			camera: new Camera(this.gl, 50, [0, 0, 5000]),
+			camera: new Camera(this.gl, 50, [0, 2500, 72000]),
 		};
 		window.global = this.global;
 

@@ -7,9 +7,18 @@ import Transform from '../../standard/transform';
 import HierarchyNode from '../../standard/hierarchy/node';
 
 export default class Primitive extends GLProgram {
-	constructor(gl, name, enableSpecular = false, specularStrength = 80) {
+	constructor(
+		gl,
+		name,
+		{
+			enableLighting = true,
+			enableSpecular = false,
+			specularStrength = 80,
+		} = {}
+	) {
 		super(gl);
 
+		this.enableLighting = enableLighting;
 		this.enableSpecular = enableSpecular;
 		this.specularStrength = specularStrength;
 
@@ -124,6 +133,11 @@ export default class Primitive extends GLProgram {
 			'uPointLightNumber'
 		);
 
+		this.uniforms.enableLighting = this.gl.getUniformLocation(
+			this.program,
+			'uEnableLighting'
+		);
+
 		this.uniforms.enableSpecular = this.gl.getUniformLocation(
 			this.program,
 			'uEnableSpecular'
@@ -136,11 +150,12 @@ export default class Primitive extends GLProgram {
 
 		this.gl.uniform3f(
 			this.uniforms.shadeColor,
-			...vec3.scale(vec3.create(), hexToRgb('#48dbfb').vec3, 0.05)
+			...vec3.scale(vec3.create(), hexToRgb('#666666').vec3, 0.05)
 		);
 
 		this.gl.uniform1f(this.uniforms.enableSpecular, this.enableSpecular);
 		this.gl.uniform1f(this.uniforms.specularStrength, this.specularStrength);
+		this.gl.uniform1f(this.uniforms.enableLighting, this.enableLighting);
 
 		this.updateMatrix();
 	}

@@ -16,9 +16,16 @@ uniform uint uPointLightNumber;
 uniform vec3 uViewWorldPosition;
 uniform float uEnableSpecular;
 uniform float uSpecularStrength;
+uniform float uEnableLighting;
 
 void main() {
 	vec3 normal = normalize(vNormal);
+
+	if (uEnableLighting == 0.) {
+		outColor = vec4(vColor.xyz, 1);
+		return;
+	}
+
 	vec3 color = uShadeColor;
 
 	vec3 viewDirection = normalize(uViewWorldPosition - vWorldPosition);

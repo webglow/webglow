@@ -6,23 +6,23 @@ export default class SkyBox extends Sphere {
 	constructor(
 		gl,
 		name,
-		widthSegments,
-		heightSegments,
-		radius,
-		color,
-		gap = 0,
-		innerFacing = true
+		{
+			widthSegments,
+			heightSegments,
+			radius,
+			color,
+			gap = 0,
+			innerFacing = true,
+		}
 	) {
-		super(
-			gl,
-			name,
+		super(gl, name, {
 			widthSegments,
 			heightSegments,
 			radius,
 			color,
 			gap,
-			innerFacing
-		);
+			innerFacing,
+		});
 	}
 
 	createProgram() {

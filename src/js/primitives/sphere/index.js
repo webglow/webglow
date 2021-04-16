@@ -6,17 +6,20 @@ export default class Sphere extends Primitive {
 	constructor(
 		gl,
 		name,
-		widthSegments,
-		heightSegments,
-		radius,
-		color = [1, 1, 1],
-		gap = 0,
-		innerFacing = false,
-		polygonal = false,
-		enableSpecular,
-		specularStrength
+		{
+			widthSegments,
+			heightSegments,
+			radius,
+			color = [1, 1, 1],
+			gap = 0,
+			innerFacing = false,
+			polygonal = false,
+			enableSpecular,
+			specularStrength,
+			enableLighting,
+		}
 	) {
-		super(gl, name, enableSpecular, specularStrength);
+		super(gl, name, { enableSpecular, specularStrength, enableLighting });
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;

@@ -6,12 +6,15 @@ export default class Box extends Primitive {
 	constructor(
 		gl,
 		name,
-		size = [1, 1, 1],
-		colors,
-		enableSpecular,
-		specularStrength
+		{
+			size = [1, 1, 1],
+			colors,
+			enableSpecular,
+			specularStrength,
+			enableLighting,
+		}
 	) {
-		super(gl, name, enableSpecular, specularStrength);
+		super(gl, name, { enableSpecular, specularStrength, enableLighting });
 
 		this.colors = colors;
 		this.size = size;

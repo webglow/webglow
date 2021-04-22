@@ -1,8 +1,8 @@
 import Stats from 'stats.js';
-import { resizeCanvasToDisplaySize, hexToRgb } from './helpers';
-import Camera from './standard/camera';
-import CameraMovement from './standard/camera-movement';
-import MainScene from './main-scene';
+import { resizeCanvasToDisplaySize, hexToRgb } from './lib/helpers';
+import SolarSystem from './scenes/solar-system.scene';
+import Cube from './scenes/cube.scene';
+import Tetris from './scenes/tetris/scene';
 
 class Game {
 	constructor() {
@@ -10,13 +10,8 @@ class Game {
 
 		/** @type {WebGL2RenderingContext} */
 		this.gl = this.canvas.getContext('webgl2');
-		this.global = {
-			camera: new Camera(this.gl, 50, [0, 2500, 72000]),
-		};
+		this.global = {};
 		window.global = this.global;
-
-		this.globalCameraMovement = new CameraMovement(this.global.camera, this.gl);
-		this.setupEventListeners();
 	}
 
 	async setupGl() {
@@ -27,34 +22,6 @@ class Game {
 		this.gl.enable(this.gl.CULL_FACE);
 
 		this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-	}
-
-	setupEventListeners() {
-		document.addEventListener('keydown', (event) => {
-			this.globalCameraMovement.onKeyDown(event.key);
-		});
-
-		document.addEventListener('keyup', (event) => {
-			this.globalCameraMovement.onKeyUp(event.key);
-		});
-
-		this.canvas.addEventListener('mousedown', () => {
-			this.canvas.requestPointerLock();
-			this.globalCameraMovement.setIsRotating(true);
-		});
-
-		document.addEventListener('mousemove', (event) => {
-			this.globalCameraMovement.rotateCamera(event.movementX, event.movementY);
-		});
-
-		this.canvas.addEventListener('mouseup', () => {
-			document.exitPointerLock();
-			this.globalCameraMovement.setIsRotating(false);
-		});
-
-		this.canvas.addEventListener('wheel', (event) => {
-			this.global.camera.zoom(-Math.sign(event.deltaY));
-		});
 	}
 
 	async start() {
@@ -72,7 +39,7 @@ class Game {
 			1.0
 		);
 
-		this.mainScene = new MainScene(this.gl);
+		this.mainScene = new Tetris(this.gl);
 
 		this.startTime = Date.now();
 		requestAnimationFrame(this.draw.bind(this));
@@ -91,8 +58,6 @@ class Game {
 
 		this.stats.begin();
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-		this.global.camera.update();
 
 		this.mainScene.draw();
 

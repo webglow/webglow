@@ -1,11 +1,11 @@
 import { vec3 } from 'gl-matrix';
+import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
-import Primitive from '../primitive';
 
-export default class Plane extends Primitive {
+export default class Plane extends Mesh {
 	constructor(
 		gl,
-		scene,
+		gameObject,
 		{
 			width,
 			length,
@@ -20,7 +20,7 @@ export default class Plane extends Primitive {
 			specularStrength,
 		}
 	) {
-		super(gl, scene, {
+		super(gl, gameObject, {
 			enableLighting,
 			enableSpecular,
 			specularStrength,
@@ -42,34 +42,15 @@ export default class Plane extends Primitive {
 	}
 
 	setup() {
-		super.setupProgram();
+		const { positions, normals, textureCoords } = this.getGeometry();
 
-		const { vertices, normals, textureCoords } = this.getVertices();
+		this.positions = new Float32Array(positions);
+		this.normals = new Float32Array(normals);
+		this.textureCoords = new Float32Array(textureCoords);
 
-		this.aPositions = new Float32Array(vertices);
-		this.aNormals = new Float32Array(normals);
-		this.aTextureCoords = new Float32Array(textureCoords);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aPositions,
-			this.gl.STATIC_DRAW
-		);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.normal);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aNormals,
-			this.gl.STATIC_DRAW
-		);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.textureCoord);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aTextureCoords,
-			this.gl.STATIC_DRAW
-		);
+		this.setPositions(this.positions);
+		this.setNormals(this.normals);
+		this.setTextureCoords(this.textureCoords);
 
 		if (typeof this.texture === 'number') {
 			this.setupTexture(this.texture);
@@ -78,12 +59,10 @@ export default class Plane extends Primitive {
 		}
 	}
 
-	draw() {
-		super.draw();
+	draw(...args) {
+		super.draw(...args);
 
-		this.updateMatrix();
-
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
+		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
 	}
 
 	getNormalsForSegment(p00, p01, p10) {
@@ -98,8 +77,8 @@ export default class Plane extends Primitive {
 		return [...n, ...n, ...n, ...n, ...n, ...n];
 	}
 
-	getVertices() {
-		const vertices = [];
+	getGeometry() {
+		const positions = [];
 		const normals = [];
 		const textureCoords = [];
 		const segmentWidth = this.width / this.widthSegments;
@@ -130,7 +109,7 @@ export default class Plane extends Primitive {
 					this.heightMap[(j + 1) * this.widthSegments + i],
 					(y + 1) * segmentLength - this.gap,
 				];
-				vertices.push(getSegment(p00, p10, p11, p01));
+				positions.push(getSegment(p00, p10, p11, p01));
 
 				normals.push(this.getNormalsForSegment(p00, p01, p10));
 
@@ -139,7 +118,7 @@ export default class Plane extends Primitive {
 		}
 
 		return {
-			vertices: vertices.flat(),
+			positions: positions.flat(),
 			normals: normals.flat(),
 			textureCoords: textureCoords.flat(),
 		};

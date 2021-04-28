@@ -1,11 +1,11 @@
 import { vec3 } from 'gl-matrix';
-import { getSegment, getTextureCoordsForSegment } from '../helpers';
-import Primitive from '../primitive';
+import Mesh from '../../standard/mesh';
+import { getSegment } from '../helpers';
 
-export default class Sphere extends Primitive {
+export default class Sphere extends Mesh {
 	constructor(
 		gl,
-		scene,
+		gameObject,
 		{
 			widthSegments,
 			heightSegments,
@@ -20,7 +20,7 @@ export default class Sphere extends Primitive {
 			enableLighting,
 		}
 	) {
-		super(gl, scene, {
+		super(gl, gameObject, {
 			enableSpecular,
 			specularStrength,
 			enableLighting,
@@ -39,35 +39,15 @@ export default class Sphere extends Primitive {
 	}
 
 	setup() {
-		super.setupProgram();
+		const { normals, positions, textureCoords } = this.getGeometry();
 
-		const { normals, vertices, textureCoords } = this.getVertices();
+		this.positions = new Float32Array(positions);
+		this.normals = new Float32Array(normals);
+		this.textureCoords = new Float32Array(textureCoords);
 
-		console.log(textureCoords);
-		this.aPositions = new Float32Array(vertices);
-		this.aNormals = new Float32Array(normals);
-		this.aTextureCoords = new Float32Array(textureCoords);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aPositions,
-			this.gl.STATIC_DRAW
-		);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.normal);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aNormals,
-			this.gl.STATIC_DRAW
-		);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.textureCoord);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aTextureCoords,
-			this.gl.STATIC_DRAW
-		);
+		this.setPositions(this.positions);
+		this.setNormals(this.normals);
+		this.setTextureCoords(this.textureCoords);
 
 		if (typeof this.texture === 'number') {
 			this.setupTexture(this.texture);
@@ -76,12 +56,10 @@ export default class Sphere extends Primitive {
 		}
 	}
 
-	draw() {
-		super.draw();
+	draw(...args) {
+		super.draw(...args);
 
-		this.updateMatrix();
-
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
+		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
 	}
 
 	getPoint(i, j, width, height) {
@@ -127,8 +105,8 @@ export default class Sphere extends Primitive {
 			: [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
-	getVertices() {
-		const vertices = [];
+	getGeometry() {
+		const positions = [];
 		const normals = [];
 		const textureCoords = [];
 		for (let i = 0; i < this.widthSegments; i++) {
@@ -161,7 +139,7 @@ export default class Sphere extends Primitive {
 				normals.push(
 					this.getNormalsForSegment(p00, p10, p11, p01, this.innerFacing)
 				);
-				vertices.push(vertex);
+				positions.push(vertex);
 				textureCoords.push(
 					this.getTextureCoordsForSegment(
 						[i / this.widthSegments, j / this.heightSegments],
@@ -175,7 +153,7 @@ export default class Sphere extends Primitive {
 		}
 
 		return {
-			vertices: vertices.flat(),
+			positions: positions.flat(),
 			normals: normals.flat(),
 			textureCoords: textureCoords.flat(),
 		};

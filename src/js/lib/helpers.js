@@ -21,12 +21,19 @@ export function createShader(
 export function createProgram(
 	/** @type {WebGL2RenderingContext} */ gl,
 	vertexShader,
-	fragmentShader
+	fragmentShader,
+	attribLocations
 ) {
 	const program = gl.createProgram();
 
 	gl.attachShader(program, vertexShader);
 	gl.attachShader(program, fragmentShader);
+
+	if (attribLocations) {
+		Object.keys(attribLocations).forEach((key) => {
+			gl.bindAttribLocation(program, attribLocations[key], key);
+		});
+	}
 
 	gl.linkProgram(program);
 

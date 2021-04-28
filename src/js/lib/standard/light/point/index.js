@@ -1,11 +1,9 @@
 import { mat3 } from 'gl-matrix';
-import GameObject from '../../game-object';
-import { NODE_TYPE } from '../../hierarchy/node';
 
-export default class PointLight extends GameObject {
-	constructor(position, intensity, color) {
-		super(NODE_TYPE.POINT_LIGHT);
-		this.transform.setPosition(position);
+export default class PointLight {
+	constructor(gameObject, { position, intensity, color }) {
+		this.gameObject = gameObject;
+		this.gameObject.transform.setPosition(position);
 		this.intensity = intensity;
 		this.color = color;
 	}
@@ -13,7 +11,7 @@ export default class PointLight extends GameObject {
 	toMat3() {
 		// prettier-ignore
 		return mat3.fromValues(
-			...this.transform.vPosition,
+			...this.gameObject.transform.position,
 			this.intensity, 0, 0,
 			...this.color
 		);

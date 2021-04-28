@@ -1,17 +1,58 @@
+import { mat4 } from 'gl-matrix';
 import Camera from '../camera';
 import CameraMovement from '../camera-movement';
 import Hierarchy from '../hierarchy';
-import { NODE_TYPE } from '../hierarchy/node';
+import DirectionalLight from '../light/directional';
+import PointLight from '../light/point';
+import PROJECTION_TYPE from './projection-type';
 
 export default class Scene {
-	constructor(gl, { cameraSpeed = 50, cameraPosition = [0, 0, 0] } = {}) {
+	constructor(
+		gl,
+		{
+			cameraSpeed = 50,
+			cameraPosition = [0, 0, 0],
+			projectionType = PROJECTION_TYPE.PERSPECTIVE,
+		} = {}
+	) {
 		this.gl = gl;
 		this.hierarchy = new Hierarchy('root');
 		this.sceneCamera = new Camera(this.gl, cameraSpeed, cameraPosition);
 		this.sceneCameraMovement = new CameraMovement(this.sceneCamera, this.gl);
-		this.nextTextureUnit = 0;
+		this.projectionType = projectionType;
+
+		this.setProjectionMatrix();
 
 		this.setupEventListeners();
+	}
+
+	setProjectionMatrix() {
+		this.mProjection = mat4.create();
+		switch (this.projectionType) {
+			case PROJECTION_TYPE.ORTHOGRAPHIC:
+				mat4.ortho(
+					this.mProjection,
+					-this.gl.canvas.clientWidth / 2,
+					this.gl.canvas.clientWidth / 2,
+					-this.gl.canvas.clientHeight / 2,
+					this.gl.canvas.clientHeight / 2,
+					-10000,
+					10000
+				);
+				break;
+			default:
+				mat4.perspective(
+					this.mProjection,
+					2 *
+						Math.atan(
+							this.sceneCamera.sensor.diagonal /
+								(2 * this.sceneCamera.focalLength)
+						),
+					this.gl.canvas.clientWidth / this.gl.canvas.clientHeight,
+					1
+				);
+				break;
+		}
 	}
 
 	setupEventListeners() {
@@ -39,33 +80,85 @@ export default class Scene {
 
 		this.gl.canvas.addEventListener('wheel', (event) => {
 			this.sceneCamera.zoom(-Math.sign(event.deltaY));
+			this.setProjectionMatrix();
 		});
-	}
-
-	getFreeTextureUnit() {
-		return this.nextTextureUnit++;
 	}
 
 	setupLight() {
 		this.hierarchy.forEachDrawableNode((node) => {
-			node.objectInstance.setupDirectionalLight(
-				this.hierarchy
-					.getNodesWithType(NODE_TYPE.DIRECTIONAL_LIGHT)
-					.map((lightNode) => lightNode.objectInstance)
+			node.gameObject.mesh.setupDirectionalLight(
+				this.hierarchy.nodesArray
+					.filter(
+						(n) =>
+							n.gameObject && n.gameObject.light instanceof DirectionalLight
+					)
+					.map((lightNode) => lightNode.gameObject.light)
 			);
-			node.objectInstance.setupPointLight(
-				this.hierarchy
-					.getNodesWithType(NODE_TYPE.POINT_LIGHT)
-					.map((lightNode) => lightNode.objectInstance)
+			node.gameObject.mesh.setupPointLight(
+				this.hierarchy.nodesArray
+					.filter(
+						(n) => n.gameObject && n.gameObject.light instanceof PointLight
+					)
+					.map((lightNode) => lightNode.gameObject.light)
 			);
 		});
 	}
 
-	draw() {
+	createDepthTexture() {
+		const depthTexture = this.gl.createTexture();
+		const depthTextureSize = 512;
+		this.gl.bindTexture(this.gl.TEXTURE_2D, depthTexture);
+		this.gl.texImage2D(
+			this.gl.TEXTURE_2D,
+			0,
+			this.gl.DEPTH_COMPONENT32F,
+			depthTextureSize,
+			depthTextureSize,
+			0,
+			this.gl.DEPTH_COMPONENT,
+			this.gl.FLOAT,
+			null
+		);
+		this.gl.texParameteri(
+			this.gl.TEXTURE_2D,
+			this.gl.TEXTURE_MAG_FILTER,
+			this.gl.NEAREST
+		);
+		this.gl.texParameteri(
+			this.gl.TEXTURE_2D,
+			this.gl.TEXTURE_MIN_FILTER,
+			this.gl.NEAREST
+		);
+		this.gl.texParameteri(
+			this.gl.TEXTURE_2D,
+			this.gl.TEXTURE_WRAP_S,
+			this.gl.CLAMP_TO_EDGE
+		);
+		this.gl.texParameteri(
+			this.gl.TEXTURE_2D,
+			this.gl.TEXTURE_WRAP_T,
+			this.gl.CLAMP_TO_EDGE
+		);
+
+		const depthFramebuffer = this.gl.createFramebuffer();
+		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, depthFramebuffer);
+		this.gl.framebufferTexture2D(
+			this.gl.FRAMEBUFFER,
+			this.gl.DEPTH_ATTACHMENT,
+			this.gl.TEXTURE_2D,
+			depthTexture,
+			0
+		);
+	}
+
+	draw(viewWorldPosition, pov) {
 		this.sceneCamera.update();
 
 		this.hierarchy.forEachDrawableNode((node) => {
-			node.objectInstance.draw();
+			node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+		});
+		this.hierarchy.forEachPhysicsNode((node) => {
+			node.gameObject.rigidBody.move();
 		});
 	}
 }

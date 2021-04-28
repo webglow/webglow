@@ -1,18 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import HierarchyNode, { NODE_TYPE } from './node';
+import HierarchyNode from './node';
 
 export default class Hierarchy {
 	constructor(rootNodeId) {
 		this.rootNode = this.createRootNode();
 		this.rootNodeId = rootNodeId;
 		this.nodes = { [rootNodeId]: this.rootNode };
-		this.nodesByType = Object.values(NODE_TYPE).reduce(
-			(acc, value) => ({
-				...acc,
-				[value]: [],
-			}),
-			{}
-		);
+		this.nodesArray = [this.rootNode];
 	}
 
 	createRootNode() {
@@ -23,12 +17,12 @@ export default class Hierarchy {
 		return this.nodes[id];
 	}
 
-	getObjectInstance(id) {
-		return this.nodes[id].objectInstance;
+	getGameObject(id) {
+		return this.nodes[id].gameObject;
 	}
 
-	getNodesWithType(nodeType) {
-		return this.nodesByType[nodeType];
+	getGameObjectNodes() {
+		return this.nodesArray.filter((node) => node.gameObject);
 	}
 
 	addObject(node, id = uuidv4()) {
@@ -36,7 +30,7 @@ export default class Hierarchy {
 			node.parent = this.nodes[this.rootNodeId];
 		}
 		this.nodes[id] = node;
-		this.nodesByType[node.type].push(node);
+		this.nodesArray.push(node);
 
 		node.children.forEach((_node) => {
 			this.addObject(_node);
@@ -50,14 +44,22 @@ export default class Hierarchy {
 	}
 
 	forEachDrawableNode(callback) {
-		this.getNodesWithType(NODE_TYPE.DRAWABLE).forEach(callback);
+		this.nodesArray
+			.filter((node) => node.gameObject && node.gameObject.mesh)
+			.forEach(callback);
+	}
+
+	forEachPhysicsNode(callback) {
+		this.nodesArray
+			.filter((node) => node.gameObject && node.gameObject.rigidBody)
+			.forEach(callback);
 	}
 
 	removeParent(id) {
 		this.nodes[id].parent = null;
 
-		const nodeTypeArray = this.nodesByType[this.nodes[id].type];
-		nodeTypeArray.splice(nodeTypeArray.indexOf(this.nodes[id]), 1);
+		this.nodesArray.splice(this.nodesArray.indexOf(this.nodes[id]), 1);
+
 		delete this.nodes[id];
 	}
 }

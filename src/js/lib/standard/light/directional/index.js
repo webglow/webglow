@@ -1,10 +1,8 @@
 import { mat3, vec3 } from 'gl-matrix';
-import GameObject from '../../game-object';
-import { NODE_TYPE } from '../../hierarchy/node';
 
-export default class DirectionalLight extends GameObject {
-	constructor(direction, intensity, color) {
-		super(NODE_TYPE.DIRECTIONAL_LIGHT);
+export default class DirectionalLight {
+	constructor(gameObject, { direction, intensity, color }) {
+		this.gameObject = gameObject;
 		this.direction = vec3.normalize(vec3.create(), direction);
 		this.intensity = intensity;
 		this.color = color;

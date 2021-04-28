@@ -1,4 +1,4 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import CameraTransform from './transform';
 
 export default class Camera {
@@ -9,18 +9,14 @@ export default class Camera {
 			width: 36,
 			height: 24,
 		};
-
 		this.sensor.diagonal = Math.sqrt(
 			this.sensor.width ** 2 + this.sensor.height ** 2
 		);
 		this.focalLength = 35;
 		this.zoomStep = 5;
 
-		this.transform = new CameraTransform(() => this.updateViewMatrix());
+		this.transform = new CameraTransform();
 
-		this.setProjectionMatrix();
-
-		this.viewMatrix = mat4.create();
 		this.speed = movementSpeed;
 		this.isMoving = false;
 		this.direction = vec3.create();
@@ -30,32 +26,12 @@ export default class Camera {
 			initialPosition[1],
 			-initialPosition[2],
 		]);
-
-		this.updateViewMatrix();
-	}
-
-	setProjectionMatrix() {
-		this.mProjection = mat4.create();
-		mat4.perspective(
-			this.mProjection,
-			2 * Math.atan(this.sensor.diagonal / (2 * this.focalLength)),
-			this.gl.canvas.clientWidth / this.gl.canvas.clientHeight,
-			1
-		);
 	}
 
 	zoom(direction) {
 		if (this.focalLength + direction * this.zoomStep > 1 || direction > 0) {
 			this.focalLength += direction * this.zoomStep;
 		}
-
-		this.setProjectionMatrix();
-	}
-
-	updateViewMatrix() {
-		const cameraMatrix = this.transform.getLocal();
-
-		mat4.invert(this.viewMatrix, cameraMatrix);
 	}
 
 	setMoving(direction) {

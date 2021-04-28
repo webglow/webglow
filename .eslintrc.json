@@ -39,6 +39,7 @@
     "import/prefer-default-export": "off",
     "max-len": "off",
     "no-unused-expressions": "off",
+    "no-underscore-dangle": "off",
     "func-names": "off",
     "object-curly-newline": "off",
     "prettier/prettier": [

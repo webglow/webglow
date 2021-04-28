@@ -1,11 +1,11 @@
 import { vec3 } from 'gl-matrix';
+import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
-import Primitive from '../primitive';
 
-export default class Box extends Primitive {
+export default class Box extends Mesh {
 	constructor(
 		gl,
-		scene,
+		gameObject,
 		{
 			size = [1, 1, 1],
 			color,
@@ -16,7 +16,7 @@ export default class Box extends Primitive {
 			enableLighting,
 		}
 	) {
-		super(gl, scene, {
+		super(gl, gameObject, {
 			enableSpecular,
 			specularStrength,
 			enableLighting,
@@ -31,33 +31,14 @@ export default class Box extends Primitive {
 	}
 
 	setup() {
-		super.setupProgram();
+		const { positions, normals, textureCoords } = this.getGeometry(this.size);
+		this.positions = new Float32Array(positions);
+		this.normals = new Float32Array(normals);
+		this.textureCoords = new Float32Array(textureCoords);
 
-		const { vertices, normals, textureCoords } = this.getVertices(this.size);
-		this.aPositions = new Float32Array(vertices);
-		this.aNormals = new Float32Array(normals);
-		this.aTextureCoords = new Float32Array(textureCoords);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.position);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aPositions,
-			this.gl.STATIC_DRAW
-		);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.normal);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aNormals,
-			this.gl.STATIC_DRAW
-		);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.textureCoord);
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			this.aTextureCoords,
-			this.gl.STATIC_DRAW
-		);
+		this.setPositions(this.positions);
+		this.setNormals(this.normals);
+		this.setTextureCoords(this.textureCoords);
 
 		if (typeof this.texture === 'number') {
 			this.setupTexture(this.texture);
@@ -66,12 +47,10 @@ export default class Box extends Primitive {
 		}
 	}
 
-	draw() {
-		super.draw();
+	draw(...args) {
+		super.draw(...args);
 
-		this.updateMatrix();
-
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.aPositions.length / 3);
+		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
 	}
 
 	getNormalsForSegment(p00, p01, p10) {
@@ -89,18 +68,19 @@ export default class Box extends Primitive {
 	// prettier-ignore
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
-	getVertices(size) {
-		const p000 = [-size[0], -size[1], -size[2]];
-		const p100 = [ size[0], -size[1], -size[2]];
-		const p101 = [ size[0], -size[1],  size[2]];
-		const p001 = [-size[0], -size[1],  size[2]];
-		const p010 = [-size[0],  size[1], -size[2]];
-		const p110 = [ size[0],  size[1], -size[2]];
-		const p111 = [ size[0],  size[1],  size[2]];
-		const p011 = [-size[0],  size[1],  size[2]];
+	getGeometry(size) {
+		const halfSize = vec3.scale(vec3.create(), size, 0.5);
+		const p000 = [-halfSize[0], -halfSize[1], -halfSize[2]];
+		const p100 = [ halfSize[0], -halfSize[1], -halfSize[2]];
+		const p101 = [ halfSize[0], -halfSize[1],  halfSize[2]];
+		const p001 = [-halfSize[0], -halfSize[1],  halfSize[2]];
+		const p010 = [-halfSize[0],  halfSize[1], -halfSize[2]];
+		const p110 = [ halfSize[0],  halfSize[1], -halfSize[2]];
+		const p111 = [ halfSize[0],  halfSize[1],  halfSize[2]];
+		const p011 = [-halfSize[0],  halfSize[1],  halfSize[2]];
 
 		return {
-			vertices: [
+			positions: [
 			// bottom
 			...getSegment(p000, p001, p101, p100, this.innerFacing),
 

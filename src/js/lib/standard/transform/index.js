@@ -6,30 +6,24 @@ export default class Transform {
 		this.mRotation = mat4.create();
 		this.mScale = mat4.create();
 
-		this.vPosition = vec3.create();
-		this.vRotation = vec3.create();
-		this.vScale = vec3.create();
 		this.onChange = onChange;
 	}
 
 	translate(translation) {
 		mat4.translate(this.mTranslation, this.mTranslation, translation);
 
-		this.updateVPosition();
 		this.onChange();
 	}
 
 	rotate(angle, axis) {
 		mat4.rotate(this.mRotation, this.mRotation, angle, axis);
 
-		this.updateVRotation();
 		this.onChange();
 	}
 
 	scale(scale) {
 		mat4.scale(this.mScale, this.mScale, scale);
 
-		this.updateVScale();
 		this.onChange();
 	}
 
@@ -37,7 +31,6 @@ export default class Transform {
 		this.mTranslation = mat4.create();
 		mat4.translate(this.mTranslation, this.mTranslation, position);
 
-		this.updateVPosition();
 		this.onChange();
 	}
 
@@ -45,7 +38,6 @@ export default class Transform {
 		this.mRotation = mat4.create();
 		mat4.rotate(this.mRotation, this.mRotation, angle, axis);
 
-		this.updateVRotation();
 		this.onChange();
 	}
 
@@ -53,26 +45,23 @@ export default class Transform {
 		this.mScale = mat4.create();
 		mat4.scale(this.mScale, this.mScale, scale);
 
-		this.updateVScale();
 		this.onChange();
 	}
 
-	updateVPosition() {
-		this.vPosition = vec3.create();
-
-		vec3.transformMat4(this.vPosition, this.vPosition, this.mTranslation);
+	get position() {
+		return mat4.getTranslation(vec3.create(), this.mTranslation);
 	}
 
-	updateVRotation() {
-		this.vRotation = vec3.create();
-
-		vec3.transformMat4(this.vRotation, this.vRotation, this.mRotation);
+	get rotation() {
+		return mat4.getRotation(vec3.create(), this.mRotation);
 	}
 
-	updateVScale() {
-		this.vScale = vec3.create();
+	get scaling() {
+		return mat4.getScaling(vec3.create(), this.mScale);
+	}
 
-		vec3.transformMat4(this.vScale, this.vScale, this.mScale);
+	get viewMatrix() {
+		return mat4.invert(mat4.create(), this.getLocal());
 	}
 
 	getWorld(node) {
@@ -83,16 +72,16 @@ export default class Transform {
 		return mat4.multiply(
 			mat4.create(),
 			this.getWorld(node.parent),
-			node.objectInstance.transform.getLocal()
+			node.gameObject.transform.getLocal()
 		);
 	}
 
-	getWorldViewProjection(world, camera) {
+	getWorldViewProjection(world, mProjection, pov) {
 		const worldMatrix = world;
 
 		const worldViewProjection = mat4.create();
 		const mViewProjection = mat4.create();
-		mat4.multiply(mViewProjection, camera.mProjection, camera.viewMatrix);
+		mat4.multiply(mViewProjection, mProjection, pov);
 		mat4.multiply(worldViewProjection, worldViewProjection, mViewProjection);
 		mat4.multiply(worldViewProjection, worldViewProjection, worldMatrix);
 

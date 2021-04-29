@@ -1,9 +1,13 @@
 import { mat3, vec3 } from 'gl-matrix';
 
 export default class DirectionalLight {
-	constructor(gameObject, { direction, intensity, color }) {
+	constructor(
+		gameObject,
+		{ position = [0, 0, 0], direction, intensity, color }
+	) {
 		this.gameObject = gameObject;
 		this.direction = vec3.normalize(vec3.create(), direction);
+		this.gameObject.transform.setPosition(position);
 		this.intensity = intensity;
 		this.color = color;
 	}

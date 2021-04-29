@@ -1,7 +1,7 @@
 import { mat3 } from 'gl-matrix';
 
 export default class PointLight {
-	constructor(gameObject, { position, intensity, color }) {
+	constructor(gameObject, { position = [0, 0, 0], intensity, color }) {
 		this.gameObject = gameObject;
 		this.gameObject.transform.setPosition(position);
 		this.intensity = intensity;

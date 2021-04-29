@@ -1,10 +1,8 @@
-import { vec3 } from 'gl-matrix';
-import defaultVertexSource from './shaders/default/vertex.glsl';
-import defaultFragmentSource from './shaders/default/fragment.glsl';
+import { mat4 } from 'gl-matrix';
 import depthVertexSource from './shaders/depth/vertex.glsl';
 import depthFragmentSource from './shaders/depth/fragment.glsl';
-import { hexToRgb } from '../../helpers';
-import GLProgram from '../gl-program';
+import VAO from '../vao';
+import DefaultMaterial from '../materials/default';
 
 export default class Mesh {
 	constructor(
@@ -14,44 +12,48 @@ export default class Mesh {
 			enableLighting = true,
 			enableSpecular = false,
 			specularStrength = 80,
+			shadeColor,
 		} = {}
 	) {
 		/** @type {WebGL2RenderingContext} */
 		this.gl = gl;
 
-		this.programs = {
-			default: new GLProgram(
-				this.gl,
-				defaultVertexSource,
-				defaultFragmentSource
-			),
+		this.attribLocations = {
+			aPosition: 0,
+			aNormal: 1,
+			aTextureCoord: 2,
 		};
+
+		this.materials = {
+			default: new DefaultMaterial(this.gl, this.attribLocations, {
+				enableLighting,
+				enableSpecular,
+				specularStrength,
+				shadeColor,
+			}),
+		};
+		this.vao = new VAO(this.gl, this.attribLocations);
 		this.gameObject = gameObject;
 
-		this.enableLighting = enableLighting;
-		this.enableSpecular = enableSpecular;
-		this.specularStrength = specularStrength;
-
 		this.setupAttributes();
-		this.setupUniforms();
 	}
 
 	setupAttributes() {
-		this.programs.default.setAttribute('aPosition', 3, this.gl.FLOAT);
-		this.programs.default.setAttribute('aNormal', 3, this.gl.FLOAT);
-		this.programs.default.setAttribute('aTextureCoord', 2, this.gl.FLOAT);
+		this.vao.setAttribute('aPosition', 3, this.gl.FLOAT);
+		this.vao.setAttribute('aNormal', 3, this.gl.FLOAT);
+		this.vao.setAttribute('aTextureCoord', 2, this.gl.FLOAT);
 	}
 
 	setPositions(positions) {
-		this.programs.default.setBufferData('aPosition', positions);
+		this.vao.setBufferData('aPosition', positions);
 	}
 
 	setNormals(normals) {
-		this.programs.default.setBufferData('aNormal', normals);
+		this.vao.setBufferData('aNormal', normals);
 	}
 
 	setTextureCoords(textureCoords) {
-		this.programs.default.setBufferData('aTextureCoord', textureCoords);
+		this.vao.setBufferData('aTextureCoord', textureCoords);
 	}
 
 	setupColor(color) {
@@ -99,125 +101,50 @@ export default class Mesh {
 			this.gl.CLAMP_TO_EDGE
 		);
 
-		this.setupTexture(0);
-	}
-
-	setupTexture(textureUnit) {
-		this.programs.default.setUniforms({
-			uTexture: {
-				type: 'uniform1i',
-				value: [textureUnit],
-			},
-		});
-	}
-
-	setupUniforms() {
-		this.programs.default.setUniforms({
-			uEnableSpecular: {
-				type: 'uniform1f',
-				value: [this.enableSpecular],
-			},
-			uSpecularStrength: {
-				type: 'uniform1f',
-				value: [this.specularStrength],
-			},
-			uEnableLighting: {
-				type: 'uniform1f',
-				value: [this.enableLighting],
-			},
-			uShadeColor: {
-				type: 'uniform3f',
-				value: vec3.scale(vec3.create(), hexToRgb('#666666').vec3, 0.05),
-			},
-		});
+		this.materials.default.setTexture(0);
 	}
 
 	setupDirectionalLight(lightSources) {
-		if (!lightSources || !lightSources.length) {
-			return;
-		}
-
-		this.programs.default.setUniforms({
-			uDirectionalLight: {
-				type: 'uniformMatrix3fv',
-				value: [
-					false,
-					new Float32Array(lightSources.map((l) => l.toMat3Array()).flat()),
-					0,
-					lightSources.length * 3 * 3,
-				],
-			},
-			uDirectionalLightNumber: {
-				type: 'uniform1ui',
-				value: [lightSources.length],
-			},
-		});
+		this.materials.default.setDirectionalLights(lightSources);
 	}
 
 	setupPointLight(lightSources) {
-		if (!lightSources || !lightSources.length) {
-			return;
-		}
-
-		this.programs.default.setUniforms({
-			uPointLight: {
-				type: 'uniformMatrix3fv',
-				value: [
-					false,
-					new Float32Array(lightSources.map((l) => l.toMat3Array()).flat()),
-					0,
-					lightSources.length * 3 * 3,
-				],
-			},
-			uPointLightNumber: {
-				type: 'uniform1ui',
-				value: [lightSources.length],
-			},
-		});
+		this.materials.default.setPointLights(lightSources);
 	}
 
 	updateMatrix(mProjection, viewWorldPosition, pov) {
 		const world = this.updateWorldMatrix(viewWorldPosition);
 
-		const uWorldViewProjection = this.gameObject.transform.getWorldViewProjection(
+		const worldViewProjection = this.gameObject.transform.getWorldViewProjection(
 			world,
 			mProjection,
 			pov
 		);
 
-		this.programs.default.setUniforms({
-			uWorldViewProjection: {
-				type: 'uniformMatrix4fv',
-				value: [false, uWorldViewProjection],
-			},
-		});
+		this.materials.default.setWorldViewProjection(worldViewProjection);
 
-		return uWorldViewProjection;
+		return worldViewProjection;
 	}
 
 	updateWorldMatrix(viewWorldPosition) {
-		const uWorld = this.gameObject.transform.getWorld(this.gameObject.node);
+		const world = this.gameObject.transform.getWorld(this.gameObject.node);
 
-		this.programs.default.setUniforms({
-			uWorld: {
-				type: 'uniformMatrix4fv',
-				value: [false, uWorld],
-			},
-			uWorldInverseTranspose: {
-				type: 'uniformMatrix4fv',
-				value: [false, uWorld],
-			},
-			uViewWorldPosition: {
-				type: 'uniform3f',
-				value: viewWorldPosition,
-			},
-		});
+		const worldInverseTranspose = mat4.create();
 
-		return uWorld;
+		mat4.transpose(
+			worldInverseTranspose,
+			mat4.invert(worldInverseTranspose, world)
+		);
+
+		this.materials.default.setWorld(world);
+		this.materials.default.setWorldInverseTranspose(worldInverseTranspose);
+		this.materials.default.setViewWorldPosition(viewWorldPosition);
+
+		return world;
 	}
 
 	draw(mProjection, viewWorldPosition, pov) {
-		this.gl.bindVertexArray(this.programs.default.vao);
+		this.vao.bind();
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 

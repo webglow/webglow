@@ -1,8 +1,8 @@
 import Stats from 'stats.js';
-import { resizeCanvasToDisplaySize, hexToRgb } from './lib/helpers';
-import SolarSystem from './scenes/solar-system.scene';
-import Cube from './scenes/cube.scene';
-import Tetris from './scenes/tetris/scene';
+import { resizeCanvasToDisplaySize } from './lib/utils/helpers';
+import Tetris from './scenes/3d/tetris/scene';
+import Color from './lib/utils/color';
+import Test2DScene from './scenes/2d/test.scene';
 
 class Game {
 	constructor() {
@@ -31,15 +31,9 @@ class Game {
 		this.stats.showPanel(0);
 		document.body.appendChild(this.stats.dom);
 
-		const backgroundColorRgb = hexToRgb('#48dbfb').rgb;
-		this.gl.clearColor(
-			backgroundColorRgb.r,
-			backgroundColorRgb.g,
-			backgroundColorRgb.b,
-			1.0
-		);
-
-		this.mainScene = new Tetris(this.gl);
+		this.mainScene = new Test2DScene(this.gl, {
+			backgroundColor: new Color('#000000'),
+		});
 
 		this.startTime = Date.now();
 		requestAnimationFrame(this.draw.bind(this));
@@ -57,7 +51,6 @@ class Game {
 		}
 
 		this.stats.begin();
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 		this.mainScene.draw();
 

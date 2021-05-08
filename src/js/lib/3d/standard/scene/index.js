@@ -1,10 +1,11 @@
 import { mat4 } from 'gl-matrix';
 import Camera from '../camera';
 import CameraMovement from '../camera-movement';
-import Hierarchy from '../hierarchy';
+import Hierarchy from '../../../utils/hierarchy';
 import DirectionalLight from '../light/directional';
 import PointLight from '../light/point';
 import PROJECTION_TYPE from './projection-type';
+import Color from '../../../utils/color';
 
 export default class Scene {
 	constructor(
@@ -13,6 +14,7 @@ export default class Scene {
 			cameraSpeed = 50,
 			cameraPosition = [0, 0, 0],
 			projectionType = PROJECTION_TYPE.PERSPECTIVE,
+			backgroundColor = new Color('#000000'),
 		} = {}
 	) {
 		this.gl = gl;
@@ -20,6 +22,9 @@ export default class Scene {
 		this.sceneCamera = new Camera(this.gl, cameraSpeed, cameraPosition);
 		this.sceneCameraMovement = new CameraMovement(this.sceneCamera, this.gl);
 		this.projectionType = projectionType;
+
+		this.backgroundColor = backgroundColor;
+		this.gl.clearColor(...this.backgroundColor.toNormalizedVec3(), 1.0);
 
 		this.setProjectionMatrix();
 
@@ -43,11 +48,7 @@ export default class Scene {
 			default:
 				mat4.perspective(
 					this.mProjection,
-					2 *
-						Math.atan(
-							this.sceneCamera.sensor.diagonal /
-								(2 * this.sceneCamera.focalLength)
-						),
+					this.sceneCamera.fieldOfView,
 					this.gl.canvas.clientWidth / this.gl.canvas.clientHeight,
 					1
 				);
@@ -152,6 +153,8 @@ export default class Scene {
 	}
 
 	draw(viewWorldPosition, pov) {
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
 		this.sceneCamera.update();
 
 		this.hierarchy.forEachDrawableNode((node) => {

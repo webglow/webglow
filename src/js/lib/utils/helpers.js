@@ -58,24 +58,3 @@ export function resizeCanvasToDisplaySize(canvas, multiplier) {
 	}
 	return false;
 }
-
-export function hexToRgb(hex) {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	const color = {
-		r: parseInt(result[1], 16),
-		g: parseInt(result[2], 16),
-		b: parseInt(result[3], 16),
-	};
-	const normColor = {
-		r: color.r / 255,
-		g: color.g / 255,
-		b: color.b / 255,
-	};
-	return result
-		? {
-				rgb: normColor,
-				vec3: [normColor.r, normColor.g, normColor.b],
-				vec4: [color.r, color.g, color.b, 255],
-		  }
-		: null;
-}

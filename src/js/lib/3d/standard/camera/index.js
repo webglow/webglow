@@ -28,6 +28,10 @@ export default class Camera {
 		]);
 	}
 
+	get fieldOfView() {
+		return 2 * Math.atan(this.sensor.diagonal / (2 * this.focalLength));
+	}
+
 	zoom(direction) {
 		if (this.focalLength + direction * this.zoomStep > 1 || direction > 0) {
 			this.focalLength += direction * this.zoomStep;

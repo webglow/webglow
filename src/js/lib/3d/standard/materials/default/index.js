@@ -1,9 +1,9 @@
-import Material from '..';
 import vertexSource from './shaders/vertex.glsl';
 import fragmentSource from './shaders/fragment.glsl';
-import Color from '../../color';
+import Color from '../../../../utils/color';
+import Material3D from '..';
 
-export default class DefaultMaterial extends Material {
+export default class DefaultMaterial3D extends Material3D {
 	constructor(
 		gl,
 		attribLocations,
@@ -85,42 +85,6 @@ export default class DefaultMaterial extends Material {
 			uPointLightNumber: {
 				type: 'uniform1ui',
 				value: [lightSources.length],
-			},
-		});
-	}
-
-	setWorldViewProjection(mWorldViewProjection) {
-		this.setUniforms({
-			uWorldViewProjection: {
-				type: 'uniformMatrix4fv',
-				value: [false, mWorldViewProjection],
-			},
-		});
-	}
-
-	setWorld(mWorld) {
-		this.setUniforms({
-			uWorld: {
-				type: 'uniformMatrix4fv',
-				value: [false, mWorld],
-			},
-		});
-	}
-
-	setWorldInverseTranspose(mWorldInverseTranspose) {
-		this.setUniforms({
-			uWorldInverseTranspose: {
-				type: 'uniformMatrix4fv',
-				value: [false, mWorldInverseTranspose],
-			},
-		});
-	}
-
-	setViewWorldPosition(vViewWorldPosition) {
-		this.setUniforms({
-			uViewWorldPosition: {
-				type: 'uniform3f',
-				value: vViewWorldPosition,
 			},
 		});
 	}

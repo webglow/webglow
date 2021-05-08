@@ -1,5 +1,5 @@
-import Box from '../../../lib/primitives/box';
-import GameObject from '../../../lib/standard/game-object';
+import Box from '../../../../lib/3d/primitives/box';
+import GameObject from '../../../../lib/utils/game-object';
 
 export default class Shape {
 	constructor(gl, scene, color, size = 500) {

@@ -1,4 +1,4 @@
-import { createShader, createProgram } from '../../helpers';
+import { createShader, createProgram } from '../helpers';
 
 export default class Material {
 	constructor(gl, vertexSource, fragmentSource, attribLocations) {

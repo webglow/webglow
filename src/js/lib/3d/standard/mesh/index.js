@@ -1,8 +1,6 @@
 import { mat4 } from 'gl-matrix';
-import depthVertexSource from './shaders/depth/vertex.glsl';
-import depthFragmentSource from './shaders/depth/fragment.glsl';
-import VAO from '../vao';
-import DefaultMaterial from '../materials/default';
+import VAO from '../../../utils/vao';
+import DefaultMaterial3D from '../materials/default';
 
 export default class Mesh {
 	constructor(
@@ -25,7 +23,7 @@ export default class Mesh {
 		};
 
 		this.materials = {
-			default: new DefaultMaterial(this.gl, this.attribLocations, {
+			default: new DefaultMaterial3D(this.gl, this.attribLocations, {
 				enableLighting,
 				enableSpecular,
 				specularStrength,

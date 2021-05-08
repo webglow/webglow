@@ -1,20 +1,20 @@
-import BoxCollider from '../../lib/physics/collider/box-collider';
-import CollisionDetector from '../../lib/physics/collision-detector';
-import Plane from '../../lib/primitives/plane';
-import Color from '../../lib/standard/color';
-import GameObject from '../../lib/standard/game-object';
-import DirectionalLight from '../../lib/standard/light/directional';
-import PointLight from '../../lib/standard/light/point';
-import Scene from '../../lib/standard/scene';
+import BoxCollider from '../../../lib/3d/physics/collider/box-collider';
+import CollisionDetector from '../../../lib/3d/physics/collision-detector';
+import Plane from '../../../lib/3d/primitives/plane';
+import Color from '../../../lib/utils/color';
+import DirectionalLight from '../../../lib/3d/standard/light/directional';
+import PointLight from '../../../lib/3d/standard/light/point';
+import Scene from '../../../lib/3d/standard/scene';
 import CubeShape from './shapes/cube-shape';
 import LShape from './shapes/l-shape';
 import StairsShape from './shapes/stairs-shape';
 import StickShape from './shapes/stick-shape';
 import TShape from './shapes/t-shape';
+import GameObject from '../../../lib/utils/game-object';
 
 export default class Tetris extends Scene {
-	constructor(gl) {
-		super(gl, { cameraPosition: [0, 0, -5000] });
+	constructor(gl, config) {
+		super(gl, { ...config, cameraPosition: [0, 0, -5000] });
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
 		// const mainLight = new GameObject({ gl: this.gl, scene: this });
@@ -100,7 +100,10 @@ export default class Tetris extends Scene {
 	}
 
 	draw() {
+		const pointLight = this.hierarchy.getNodeById('pointLight').gameObject;
 		super.draw(
+			// pointLight.transform.position,
+			// pointLight.transform.viewMatrix
 			this.sceneCamera.transform.position,
 			this.sceneCamera.transform.viewMatrix
 		);

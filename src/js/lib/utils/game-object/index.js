@@ -1,14 +1,14 @@
 import { vec3 } from 'gl-matrix';
-import BoxCollider from '../../physics/collider/box-collider';
-import RigidBody from '../../physics/rigidbody';
-import Box from '../../primitives/box';
+import BoxCollider from '../../3d/physics/collider/box-collider';
+import RigidBody from '../../3d/physics/rigidbody';
+import Box from '../../3d/primitives/box';
 import HierarchyNode from '../hierarchy/node';
-import Transform from '../transform';
+import Transform from '../../3d/standard/transform';
 
 export default class GameObject {
-	constructor({ gl, scene } = {}) {
+	constructor({ gl, scene, TransformType = Transform } = {}) {
 		this.gl = gl;
-		this.transform = new Transform();
+		this.transform = new TransformType();
 		this.node = new HierarchyNode(this, false, null);
 		this.scene = scene;
 	}

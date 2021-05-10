@@ -1,4 +1,4 @@
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import Camera from '../camera';
 import CameraMovement from '../camera-movement';
 import Hierarchy from '../../../utils/hierarchy';
@@ -6,10 +6,20 @@ import DirectionalLight from '../light/directional';
 import PointLight from '../light/point';
 import PROJECTION_TYPE from './projection-type';
 import Color from '../../../utils/color';
+import HierarchyNode from '../../../utils/hierarchy/node';
 
 export default class Scene {
+	gl: WebGL2RenderingContext;
+	hierarchy: Hierarchy;
+	sceneCamera: Camera;
+	sceneCameraMovement: CameraMovement;
+	projectionType: number;
+	backgroundColor: Color;
+	mProjection: mat4;
+	canvas: HTMLCanvasElement;
+
 	constructor(
-		gl,
+		gl: WebGL2RenderingContext,
 		{
 			cameraSpeed = 50,
 			cameraPosition = [0, 0, 0],
@@ -18,6 +28,7 @@ export default class Scene {
 		} = {}
 	) {
 		this.gl = gl;
+		this.canvas = this.gl.canvas as HTMLCanvasElement;
 		this.hierarchy = new Hierarchy('root');
 		this.sceneCamera = new Camera(this.gl, cameraSpeed, cameraPosition);
 		this.sceneCameraMovement = new CameraMovement(this.sceneCamera, this.gl);
@@ -37,10 +48,10 @@ export default class Scene {
 			case PROJECTION_TYPE.ORTHOGRAPHIC:
 				mat4.ortho(
 					this.mProjection,
-					-this.gl.canvas.clientWidth / 2,
-					this.gl.canvas.clientWidth / 2,
-					-this.gl.canvas.clientHeight / 2,
-					this.gl.canvas.clientHeight / 2,
+					-this.canvas.clientWidth / 2,
+					this.canvas.clientWidth / 2,
+					-this.canvas.clientHeight / 2,
+					this.canvas.clientHeight / 2,
 					-10000,
 					10000
 				);
@@ -49,8 +60,9 @@ export default class Scene {
 				mat4.perspective(
 					this.mProjection,
 					this.sceneCamera.fieldOfView,
-					this.gl.canvas.clientWidth / this.gl.canvas.clientHeight,
-					1
+					this.canvas.clientWidth / this.canvas.clientHeight,
+					1,
+					undefined
 				);
 				break;
 		}
@@ -66,11 +78,11 @@ export default class Scene {
 		});
 
 		this.gl.canvas.addEventListener('mousedown', () => {
-			this.gl.canvas.requestPointerLock();
+			this.canvas.requestPointerLock();
 			this.sceneCameraMovement.setIsRotating(true);
 		});
 
-		document.addEventListener('mousemove', (event) => {
+		document.addEventListener('mousemove', (event: MouseEvent) => {
 			this.sceneCameraMovement.rotateCamera(event.movementX, event.movementY);
 		});
 
@@ -79,14 +91,14 @@ export default class Scene {
 			this.sceneCameraMovement.setIsRotating(false);
 		});
 
-		this.gl.canvas.addEventListener('wheel', (event) => {
+		this.gl.canvas.addEventListener('wheel', (event: WheelEvent) => {
 			this.sceneCamera.zoom(-Math.sign(event.deltaY));
 			this.setProjectionMatrix();
 		});
 	}
 
 	setupLight() {
-		this.hierarchy.forEachDrawableNode((node) => {
+		this.hierarchy.forEachDrawableNode((node: HierarchyNode) => {
 			node.gameObject.mesh.setupDirectionalLight(
 				this.hierarchy.nodesArray
 					.filter(
@@ -152,16 +164,16 @@ export default class Scene {
 		);
 	}
 
-	draw(viewWorldPosition, pov) {
+	draw(viewWorldPosition?: vec3, pov?: mat4) {
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 		this.sceneCamera.update();
 
-		this.hierarchy.forEachDrawableNode((node) => {
+		this.hierarchy.forEachDrawableNode((node: HierarchyNode) => {
 			node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
 		});
-		this.hierarchy.forEachPhysicsNode((node) => {
-			node.gameObject.rigidBody.move();
-		});
+		// this.hierarchy.forEachPhysicsNode((node: HierarchyNode) => {
+			// node.gameObject.rigidBody.move();
+		// });
 	}
 }

@@ -1,3 +1,5 @@
+import { quat, vec3 } from 'gl-matrix';
+
 export function createShader(
 	/** @type {WebGL2RenderingContext} */ gl,
 	type,
@@ -57,4 +59,38 @@ export function resizeCanvasToDisplaySize(canvas, multiplier) {
 		return true;
 	}
 	return false;
+}
+
+export function getEuler(quaternion) {
+	const out = vec3.create();
+
+	const x = quaternion[0];
+	const y = quaternion[1];
+	const z = quaternion[2];
+	const w = quaternion[3];
+	const x2 = x * x;
+	const y2 = y * y;
+	const z2 = z * z;
+	const w2 = w * w;
+	const unit = x2 + y2 + z2 + w2;
+	const test = x * w - y * z;
+	if (test > 0.499995 * unit) {
+		out[0] = Math.PI / 2;
+		out[1] = 2 * Math.atan2(y, x);
+		out[2] = 0;
+	} else if (test < -0.499995 * unit) {
+		out[0] = -Math.PI / 2;
+		out[1] = 2 * Math.atan2(y, x);
+		out[2] = 0;
+	} else {
+		out[0] = Math.asin(2 * (x * z - w * y));
+		out[1] = Math.atan2(2 * (x * w + y * z), 1 - 2 * (z2 + w2));
+		out[2] = Math.atan2(2 * (x * y + z * w), 1 - 2 * (y2 + z2));
+	}
+
+	out[0] = (out[0] * 180) / Math.PI;
+	out[1] = (out[1] * 180) / Math.PI;
+	out[2] = (out[2] * 180) / Math.PI;
+
+	return out;
 }

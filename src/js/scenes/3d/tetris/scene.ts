@@ -2,7 +2,6 @@ import BoxCollider from '../../../lib/3d/physics/collider/box-collider';
 import CollisionDetector from '../../../lib/3d/physics/collision-detector';
 import Plane from '../../../lib/3d/primitives/plane';
 import Color from '../../../lib/utils/color';
-import DirectionalLight from '../../../lib/3d/standard/light/directional';
 import PointLight from '../../../lib/3d/standard/light/point';
 import Scene from '../../../lib/3d/standard/scene';
 import CubeShape from './shapes/cube-shape';
@@ -11,20 +10,23 @@ import StairsShape from './shapes/stairs-shape';
 import StickShape from './shapes/stick-shape';
 import TShape from './shapes/t-shape';
 import GameObject from '../../../lib/utils/game-object';
+import Shape from './shapes';
 
 export default class Tetris extends Scene {
-	constructor(gl, config) {
-		super(gl, { ...config, cameraPosition: [0, 0, -5000] });
+	collisionDetector: CollisionDetector;
+
+	shapes: any[];
+
+	randomShape: Shape;
+
+	constructor(gl: WebGL2RenderingContext, config: any) {
+		super(gl, {
+			...config,
+			cameraPosition: [0, 0, -5000],
+			backgroundColor: new Color('#2980b9'),
+		});
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
-		// const mainLight = new GameObject({ gl: this.gl, scene: this });
-		// mainLight.addLight(DirectionalLight, {
-		// direction: [0, 1, 1],
-		// intensity: 1,
-		// color: new Color('#ffffff').toNormalizedVec3(),
-		// });
-
-		// this.hierarchy.addObject(mainLight.node, 'mainLight');
 		const pointLight = new GameObject({ gl: this.gl, scene: this });
 		pointLight.addLight(PointLight, {
 			position: [0, -1000, 1000],
@@ -73,12 +75,10 @@ export default class Tetris extends Scene {
 
 		this.hierarchy.addObject(ground.node, 'ground');
 
-		// for (let i = 0; i < 20; i++) {
 		this.randomShape = this.getRandomShape();
 		this.randomShape.parent.transform.translate([0, 3000, 0]);
 
 		this.hierarchy.addObject(this.randomShape.parent.node);
-		// }
 
 		this.setupLight();
 
@@ -100,16 +100,13 @@ export default class Tetris extends Scene {
 	}
 
 	draw() {
-		const pointLight = this.hierarchy.getNodeById('pointLight').gameObject;
 		super.draw(
-			// pointLight.transform.position,
-			// pointLight.transform.viewMatrix
 			this.sceneCamera.transform.position,
 			this.sceneCamera.transform.viewMatrix
 		);
 
-		this.collisionDetector.checkCollision();
+		// this.collisionDetector.checkCollision();
 
-		this.randomShape.move();
+		// this.randomShape.move();
 	}
 }

@@ -8,7 +8,7 @@ import Transform from '../../3d/standard/transform';
 export default class GameObject {
 	constructor({ gl, scene, TransformType = Transform } = {}) {
 		this.gl = gl;
-		this.transform = new TransformType();
+		this.transform = new TransformType(this);
 		this.node = new HierarchyNode(this, false, null);
 		this.scene = scene;
 	}

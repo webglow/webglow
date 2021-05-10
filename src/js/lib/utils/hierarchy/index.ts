@@ -2,7 +2,12 @@ import { v4 as uuidv4 } from 'uuid';
 import HierarchyNode from './node';
 
 export default class Hierarchy {
-	constructor(rootNodeId) {
+	rootNode: HierarchyNode;
+	rootNodeId: string;
+	nodes: { [key: string]: HierarchyNode };
+	nodesArray: HierarchyNode[];
+
+	constructor(rootNodeId: string) {
 		this.rootNode = this.createRootNode();
 		this.rootNodeId = rootNodeId;
 		this.nodes = { [rootNodeId]: this.rootNode };
@@ -10,14 +15,14 @@ export default class Hierarchy {
 	}
 
 	createRootNode() {
-		return new HierarchyNode(null, true, null);
+		return new HierarchyNode(null, true, null, this.rootNodeId);
 	}
 
-	getNodeById(id) {
+	getNodeById(id: string) {
 		return this.nodes[id];
 	}
 
-	getGameObject(id) {
+	getGameObject(id: string) {
 		return this.nodes[id].gameObject;
 	}
 
@@ -25,12 +30,13 @@ export default class Hierarchy {
 		return this.nodesArray.filter((node) => node.gameObject);
 	}
 
-	addObject(node, id = uuidv4()) {
+	addObject(node: HierarchyNode, id = uuidv4()) {
 		if (!node.parent) {
-			node.parent = this.nodes[this.rootNodeId];
+			node.addParent(this.nodes[this.rootNodeId]);
 		}
 		this.nodes[id] = node;
 		this.nodesArray.push(node);
+		node.id = id;
 
 		node.children.forEach((_node) => {
 			this.addObject(_node);
@@ -39,23 +45,23 @@ export default class Hierarchy {
 		return id;
 	}
 
-	setParent(child, parent) {
-		child.parent = parent;
+	setParent(child: HierarchyNode, parent: HierarchyNode) {
+		child.addParent(parent);
 	}
 
-	forEachDrawableNode(callback) {
+	forEachDrawableNode(callback: (node: HierarchyNode) => void) {
 		this.nodesArray
 			.filter((node) => node.gameObject && node.gameObject.mesh)
 			.forEach(callback);
 	}
 
-	forEachPhysicsNode(callback) {
+	forEachPhysicsNode(callback: (node: HierarchyNode) => void) {
 		this.nodesArray
 			.filter((node) => node.gameObject && node.gameObject.rigidBody)
 			.forEach(callback);
 	}
 
-	removeParent(id) {
+	removeParent(id: string) {
 		this.nodes[id].parent = null;
 
 		this.nodesArray.splice(this.nodesArray.indexOf(this.nodes[id]), 1);

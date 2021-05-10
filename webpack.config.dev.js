@@ -16,13 +16,24 @@ module.exports = {
 					},
 				},
 			},
+			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/,
+			},
 		],
 	},
 	resolve: {
-		extensions: ['.glsl', '.js'],
+		extensions: ['.glsl', '.js', '.ts', '.tsx'],
+		alias: {
+			'react-dom': '@hot-loader/react-dom',
+		},
 	},
 	entry: {
-		index: path.resolve(__dirname, 'src', 'js', 'index.js'),
+		index: [
+			'react-hot-loader/patch',
+			path.resolve(__dirname, 'src', 'js', 'index.ts'),
+		],
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -30,7 +41,7 @@ module.exports = {
 		filename: '[name].js',
 	},
 	devServer: {
-		hot: true,
+		hotOnly: true,
 		open: true,
 		port: 9000,
 	},

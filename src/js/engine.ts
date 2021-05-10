@@ -2,20 +2,29 @@ import Stats from 'stats.js';
 import { resizeCanvasToDisplaySize } from './lib/utils/helpers';
 import Tetris from './scenes/3d/tetris/scene';
 import Color from './lib/utils/color';
-import Test2DScene from './scenes/2d/test.scene';
+import Scene from './lib/3d/standard/scene';
 
-class Game {
-	constructor() {
-		this.canvas = document.querySelector('#canvas');
+export default class Engine {
+	canvas: HTMLCanvasElement;
+	gl: WebGL2RenderingContext;
+	stats: Stats;
+	activeScene: Scene;
+	frameEndTime?: number;
+	startTime?: number;
+	global: {
+		deltaTime?: number;
+	};
 
-		/** @type {WebGL2RenderingContext} */
+	constructor(canvas: HTMLCanvasElement) {
+		this.canvas = canvas;
+
 		this.gl = this.canvas.getContext('webgl2');
 		this.global = {};
-		window.global = this.global;
+		window.global = this.global as any;
 	}
 
 	async setupGl() {
-		resizeCanvasToDisplaySize(this.gl.canvas, 2);
+		resizeCanvasToDisplaySize(this.gl.canvas, 4);
 		this.gl.enable(this.gl.DEPTH_TEST);
 		this.gl.enable(this.gl.BLEND);
 		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -29,9 +38,9 @@ class Game {
 
 		this.stats = new Stats();
 		this.stats.showPanel(0);
-		document.body.appendChild(this.stats.dom);
+		// document.body.appendChild(this.stats.dom);
 
-		this.mainScene = new Test2DScene(this.gl, {
+		this.activeScene = new Tetris(this.gl, {
 			backgroundColor: new Color('#000000'),
 		});
 
@@ -39,7 +48,7 @@ class Game {
 		requestAnimationFrame(this.draw.bind(this));
 	}
 
-	draw(now) {
+	draw(now: number) {
 		if (!this.frameEndTime) {
 			this.frameEndTime = now;
 		}
@@ -52,13 +61,10 @@ class Game {
 
 		this.stats.begin();
 
-		this.mainScene.draw();
+		this.activeScene.draw();
 
 		this.stats.end();
 		requestAnimationFrame(this.draw.bind(this));
 		this.frameEndTime = now;
 	}
 }
-
-const game = new Game();
-game.start();

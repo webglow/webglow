@@ -35,7 +35,13 @@ const Main = () => {
 				/>
 			) : null}
 			<Canvas ref={canvasRef}></Canvas>
-			<StyledInspector selectedNode={selectedNode} />
+			<StyledInspector
+				selectedNode={selectedNode}
+				onNameChange={(node, newName) => {
+					hierarchy.rename(node, newName);
+					setHierarchy(hierarchy);
+				}}
+			/>
 		</Wrapper>
 	);
 };

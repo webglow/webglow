@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { vec3 } from 'gl-matrix';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 import { Props } from './types';
 import { Info, Title, Wrapper } from './styles';
 import { TransformInfo } from '../../lib/3d/standard/transform/types';
 import TransformParameter from '../transform-parameter';
-import {faArrowsAlt} from '@fortawesome/free-solid-svg-icons';
 
 export default function Transform({
 	className,

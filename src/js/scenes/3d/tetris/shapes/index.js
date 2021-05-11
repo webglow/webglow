@@ -9,7 +9,7 @@ export default class Shape {
 	}
 
 	setupStructure(gl, scene, color, size) {
-		this.parent = new GameObject();
+		this.parent = new GameObject({ gl, scene });
 
 		this.b1 = new GameObject({ gl, scene });
 		this.b2 = new GameObject({ gl, scene });

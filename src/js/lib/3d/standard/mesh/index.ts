@@ -1,17 +1,35 @@
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
+import GameObject from '../../../utils/game-object';
+import Material from '../../../utils/material';
 import VAO from '../../../utils/vao';
+import DirectionalLight from '../light/directional';
+import PointLight from '../light/point';
 import DefaultMaterial3D from '../materials/default';
+import { MeshConfig } from './types';
 
 export default class Mesh {
+	gl: WebGL2RenderingContext;
+	attribLocations: {
+		[key: string]: number;
+	};
+
+	materials: {
+		[key: string]: any;
+	};
+
+	vao: VAO;
+	gameObject: GameObject;
+	texture: WebGLTexture;
+
 	constructor(
-		gl,
-		gameObject,
+		gl: WebGL2RenderingContext,
+		gameObject: GameObject,
 		{
 			enableLighting = true,
 			enableSpecular = false,
 			specularStrength = 80,
 			shadeColor,
-		} = {}
+		}: MeshConfig
 	) {
 		/** @type {WebGL2RenderingContext} */
 		this.gl = gl;
@@ -42,19 +60,19 @@ export default class Mesh {
 		this.vao.setAttribute('aTextureCoord', 2, this.gl.FLOAT);
 	}
 
-	setPositions(positions) {
+	setPositions(positions: number[]) {
 		this.vao.setBufferData('aPosition', positions);
 	}
 
-	setNormals(normals) {
+	setNormals(normals: number[]) {
 		this.vao.setBufferData('aNormal', normals);
 	}
 
-	setTextureCoords(textureCoords) {
+	setTextureCoords(textureCoords: number[]) {
 		this.vao.setBufferData('aTextureCoord', textureCoords);
 	}
 
-	setupColor(color) {
+	setupColor(color: number[]) {
 		this.texture = this.gl.createTexture();
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
@@ -102,15 +120,15 @@ export default class Mesh {
 		this.materials.default.setTexture(0);
 	}
 
-	setupDirectionalLight(lightSources) {
+	setupDirectionalLight(lightSources: DirectionalLight[]) {
 		this.materials.default.setDirectionalLights(lightSources);
 	}
 
-	setupPointLight(lightSources) {
+	setupPointLight(lightSources: PointLight[]) {
 		this.materials.default.setPointLights(lightSources);
 	}
 
-	updateMatrix(mProjection, viewWorldPosition, pov) {
+	updateMatrix(mProjection: mat4, viewWorldPosition: vec3, pov: mat4) {
 		const world = this.updateWorldMatrix(viewWorldPosition);
 
 		const worldViewProjection = this.gameObject.transform.getWorldViewProjection(
@@ -124,7 +142,7 @@ export default class Mesh {
 		return worldViewProjection;
 	}
 
-	updateWorldMatrix(viewWorldPosition) {
+	updateWorldMatrix(viewWorldPosition: vec3) {
 		const world = this.gameObject.transform.getWorld(this.gameObject.node);
 
 		const worldInverseTranspose = mat4.create();
@@ -141,7 +159,7 @@ export default class Mesh {
 		return world;
 	}
 
-	draw(mProjection, viewWorldPosition, pov) {
+	draw(mProjection: mat4, viewWorldPosition: vec3, pov: mat4) {
 		this.vao.bind();
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);

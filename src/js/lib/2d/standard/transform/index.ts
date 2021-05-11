@@ -63,7 +63,7 @@ export default class Transform2D {
 		return worldViewProjection;
 	}
 
-	getLocal() {
+	getLocal(): mat3 {
 		const local = mat3.create();
 		mat3.multiply(local, local, this.mTranslation);
 		mat3.multiply(local, local, this.mRotation);

@@ -127,7 +127,7 @@ export default class Transform {
 		return worldViewProjection;
 	}
 
-	getLocal() {
+	getLocal(): mat4 {
 		const local = mat4.create();
 		mat4.multiply(local, local, this.mTranslation);
 		mat4.multiply(local, local, this.mRotation);

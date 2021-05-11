@@ -11,6 +11,7 @@ import StickShape from './shapes/stick-shape';
 import TShape from './shapes/t-shape';
 import GameObject from '../../../lib/utils/game-object';
 import Shape from './shapes';
+import Script from '../../../lib/utils/script';
 
 export default class Tetris extends Scene {
 	collisionDetector: CollisionDetector;
@@ -77,6 +78,8 @@ export default class Tetris extends Scene {
 
 		this.randomShape = this.getRandomShape();
 		this.randomShape.parent.transform.translate([0, 3000, 0]);
+		const randomShapeScript = new Script('movement', this.randomShape.parent.node);
+		this.randomShape.parent.addScript(randomShapeScript);
 
 		this.hierarchy.addObject(this.randomShape.parent.node);
 

@@ -3,11 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import Transform from '../../lib/3d/standard/transform';
 import { TransformInfo } from '../../lib/3d/standard/transform/types';
+import ScriptSection from '../script-section';
 import { default as TransformUI } from '../transform';
 import { Section, StyledObjectNameEditor, Title, Wrapper } from './styles';
 import { Props } from './types';
 
-export default function Inspector({ className, selectedNode }: Props) {
+export default function Inspector({
+	className,
+	selectedNode,
+	onNameChange,
+}: Props) {
 	if (!selectedNode) {
 		return null;
 	}
@@ -52,7 +57,10 @@ export default function Inspector({ className, selectedNode }: Props) {
 					<FontAwesomeIcon icon={faInfoCircle} />
 					<div>Inspector</div>
 				</Title>
-				<StyledObjectNameEditor name={selectedNode.id} />
+				<StyledObjectNameEditor
+					name={selectedNode.id}
+					onChange={(newName) => onNameChange(selectedNode, newName)}
+				/>
 			</Section>
 			<Section>
 				<TransformUI
@@ -60,6 +68,11 @@ export default function Inspector({ className, selectedNode }: Props) {
 					onChange={onTransformChange}
 				/>
 			</Section>
+			{selectedNode.gameObject.scripts.map((script) => (
+				<Section key={script.name}>
+					<ScriptSection script={script} />
+				</Section>
+			))}
 		</Wrapper>
 	);
 }

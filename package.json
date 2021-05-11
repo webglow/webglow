@@ -35,6 +35,11 @@
     "webpack-glsl-minify": "^1.4.2"
   },
   "dependencies": {
+    "@codemirror/gutter": "^0.18.2",
+    "@codemirror/highlight": "^0.18.3",
+    "@codemirror/lang-javascript": "^0.18.0",
+    "@codemirror/state": "^0.18.7",
+    "@codemirror/view": "^0.18.12",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",

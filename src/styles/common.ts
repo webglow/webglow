@@ -36,3 +36,9 @@ export const SubHeader = styled((props) =>
 	font-size: ${pxToRem(15)}rem;
 	color: var(--blue);
 `;
+
+export const SmallText = styled((props) =>
+	React.createElement(TextWithIcon, { ...props, svgWidth: 10 })
+)`
+	font-size: ${pxToRem(13)}rem;
+`;

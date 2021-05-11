@@ -38,6 +38,7 @@
     "class-methods-use-this": "off",
     "operator-linebreak": "off",
     "import/prefer-default-export": "off",
+    "no-eval": "off",
     "max-len": "off",
     "no-unused-expressions": "off",
     "no-underscore-dangle": "off",

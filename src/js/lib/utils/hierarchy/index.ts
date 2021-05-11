@@ -61,6 +61,12 @@ export default class Hierarchy {
 			.forEach(callback);
 	}
 
+	rename(node: HierarchyNode, newId: string) {
+		delete this.nodes[node.id];
+		node.id = newId;
+		this.nodes[newId] = node;
+	}
+
 	removeParent(id: string) {
 		this.nodes[id].parent = null;
 

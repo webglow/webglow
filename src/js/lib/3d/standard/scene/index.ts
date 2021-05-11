@@ -105,14 +105,14 @@ export default class Scene {
 						(n) =>
 							n.gameObject && n.gameObject.light instanceof DirectionalLight
 					)
-					.map((lightNode) => lightNode.gameObject.light)
+					.map((lightNode) => lightNode.gameObject.light) as DirectionalLight[]
 			);
 			node.gameObject.mesh.setupPointLight(
 				this.hierarchy.nodesArray
 					.filter(
 						(n) => n.gameObject && n.gameObject.light instanceof PointLight
 					)
-					.map((lightNode) => lightNode.gameObject.light)
+					.map((lightNode) => lightNode.gameObject.light) as PointLight[]
 			);
 		});
 	}
@@ -173,7 +173,7 @@ export default class Scene {
 			node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
 		});
 		// this.hierarchy.forEachPhysicsNode((node: HierarchyNode) => {
-			// node.gameObject.rigidBody.move();
+		// node.gameObject.rigidBody.move();
 		// });
 	}
 }

@@ -3,6 +3,20 @@ const path = require('path');
 module.exports = {
 	mode: 'development',
 	devtool: 'eval-source-map',
+	entry: {
+		index: [
+			'react-hot-loader/patch',
+			path.resolve(__dirname, 'src', 'js', 'index.ts'),
+		],
+		codemirror: path.resolve(
+			__dirname,
+			'src',
+			'js',
+			'ui',
+			'editor',
+			'codemirror.ts'
+		),
+	},
 	module: {
 		rules: [
 			{
@@ -28,12 +42,6 @@ module.exports = {
 		alias: {
 			'react-dom': '@hot-loader/react-dom',
 		},
-	},
-	entry: {
-		index: [
-			'react-hot-loader/patch',
-			path.resolve(__dirname, 'src', 'js', 'index.ts'),
-		],
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),

@@ -4,6 +4,14 @@ module.exports = {
 	mode: 'production',
 	entry: {
 		index: path.resolve(__dirname, 'src', 'js', 'index.ts'),
+		codemirror: path.resolve(
+			__dirname,
+			'src',
+			'js',
+			'ui',
+			'editor',
+			'codemirror.ts'
+		),
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),

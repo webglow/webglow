@@ -1,5 +1,5 @@
 export default class Collider {
-	constructor(gameObject) {
+	constructor(gameObject, config) {
 		this.gameObject = gameObject;
 	}
 }

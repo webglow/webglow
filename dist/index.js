@@ -136,7 +136,7 @@ object-assign
 	&:hover {
 		background: var(--black);
 	}
-`;function ei({className:e,script:t}){return c.a.createElement(Ga,{className:e},c.a.createElement(Za,null,c.a.createElement(Ea,{icon:Pa}),c.a.createElement("div",null,"Script")),c.a.createElement(Ja,{onClick:()=>class{static spawn(e){window.open("/editor.html","","fullscreen=1").text=e}}.spawn(t.text)},c.a.createElement(Ea,{icon:Aa}),c.a.createElement("div",null,t.name,".js")))}const ti=ua.b.div``,ni=Object(ua.b)(Fa)``,ri=ua.b.div`
+`;function ei({className:e,script:t}){return c.a.createElement(Ga,{className:e},c.a.createElement(Za,null,c.a.createElement(Ea,{icon:Pa}),c.a.createElement("div",null,"Script")),c.a.createElement(Ja,{onClick:()=>class{static spawn(e){window.open(location.href+"/editor.html","","fullscreen=1").text=e}}.spawn(t.text)},c.a.createElement(Ea,{icon:Aa}),c.a.createElement("div",null,t.name,".js")))}const ti=ua.b.div``,ni=Object(ua.b)(Fa)``,ri=ua.b.div`
 	display: grid;
 	--input-size: 5fr;
 	grid-template-columns: 6fr 1fr var(--input-size) 1fr var(--input-size) 1fr var(

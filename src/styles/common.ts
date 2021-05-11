@@ -1,9 +1,6 @@
+import React from 'react';
 import styled from 'styled-components';
 import { pxToRem } from './helpers';
-
-export const Header = styled.div`
-	font-size: ${pxToRem(17)}rem;
-`;
 
 export const Input = styled.input`
 	display: block;
@@ -13,4 +10,29 @@ export const Input = styled.input`
 	border: 0;
 	padding: ${pxToRem(2)}rem;
 	border-radius: 3px;
+`;
+
+export const TextWithIcon = styled.div<{ svgWidth?: number }>`
+	display: flex;
+	align-items: center;
+
+	& > svg.svg-inline--fa {
+		width: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
+	}
+
+	svg + div {
+		margin-left: ${pxToRem(5)}rem;
+	}
+`;
+
+export const Header = styled(TextWithIcon)`
+	font-size: ${pxToRem(18)}rem;
+	color: var(--orange);
+`;
+
+export const SubHeader = styled((props) =>
+	React.createElement(TextWithIcon, { ...props, svgWidth: 12 })
+)`
+	font-size: ${pxToRem(15)}rem;
+	color: var(--blue);
 `;

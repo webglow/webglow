@@ -2,9 +2,8 @@ const path = require('path');
 
 module.exports = {
 	mode: 'production',
-	devtool: 'eval-source-map',
 	entry: {
-		index: path.resolve(__dirname, 'src', 'js', 'index.js'),
+		index: path.resolve(__dirname, 'src', 'js', 'index.ts'),
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -24,9 +23,14 @@ module.exports = {
 					},
 				},
 			},
+			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/,
+			},
 		],
 	},
 	resolve: {
-		extensions: ['.glsl', '.js'],
+		extensions: ['.glsl', '.js', '.ts', '.tsx'],
 	},
 };

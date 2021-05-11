@@ -1,3 +1,5 @@
+import { faCubes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Wrapper, StyledHierarchyNode, Title } from './styles';
 import { Props } from './types';
@@ -14,7 +16,8 @@ export default function HierarchyNodeUI({
 				onClick={() => onSelectNode(node)}
 				selected={selectedNode === node}
 			>
-				#{node.id}
+				<FontAwesomeIcon icon={faCubes} />
+				<div>{node.id}</div>
 			</Title>
 
 			{node.children.map((n) => (

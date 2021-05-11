@@ -11,9 +11,11 @@ html, body {
 	width: 100%;
 	height: 100%;
 
-	--dark-grey: #202124;
-	--white: #e8eaed;
-	--black: #080808;
+	--dark-grey: #2b2b2b;
+	--white: #A9B7C6;
+	--orange: #CC7832;
+	--black: #181818;
+	--blue: #3592C4;
 
 	color: var(--white);
 }

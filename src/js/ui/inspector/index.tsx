@@ -1,9 +1,10 @@
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import Transform from '../../lib/3d/standard/transform';
 import { TransformInfo } from '../../lib/3d/standard/transform/types';
-import ObjectNameEditor from '../object-name-editor';
 import { default as TransformUI } from '../transform';
-import { Title, Wrapper } from './styles';
+import { Section, StyledObjectNameEditor, Title, Wrapper } from './styles';
 import { Props } from './types';
 
 export default function Inspector({ className, selectedNode }: Props) {
@@ -46,9 +47,19 @@ export default function Inspector({ className, selectedNode }: Props) {
 
 	return (
 		<Wrapper className={className}>
-			<Title>Inspector</Title>
-			<ObjectNameEditor name={selectedNode.id} />
-			<TransformUI transformInfo={transformInfo} onChange={onTransformChange} />
+			<Section>
+				<Title>
+					<FontAwesomeIcon icon={faInfoCircle} />
+					<div>Inspector</div>
+				</Title>
+				<StyledObjectNameEditor name={selectedNode.id} />
+			</Section>
+			<Section>
+				<TransformUI
+					transformInfo={transformInfo}
+					onChange={onTransformChange}
+				/>
+			</Section>
 		</Wrapper>
 	);
 }

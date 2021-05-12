@@ -78,10 +78,13 @@ export default class Tetris extends Scene {
 
 		this.randomShape = this.getRandomShape();
 		this.randomShape.parent.transform.translate([0, 3000, 0]);
-		const randomShapeScript = new Script('movement', this.randomShape.parent.node);
+		const randomShapeScript = new Script(
+			'movement',
+			this.randomShape.parent.node
+		);
 		this.randomShape.parent.addScript(randomShapeScript);
 
-		this.hierarchy.addObject(this.randomShape.parent.node);
+		this.hierarchy.addObject(this.randomShape.parent.node, 'shape');
 
 		this.setupLight();
 

@@ -61,7 +61,17 @@ export default class Hierarchy {
 			.forEach(callback);
 	}
 
+	forEachScriptedNode(callback: (node: HierarchyNode) => void) {
+		this.nodesArray
+			.filter((node) => node.gameObject && node.gameObject.scripts.length > 0)
+			.forEach(callback);
+	}
+
 	rename(node: HierarchyNode, newId: string) {
+		if (this.nodes[newId]) {
+			newId = `${newId} (${uuidv4()})`;
+		}
+
 		delete this.nodes[node.id];
 		node.id = newId;
 		this.nodes[newId] = node;

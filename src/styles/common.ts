@@ -42,3 +42,21 @@ export const SmallText = styled((props) =>
 )`
 	font-size: ${pxToRem(13)}rem;
 `;
+
+export const Button = styled.button<{ svgWidth?: number }>`
+	color: var(--white);
+	background: var(--dark-dark-grey);
+	border: 0;
+	padding: ${pxToRem(3)}rem ${pxToRem(10)}rem;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+
+	&:hover {
+		background: var(--black);
+	}
+
+	& > svg.svg-inline--fa {
+		width: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
+	}
+`;

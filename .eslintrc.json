@@ -47,6 +47,7 @@
     "keyword-spacing": "off",
     "no-unused-vars": "off",
     "no-restricted-globals": "off",
+    "no-new-func": "off",
     "lines-between-class-members": [
       "error",
       "always",

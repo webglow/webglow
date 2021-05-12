@@ -1,4 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix';
+import cloneDeep from 'lodash/cloneDeep';
 import Camera from '../camera';
 import CameraMovement from '../camera-movement';
 import Hierarchy from '../../../utils/hierarchy';
@@ -11,12 +12,14 @@ import HierarchyNode from '../../../utils/hierarchy/node';
 export default class Scene {
 	gl: WebGL2RenderingContext;
 	hierarchy: Hierarchy;
+	runtimeHierarchy: Hierarchy;
 	sceneCamera: Camera;
 	sceneCameraMovement: CameraMovement;
 	projectionType: number;
 	backgroundColor: Color;
 	mProjection: mat4;
 	canvas: HTMLCanvasElement;
+	isRunning: boolean;
 
 	constructor(
 		gl: WebGL2RenderingContext,
@@ -40,6 +43,8 @@ export default class Scene {
 		this.setProjectionMatrix();
 
 		this.setupEventListeners();
+
+		this.isRunning = false;
 	}
 
 	setProjectionMatrix() {
@@ -79,7 +84,7 @@ export default class Scene {
 
 		this.gl.canvas.addEventListener('mousedown', () => {
 			this.canvas.requestPointerLock();
-			this.sceneCameraMovement.setIsRotating(true);
+			this.sceneCameraMovement.setIsLocked(true);
 		});
 
 		document.addEventListener('mousemove', (event: MouseEvent) => {
@@ -88,7 +93,7 @@ export default class Scene {
 
 		this.gl.canvas.addEventListener('mouseup', () => {
 			document.exitPointerLock();
-			this.sceneCameraMovement.setIsRotating(false);
+			this.sceneCameraMovement.setIsLocked(false);
 		});
 
 		this.gl.canvas.addEventListener('wheel', (event: WheelEvent) => {
@@ -164,16 +169,48 @@ export default class Scene {
 		);
 	}
 
+	toggleRunning() {
+		if (!this.isRunning) {
+			this.runtimeHierarchy = cloneDeep(this.hierarchy);
+			this.runtimeHierarchy.forEachScriptedNode((node) => {
+				node.gameObject.scripts.forEach((script) => {
+					script.behaviour.start();
+				});
+			});
+		} else {
+			this.runtimeHierarchy = null;
+		}
+
+		this.isRunning = !this.isRunning;
+	}
+
 	draw(viewWorldPosition?: vec3, pov?: mat4) {
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 		this.sceneCamera.update();
 
-		this.hierarchy.forEachDrawableNode((node: HierarchyNode) => {
-			node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+		if (this.isRunning) {
+			this.runtimeHierarchy.forEachDrawableNode((node: HierarchyNode) => {
+				node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+			});
+
+			this.run();
+		} else {
+			this.hierarchy.forEachDrawableNode((node: HierarchyNode) => {
+				node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+			});
+		}
+	}
+
+	run() {
+		this.runtimeHierarchy.forEachPhysicsNode((node: HierarchyNode) => {
+			node.gameObject.rigidBody.move();
 		});
-		// this.hierarchy.forEachPhysicsNode((node: HierarchyNode) => {
-		// node.gameObject.rigidBody.move();
-		// });
+
+		this.runtimeHierarchy.forEachScriptedNode((node) => {
+			node.gameObject.scripts.forEach((script) => {
+				script.behaviour.update();
+			});
+		});
 	}
 }

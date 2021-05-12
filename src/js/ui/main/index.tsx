@@ -3,13 +3,17 @@ import { hot } from 'react-hot-loader/root';
 import Engine from '../../engine';
 import Hierarchy from '../../lib/utils/hierarchy';
 import HierarchyNode from '../../lib/utils/hierarchy/node';
+import { useForceUpdate } from '../common/hooks';
+import ControlPanel from '../control-panel';
 import { Canvas, StyledHierarchy, StyledInspector, Wrapper } from './styles';
 
 const Main = () => {
 	const canvasRef = useRef();
+	const [isRunning, setIsRunning] = useState<boolean>(false);
 	const [engine, setEngine] = useState<Engine | null>(null);
 	const [hierarchy, setHierarchy] = useState<Hierarchy | null>(null);
 	const [selectedNode, setSelectedNode] = useState<HierarchyNode | null>(null);
+	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
 		if (!canvasRef.current || engine) {
@@ -34,12 +38,19 @@ const Main = () => {
 					selectedNode={selectedNode}
 				/>
 			) : null}
+			<ControlPanel
+				isRunning={isRunning}
+				onPlayPauseClick={() => {
+					engine.activeScene.toggleRunning();
+					setIsRunning(!isRunning);
+				}}
+			/>
 			<Canvas ref={canvasRef}></Canvas>
 			<StyledInspector
 				selectedNode={selectedNode}
 				onNameChange={(node, newName) => {
 					hierarchy.rename(node, newName);
-					setHierarchy(hierarchy);
+					forceUpdate();
 				}}
 			/>
 		</Wrapper>

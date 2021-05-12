@@ -45,7 +45,7 @@ export default class Shape {
 		this.b3.node.addParent(this.parent.node);
 		this.b4.node.addParent(this.parent.node);
 
-		this.parent.addRigidBody();
+		// this.parent.addRigidBody();
 	}
 
 	setVelocity(velocity) {

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { TextWithIcon } from '../../../styles/common';
+import { SmallText } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import { WrapperProps } from './types';
 
@@ -19,7 +19,7 @@ export const Wrapper = styled.div<WrapperProps>`
 		`}
 `;
 
-export const MenuItem = styled(TextWithIcon)`
+export const MenuItem = styled(SmallText)`
 	cursor: pointer;
 	padding: ${pxToRem(3)}rem ${pxToRem(5)}rem;
 	background: var(--dark-grey);

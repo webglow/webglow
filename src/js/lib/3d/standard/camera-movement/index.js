@@ -13,11 +13,12 @@ export default class CameraMovement {
 		this.movementKeysPressed = new Set();
 		this.camera = camera;
 		this.previousMousePosition = vec2.create();
-		this.isRotating = false;
+		this.isLocked = false;
 	}
 
 	onKeyDown(eventKey) {
 		if (
+			this.isLocked &&
 			this.movementKeys.includes(eventKey) &&
 			!this.movementKeysPressed.has(eventKey)
 		) {
@@ -50,12 +51,12 @@ export default class CameraMovement {
 		}
 	}
 
-	setIsRotating(isRotating) {
-		this.isRotating = isRotating;
+	setIsLocked(isLocked) {
+		this.isLocked = isLocked;
 	}
 
 	rotateCamera(deltaX, deltaY) {
-		if (!this.isRotating) {
+		if (!this.isLocked) {
 			return;
 		}
 

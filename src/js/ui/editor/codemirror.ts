@@ -10,7 +10,7 @@ import {
 import { EditorState } from '@codemirror/state';
 import { history, historyKeymap } from '@codemirror/history';
 import { foldGutter, foldKeymap } from '@codemirror/fold';
-import { indentOnInput } from '@codemirror/language';
+import { indentOnInput, indentUnit } from '@codemirror/language';
 import { lineNumbers } from '@codemirror/gutter';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
@@ -18,21 +18,28 @@ import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { autocompletion, completionKeymap } from '@codemirror/autocomplete';
 import { commentKeymap } from '@codemirror/comment';
 import { rectangularSelection } from '@codemirror/rectangular-selection';
-import { defaultHighlightStyle } from '@codemirror/highlight';
 import { lintKeymap } from '@codemirror/lint';
+import { defaultHighlightStyle } from '@codemirror/highlight';
+import { getDefaultText } from '../../lib/utils/script/helpers';
+import { darculaHighlightStyle, darculaTheme } from './darcula-theme';
 
-const { text } = window as any;
+const {
+	text = getDefaultText('MyClass'),
+	onCodeSave = () => {},
+} = window as any;
+
+export const darcula = [darculaTheme, darculaHighlightStyle];
 
 const view = new EditorView({
 	state: EditorState.create({
 		doc: text,
 		extensions: [
 			javascript(),
-			defaultHighlightStyle,
 			lineNumbers(),
 			highlightSpecialChars(),
 			history(),
 			foldGutter(),
+			indentUnit.of('	'),
 			drawSelection(),
 			EditorState.allowMultipleSelections.of(true),
 			indentOnInput(),
@@ -54,7 +61,16 @@ const view = new EditorView({
 				...completionKeymap,
 				...lintKeymap,
 			]),
+			...darcula,
 		],
 	}),
 	parent: document.body,
+});
+
+document.addEventListener('keydown', (event: KeyboardEvent) => {
+	if (event.code === 'KeyS' && event.ctrlKey) {
+		event.preventDefault();
+
+		onCodeSave(view.state.doc.toString());
+	}
 });

@@ -12,7 +12,11 @@ export default function ScriptSection({ className, script }: Props) {
 				<FontAwesomeIcon icon={faCode} />
 				<div>Script</div>
 			</Title>
-			<ScriptName onClick={() => Editor.spawn(script.text)}>
+			<ScriptName
+				onClick={() =>
+					new Editor(script.text, (newText) => script.setText(newText))
+				}
+			>
 				<FontAwesomeIcon icon={faFileCode} />
 				<div>{script.name}.js</div>
 			</ScriptName>

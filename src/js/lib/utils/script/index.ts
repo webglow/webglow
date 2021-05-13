@@ -24,4 +24,9 @@ export default class Script {
 		)(Behaviour))(this.node.gameObject);
 		this.behaviour.start();
 	}
+
+	setText(newText: string) {
+		this.text = newText;
+		this.parse();
+	}
 }

@@ -1,20 +1,40 @@
+import { vec3 } from 'gl-matrix';
 import Box from '../../../../lib/3d/primitives/box';
+import Scene from '../../../../lib/3d/standard/scene';
+import Color from '../../../../lib/utils/color';
 import GameObject from '../../../../lib/utils/game-object';
 
 export default class Shape {
-	constructor(gl, scene, color, size = 500) {
+	velocity: vec3;
+	parent: GameObject;
+	b1: GameObject;
+	b2: GameObject;
+	b3: GameObject;
+	b4: GameObject;
+
+	constructor(
+		gl: WebGL2RenderingContext,
+		scene: Scene,
+		color: Color,
+		size = 500
+	) {
 		this.setupStructure(gl, scene, color, size);
 
 		this.velocity = [0, 0, 0];
 	}
 
-	setupStructure(gl, scene, color, size) {
-		this.parent = new GameObject({ gl, scene });
+	setupStructure(
+		gl: WebGL2RenderingContext,
+		scene: Scene,
+		color: Color,
+		size: number
+	) {
+		this.parent = new GameObject({ gl });
 
-		this.b1 = new GameObject({ gl, scene });
-		this.b2 = new GameObject({ gl, scene });
-		this.b3 = new GameObject({ gl, scene });
-		this.b4 = new GameObject({ gl, scene });
+		this.b1 = new GameObject({ gl });
+		this.b2 = new GameObject({ gl });
+		this.b3 = new GameObject({ gl });
+		this.b4 = new GameObject({ gl });
 		this.b1.addMesh(Box, {
 			size: [size, size, size],
 			color,
@@ -40,15 +60,15 @@ export default class Shape {
 			specularStrength: 50,
 		});
 
-		this.b1.node.addParent(this.parent.node);
-		this.b2.node.addParent(this.parent.node);
-		this.b3.node.addParent(this.parent.node);
-		this.b4.node.addParent(this.parent.node);
+		this.b1.setParent(this.parent);
+		this.b2.setParent(this.parent);
+		this.b3.setParent(this.parent);
+		this.b4.setParent(this.parent);
 
 		// this.parent.addRigidBody();
 	}
 
-	setVelocity(velocity) {
+	setVelocity(velocity: vec3) {
 		this.velocity = velocity;
 	}
 

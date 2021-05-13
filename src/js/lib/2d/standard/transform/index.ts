@@ -1,15 +1,19 @@
 import { mat3, vec2 } from 'gl-matrix';
-import HierarchyNode from '../../../utils/hierarchy/node';
+import GameObject from '../../../utils/game-object';
 
 export default class Transform2D {
 	mTranslation: mat3;
 	mRotation: mat3;
 	mScale: mat3;
 
-	constructor() {
+	gameObject: GameObject;
+
+	constructor(gameObject: GameObject) {
 		this.mTranslation = mat3.create();
 		this.mRotation = mat3.create();
 		this.mScale = mat3.create();
+
+		this.gameObject = gameObject;
 	}
 
 	translate(translation: vec2) {
@@ -43,15 +47,15 @@ export default class Transform2D {
 		return [this.mTranslation[6], this.mTranslation[7]];
 	}
 
-	getWorld(node: HierarchyNode): mat3 {
-		if (!node || node.isRoot) {
+	getWorld(): mat3 {
+		if (!this.gameObject || this.gameObject.isRoot) {
 			return mat3.create();
 		}
 
 		return mat3.multiply(
 			mat3.create(),
-			this.getWorld(node.parent),
-			(node.gameObject.transform as any).getLocal()
+			(this.gameObject.parent.transform as any).getWorld(),
+			(this.gameObject.transform as any).getLocal()
 		);
 	}
 

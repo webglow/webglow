@@ -30,7 +30,7 @@ export default function Inspector({
 			setSubscriptionId('');
 		}
 
-		const objectTransform = selectedNode?.gameObject?.transform;
+		const objectTransform = selectedNode?.transform;
 
 		if (!objectTransform) {
 			return;
@@ -68,7 +68,7 @@ export default function Inspector({
 					onChange={onTransformChange}
 				/>
 			</Section>
-			{selectedNode.gameObject.scripts.map((script) => (
+			{selectedNode.scripts.map((script) => (
 				<Section key={script.name}>
 					<ScriptSection script={script} />
 				</Section>

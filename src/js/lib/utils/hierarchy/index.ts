@@ -1,39 +1,32 @@
 import { v4 as uuidv4 } from 'uuid';
-import HierarchyNode from './node';
+import GameObject from '../game-object';
 
 export default class Hierarchy {
-	rootNode: HierarchyNode;
-	rootNodeId: string;
-	nodes: { [key: string]: HierarchyNode };
-	nodesArray: HierarchyNode[];
+	root: GameObject;
+	rootId: string;
+	nodes: { [key: string]: GameObject };
+	nodesArray: GameObject[];
 
-	constructor(rootNodeId: string) {
-		this.rootNode = this.createRootNode();
-		this.rootNodeId = rootNodeId;
-		this.nodes = { [rootNodeId]: this.rootNode };
-		this.nodesArray = [this.rootNode];
+	constructor(rootId: string) {
+		this.root = this.createRoot();
+		this.rootId = rootId;
+		this.nodes = { [rootId]: this.root };
+		this.nodesArray = [this.root];
 	}
 
-	createRootNode() {
-		return new HierarchyNode(null, true, null, this.rootNodeId);
+	createRoot() {
+		return new GameObject({ isRoot: true });
 	}
 
-	getNodeById(id: string) {
+	getNode(id: string) {
 		return this.nodes[id];
 	}
 
-	getGameObject(id: string) {
-		return this.nodes[id].gameObject;
-	}
-
-	getGameObjectNodes() {
-		return this.nodesArray.filter((node) => node.gameObject);
-	}
-
-	addObject(node: HierarchyNode, id = uuidv4()) {
+	addObject(node: GameObject, id = uuidv4()) {
 		if (!node.parent) {
-			node.addParent(this.nodes[this.rootNodeId]);
+			node.setParent(this.nodes[this.rootId]);
 		}
+
 		this.nodes[id] = node;
 		this.nodesArray.push(node);
 		node.id = id;
@@ -45,29 +38,25 @@ export default class Hierarchy {
 		return id;
 	}
 
-	setParent(child: HierarchyNode, parent: HierarchyNode) {
-		child.addParent(parent);
-	}
-
-	forEachDrawableNode(callback: (node: HierarchyNode) => void) {
+	forEachDrawableNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((node) => node.gameObject && node.gameObject.mesh)
+			.filter((gameObject) => gameObject && gameObject.mesh)
 			.forEach(callback);
 	}
 
-	forEachPhysicsNode(callback: (node: HierarchyNode) => void) {
+	forEachPhysicsNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((node) => node.gameObject && node.gameObject.rigidBody)
+			.filter((gameObject) => gameObject && gameObject.rigidBody)
 			.forEach(callback);
 	}
 
-	forEachScriptedNode(callback: (node: HierarchyNode) => void) {
+	forEachScriptedNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((node) => node.gameObject && node.gameObject.scripts.length > 0)
+			.filter((gameObject) => gameObject && gameObject.scripts.length > 0)
 			.forEach(callback);
 	}
 
-	rename(node: HierarchyNode, newId: string) {
+	rename(node: GameObject, newId: string) {
 		if (this.nodes[newId]) {
 			newId = `${newId} (${uuidv4()})`;
 		}

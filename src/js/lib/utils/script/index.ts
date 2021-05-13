@@ -1,4 +1,4 @@
-import HierarchyNode from '../hierarchy/node';
+import GameObject from '../game-object';
 import Behaviour from './behaviour';
 import { getDefaultText } from './helpers';
 
@@ -7,10 +7,10 @@ export default class Script {
 	name: string;
 	className: string;
 	text: string;
-	node: HierarchyNode;
+	gameObject: GameObject;
 
-	constructor(name: string, node: HierarchyNode) {
-		this.node = node;
+	constructor(name: string, gameObject: GameObject) {
+		this.gameObject = gameObject;
 		this.name = name;
 		this.className = name.charAt(0).toUpperCase() + name.slice(1);
 		this.text = getDefaultText(this.className);
@@ -21,7 +21,7 @@ export default class Script {
 		this.behaviour = new (new Function(
 			'Behaviour',
 			`${this.text}; return ${this.className}`
-		)(Behaviour))(this.node.gameObject);
+		)(Behaviour))(this.gameObject);
 		this.behaviour.start();
 	}
 

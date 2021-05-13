@@ -28,14 +28,14 @@ export default class Tetris extends Scene {
 		});
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
-		const pointLight = new GameObject({ gl: this.gl, scene: this });
+		const pointLight = new GameObject({ gl: this.gl });
 		pointLight.addLight(PointLight, {
 			position: [0, -1000, 1000],
 			intensity: 1,
-			color: new Color('#ffffff').toNormalizedVec3(),
+			color: new Color('#ffffff'),
 		});
 
-		this.hierarchy.addObject(pointLight.node, 'pointLight');
+		this.hierarchy.addObject(pointLight, 'pointLight');
 
 		this.shapes = [TShape, LShape, StairsShape, StickShape, CubeShape];
 		this.setup();
@@ -57,7 +57,7 @@ export default class Tetris extends Scene {
 	}
 
 	setup() {
-		const ground = new GameObject({ gl: this.gl, scene: this });
+		const ground = new GameObject({ gl: this.gl });
 		ground.addMesh(Plane, {
 			width: 50000,
 			length: 50000,
@@ -74,17 +74,14 @@ export default class Tetris extends Scene {
 
 		ground.transform.translate([0, -2000, 0]);
 
-		this.hierarchy.addObject(ground.node, 'ground');
+		this.hierarchy.addObject(ground, 'ground');
 
 		this.randomShape = this.getRandomShape();
 		this.randomShape.parent.transform.translate([0, 3000, 0]);
-		const randomShapeScript = new Script(
-			'movement',
-			this.randomShape.parent.node
-		);
+		const randomShapeScript = new Script('movement', this.randomShape.parent);
 		this.randomShape.parent.addScript(randomShapeScript);
 
-		this.hierarchy.addObject(this.randomShape.parent.node, 'shape');
+		this.hierarchy.addObject(this.randomShape.parent, 'shape');
 
 		this.setupLight();
 

@@ -62,7 +62,7 @@ export default function HierarchyUI({
 			</Title>
 
 			<NodeList>
-				{hierarchy.rootNode.children.map((node) => (
+				{hierarchy.root.children.map((node) => (
 					<HierarchyNodeUI
 						key={node.id}
 						node={node}

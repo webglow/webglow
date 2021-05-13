@@ -1,7 +1,7 @@
-import HierarchyNode from '../../lib/utils/hierarchy/node';
+import GameObject from '../../lib/utils/game-object';
 import { ComponentProps } from '../common/types';
 
 export interface Props extends ComponentProps {
-	selectedNode?: HierarchyNode;
-	onNameChange: (node: HierarchyNode, newName: string) => void;
+	selectedNode?: GameObject;
+	onNameChange: (node: GameObject, newName: string) => void;
 }

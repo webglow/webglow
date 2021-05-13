@@ -2,34 +2,42 @@ import { vec3 } from 'gl-matrix';
 import BoxCollider from '../../3d/physics/collider/box-collider';
 import RigidBody from '../../3d/physics/rigidbody';
 import Box from '../../3d/primitives/box';
-import HierarchyNode from '../hierarchy/node';
 import Transform from '../../3d/standard/transform';
 import Transform2D from '../../2d/standard/transform';
-import Scene from '../../3d/standard/scene';
 import { GameObjectParams } from './types';
 import Mesh from '../../3d/standard/mesh';
 import PointLight from '../../3d/standard/light/point';
 import DirectionalLight from '../../3d/standard/light/directional';
 import Collider from '../../3d/physics/collider';
 import Script from '../script';
+import { PointLightConfig } from '../../3d/standard/light/point/types';
+import { DirectionalLightConfig } from '../../3d/standard/light/directional/types';
 
 export default class GameObject {
 	gl: WebGL2RenderingContext;
 	transform: Transform;
-	node: HierarchyNode;
-	scene: Scene;
 	scripts: Script[];
 	mesh: Mesh;
 	light: PointLight | DirectionalLight;
 	rigidBody: RigidBody;
 	collider: Collider;
 
-	constructor({ gl, scene, TransformType = Transform }: GameObjectParams) {
+	isRoot: boolean;
+	id: string;
+	parent: GameObject;
+	children: GameObject[];
+
+	constructor({
+		gl,
+		TransformType = Transform,
+		isRoot = false,
+	}: GameObjectParams = {}) {
 		this.gl = gl;
-		this.node = new HierarchyNode(this, false, null);
-		this.transform = new TransformType(this.node);
-		this.scene = scene;
+		this.transform = new TransformType(this);
+
 		this.scripts = [];
+		this.isRoot = isRoot;
+		this.children = [];
 	}
 
 	addMesh(MeshType: typeof Mesh, config: any) {
@@ -40,23 +48,17 @@ export default class GameObject {
 		this.scripts.push(script);
 	}
 
-	addLight(
-		LightType: typeof PointLight | typeof DirectionalLight,
-		config: any
-	) {
+	addLight(LightType: typeof PointLight, config: PointLightConfig): void;
+	addLight(LightType: typeof DirectionalLight, config: DirectionalLightConfig) {
 		this.light = new LightType(this, config);
 	}
 
 	addRigidBody(config = {}) {
 		this.rigidBody = new RigidBody(this, config);
 
-		this.node.children.forEach((node) => {
-			if (
-				node.gameObject &&
-				node.gameObject.mesh &&
-				!node.gameObject.collider
-			) {
-				node.gameObject.addCollider(BoxCollider);
+		this.children.forEach((gameObject) => {
+			if (gameObject && gameObject.mesh && !gameObject.collider) {
+				gameObject.addCollider(BoxCollider);
 			}
 		});
 	}
@@ -74,5 +76,15 @@ export default class GameObject {
 			}
 		}
 		this.collider = new ColliderType(this, config);
+	}
+
+	setParent(parent: GameObject) {
+		this.parent = parent;
+		parent.children.push(this);
+	}
+
+	addChild(child: GameObject) {
+		child.parent = this;
+		this.children.push(this);
 	}
 }

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { hot } from 'react-hot-loader/root';
 import Engine from '../../engine';
+import GameObject from '../../lib/utils/game-object';
 import Hierarchy from '../../lib/utils/hierarchy';
-import HierarchyNode from '../../lib/utils/hierarchy/node';
 import { useForceUpdate } from '../common/hooks';
 import ControlPanel from '../control-panel';
 import { Canvas, StyledHierarchy, StyledInspector, Wrapper } from './styles';
@@ -12,7 +12,7 @@ const Main = () => {
 	const [isRunning, setIsRunning] = useState<boolean>(false);
 	const [engine, setEngine] = useState<Engine | null>(null);
 	const [hierarchy, setHierarchy] = useState<Hierarchy | null>(null);
-	const [selectedNode, setSelectedNode] = useState<HierarchyNode | null>(null);
+	const [selectedNode, setSelectedNode] = useState<GameObject | null>(null);
 	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
@@ -34,7 +34,7 @@ const Main = () => {
 			{hierarchy ? (
 				<StyledHierarchy
 					hierarchy={hierarchy}
-					onSelectNode={(node: HierarchyNode) => setSelectedNode(node)}
+					onSelectNode={(node: GameObject) => setSelectedNode(node)}
 					selectedNode={selectedNode}
 				/>
 			) : null}

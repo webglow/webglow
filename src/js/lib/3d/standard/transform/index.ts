@@ -1,7 +1,7 @@
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { v4 as uuidv4 } from 'uuid';
+import GameObject from '../../../utils/game-object';
 import { getEuler } from '../../../utils/helpers';
-import HierarchyNode from '../../../utils/hierarchy/node';
 import { Subscriber, TransformInfo } from './types';
 
 export default class Transform {
@@ -9,13 +9,13 @@ export default class Transform {
 	mRotation: mat4;
 	mScale: mat4;
 	subscribers: Subscriber;
-	node: HierarchyNode;
+	gameObject: GameObject;
 
-	constructor(node?: HierarchyNode) {
+	constructor(gameObject?: GameObject) {
 		this.mTranslation = mat4.create();
 		this.mRotation = mat4.create();
 		this.mScale = mat4.create();
-		this.node = node;
+		this.gameObject = gameObject;
 
 		this.subscribers = {};
 	}
@@ -103,15 +103,15 @@ export default class Transform {
 		return mat4.invert(mat4.create(), this.getLocal());
 	}
 
-	getWorld(node: HierarchyNode): mat4 {
-		if (!node || node.isRoot) {
+	getWorld(): mat4 {
+		if (!this.gameObject || this.gameObject.isRoot) {
 			return mat4.create();
 		}
 
 		return mat4.multiply(
 			mat4.create(),
-			this.getWorld(node.parent),
-			node.gameObject.transform.getLocal()
+			this.gameObject.parent.transform.getWorld(),
+			this.gameObject.transform.getLocal()
 		);
 	}
 

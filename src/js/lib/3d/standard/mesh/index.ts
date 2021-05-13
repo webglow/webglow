@@ -143,7 +143,7 @@ export default class Mesh {
 	}
 
 	updateWorldMatrix(viewWorldPosition: vec3) {
-		const world = this.gameObject.transform.getWorld(this.gameObject.node);
+		const world = this.gameObject.transform.getWorld();
 
 		const worldInverseTranspose = mat4.create();
 

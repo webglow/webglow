@@ -7,7 +7,7 @@ import DirectionalLight from '../light/directional';
 import PointLight from '../light/point';
 import PROJECTION_TYPE from './projection-type';
 import Color from '../../../utils/color';
-import HierarchyNode from '../../../utils/hierarchy/node';
+import GameObject from '../../../utils/game-object';
 
 export default class Scene {
 	gl: WebGL2RenderingContext;
@@ -103,21 +103,16 @@ export default class Scene {
 	}
 
 	setupLight() {
-		this.hierarchy.forEachDrawableNode((node: HierarchyNode) => {
-			node.gameObject.mesh.setupDirectionalLight(
+		this.hierarchy.forEachDrawableNode((gameObject: GameObject) => {
+			gameObject.mesh.setupDirectionalLight(
 				this.hierarchy.nodesArray
-					.filter(
-						(n) =>
-							n.gameObject && n.gameObject.light instanceof DirectionalLight
-					)
-					.map((lightNode) => lightNode.gameObject.light) as DirectionalLight[]
+					.filter((go) => go.light instanceof DirectionalLight)
+					.map((lightObject) => lightObject.light) as DirectionalLight[]
 			);
-			node.gameObject.mesh.setupPointLight(
+			gameObject.mesh.setupPointLight(
 				this.hierarchy.nodesArray
-					.filter(
-						(n) => n.gameObject && n.gameObject.light instanceof PointLight
-					)
-					.map((lightNode) => lightNode.gameObject.light) as PointLight[]
+					.filter((go) => go.light instanceof PointLight)
+					.map((lightObject) => lightObject.light) as PointLight[]
 			);
 		});
 	}
@@ -172,8 +167,8 @@ export default class Scene {
 	toggleRunning() {
 		if (!this.isRunning) {
 			this.runtimeHierarchy = cloneDeep(this.hierarchy);
-			this.runtimeHierarchy.forEachScriptedNode((node) => {
-				node.gameObject.scripts.forEach((script) => {
+			this.runtimeHierarchy.forEachScriptedNode((gameObject) => {
+				gameObject.scripts.forEach((script) => {
 					script.behaviour.start();
 				});
 			});
@@ -190,25 +185,25 @@ export default class Scene {
 		this.sceneCamera.update();
 
 		if (this.isRunning) {
-			this.runtimeHierarchy.forEachDrawableNode((node: HierarchyNode) => {
-				node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+			this.runtimeHierarchy.forEachDrawableNode((gameObject: GameObject) => {
+				gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
 			});
 
 			this.run();
 		} else {
-			this.hierarchy.forEachDrawableNode((node: HierarchyNode) => {
-				node.gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+			this.hierarchy.forEachDrawableNode((gameObject: GameObject) => {
+				gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
 			});
 		}
 	}
 
 	run() {
-		this.runtimeHierarchy.forEachPhysicsNode((node: HierarchyNode) => {
-			node.gameObject.rigidBody.move();
+		this.runtimeHierarchy.forEachPhysicsNode((gameObject: GameObject) => {
+			gameObject.rigidBody.move();
 		});
 
-		this.runtimeHierarchy.forEachScriptedNode((node) => {
-			node.gameObject.scripts.forEach((script) => {
+		this.runtimeHierarchy.forEachScriptedNode((gameObject) => {
+			gameObject.scripts.forEach((script) => {
 				script.behaviour.update();
 			});
 		});

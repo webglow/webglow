@@ -12,8 +12,10 @@ uniform mat4 uWorldViewProjection;
 uniform mat4 uWorld;
 uniform mat4 uWorldInverseTranspose;
 
+#{shaderExtension}
+
 void main() {
-	gl_Position = uWorldViewProjection * aPosition;
+	gl_Position = vertex(uWorldViewProjection * aPosition);
 
 	vNormal = vec3(mat3(uWorldInverseTranspose) * aNormal);
 

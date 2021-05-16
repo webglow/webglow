@@ -1,39 +1,40 @@
-import { vec3 } from 'gl-matrix';
+import { vec2, vec3 } from 'gl-matrix';
+import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment } from '../helpers';
+import { SphereConfig } from './types';
 
 export default class Sphere extends Mesh {
+	positions: Float32Array;
+	normals: Float32Array;
+	textureCoords: Float32Array;
+	widthSegments: number;
+	heightSegments: number;
+	radius: number;
+	gap: number;
+	innerFacing: boolean;
+	polygonal: boolean;
+
 	constructor(
-		gl,
-		gameObject,
+		gl: WebGL2RenderingContext,
+		gameObject: GameObject,
 		{
 			widthSegments,
 			heightSegments,
 			radius,
-			color = [1, 1, 1],
-			gap = 0,
+			gap,
 			innerFacing = false,
 			polygonal = false,
-			texture,
-			enableSpecular,
-			specularStrength,
-			enableLighting,
-		}
+		}: SphereConfig
 	) {
-		super(gl, gameObject, {
-			enableSpecular,
-			specularStrength,
-			enableLighting,
-		});
+		super(gl, gameObject);
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;
 		this.radius = radius;
 		this.gap = gap;
-		this.color = color;
 		this.innerFacing = innerFacing;
 		this.polygonal = polygonal;
-		this.texture = texture;
 
 		this.setup();
 	}
@@ -48,21 +49,13 @@ export default class Sphere extends Mesh {
 		this.setPositions(this.positions);
 		this.setNormals(this.normals);
 		this.setTextureCoords(this.textureCoords);
-
-		if (typeof this.texture === 'number') {
-			this.setupTexture(this.texture);
-		} else {
-			this.setupColor(this.color);
-		}
 	}
 
-	draw(...args) {
-		super.draw(...args);
-
+	draw() {
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
 	}
 
-	getPoint(i, j, width, height) {
+	getPoint(i: number, j: number, width: number, height: number): vec3 {
 		const longitude = ((i % width) / width) * 2 * Math.PI;
 		const latitude = (j / height) * Math.PI;
 		let point = [
@@ -75,10 +68,10 @@ export default class Sphere extends Mesh {
 			point = [point[0], point[2], point[1]];
 		}
 
-		return point;
+		return point as vec3;
 	}
 
-	getNormalsForSegment(a, b, c, d) {
+	getNormalsForSegment(a: vec3, b: vec3, c: vec3, d: vec3) {
 		if (this.polygonal) {
 			const n = vec3.normalize(
 				vec3.create(),
@@ -99,7 +92,7 @@ export default class Sphere extends Mesh {
 		return [...nA, ...nD, ...nC, ...nA, ...nC, ...nB];
 	}
 
-	getTextureCoordsForSegment(a, b, c, d, cw = false) {
+	getTextureCoordsForSegment(a: vec2, b: vec2, c: vec2, d: vec2, cw = false) {
 		return cw
 			? [...a, ...c, ...d, ...a, ...b, ...c]
 			: [...a, ...d, ...c, ...a, ...c, ...b];
@@ -136,9 +129,7 @@ export default class Sphere extends Mesh {
 					this.heightSegments
 				);
 				const vertex = getSegment(p00, p10, p11, p01);
-				normals.push(
-					this.getNormalsForSegment(p00, p10, p11, p01, this.innerFacing)
-				);
+				normals.push(this.getNormalsForSegment(p00, p10, p11, p01));
 				positions.push(vertex);
 				textureCoords.push(
 					this.getTextureCoordsForSegment(

@@ -1,5 +1,6 @@
 import { vec3 } from 'gl-matrix';
 import Box from '../../../../lib/3d/primitives/box';
+import {BoxConfig} from '../../../../lib/3d/primitives/box/types';
 import Scene from '../../../../lib/3d/standard/scene';
 import Color from '../../../../lib/utils/color';
 import GameObject from '../../../../lib/utils/game-object';
@@ -37,28 +38,21 @@ export default class Shape {
 		this.b4 = new GameObject({ gl });
 		this.b1.addMesh(Box, {
 			size: [size, size, size],
-			color,
-			enableSpecular: true,
-			specularStrength: 50,
-		});
+		} as BoxConfig);
 		this.b2.addMesh(Box, {
 			size: [size, size, size],
-			color,
-			enableSpecular: true,
-			specularStrength: 50,
-		});
+		} as BoxConfig);
 		this.b3.addMesh(Box, {
 			size: [size, size, size],
-			color,
-			enableSpecular: true,
-			specularStrength: 50,
-		});
+		} as BoxConfig);
 		this.b4.addMesh(Box, {
 			size: [size, size, size],
-			color,
-			enableSpecular: true,
-			specularStrength: 50,
-		});
+		} as BoxConfig);
+
+		this.b1.addMaterial();
+		this.b2.addMaterial();
+		this.b3.addMaterial();
+		this.b4.addMaterial();
 
 		this.b1.setParent(this.parent);
 		this.b2.setParent(this.parent);

@@ -2,10 +2,6 @@
 
 precision highp float;
 
-in vec3 vNormal;
-in vec3 vWorldPosition;
-in vec2 vTextureCoord;
-
 out vec4 outColor;
 
 uniform mat3 uDirectionalLight[10];
@@ -13,24 +9,24 @@ uniform uint uDirectionalLightNumber;
 uniform vec3 uShadeColor;
 uniform mat3 uPointLight[10];
 uniform uint uPointLightNumber;
-uniform vec3 uViewWorldPosition;
-uniform float uEnableSpecular;
-uniform float uSpecularStrength;
 uniform float uEnableLighting;
 uniform sampler2D uTexture;
 
-void main() {
+in vec3 vNormal;
+in vec3 vWorldPosition;
+in vec2 vTextureCoord;
+
+uniform vec3 uViewWorldPosition;
+uniform float uEnableSpecular;
+uniform float uSpecularStrength;
+
+#{shaderExtension}
+
+vec3 calcLight(vec3 initialColor, vec4 textureColor) {
 	vec3 normal = normalize(vNormal);
 
-	vec3 color = uShadeColor;
-	vec4 textureColor = texture(uTexture, vTextureCoord);
-
-	if (uEnableLighting == 0.) {
-		outColor = vec4(textureColor.xyz, 1);
-		return;
-	}
-
 	vec3 viewDirection = normalize(uViewWorldPosition - vWorldPosition);
+	vec3 color = initialColor;
 
 	for (uint i = 0u; i < uDirectionalLightNumber; i++) {
 		color += textureColor.xyz *
@@ -56,5 +52,19 @@ void main() {
 		}
 	}
 
-	outColor = vec4(color, 1);
+	return color;
+}
+
+void main() {
+	vec3 color = uShadeColor;
+	vec4 textureColor = texture(uTexture, vTextureCoord);
+
+	if (uEnableLighting == 0.) {
+		outColor = fragment(vec4(textureColor.xyz, 1));
+		return;
+	}
+
+	color = calcLight(color, textureColor);
+
+	outColor = fragment(vec4(color, 1));
 }

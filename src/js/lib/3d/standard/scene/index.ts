@@ -3,11 +3,10 @@ import cloneDeep from 'lodash/cloneDeep';
 import Camera from '../camera';
 import CameraMovement from '../camera-movement';
 import Hierarchy from '../../../utils/hierarchy';
-import DirectionalLight from '../light/directional';
-import PointLight from '../light/point';
 import PROJECTION_TYPE from './projection-type';
 import Color from '../../../utils/color';
 import GameObject from '../../../utils/game-object';
+import { LightType } from '../light/types';
 
 export default class Scene {
 	gl: WebGL2RenderingContext;
@@ -103,16 +102,18 @@ export default class Scene {
 	}
 
 	setupLight() {
-		this.hierarchy.forEachDrawableNode((gameObject: GameObject) => {
-			gameObject.mesh.setupDirectionalLight(
+		this.hierarchy.forEachMaterialNode((gameObject: GameObject) => {
+			gameObject.material.setLights(
+				LightType.Directional,
 				this.hierarchy.nodesArray
-					.filter((go) => go.light instanceof DirectionalLight)
-					.map((lightObject) => lightObject.light) as DirectionalLight[]
+					.filter((go) => go.light && go.light.type === LightType.Directional)
+					.map((lightObject) => lightObject.light)
 			);
-			gameObject.mesh.setupPointLight(
+			gameObject.material.setLights(
+				LightType.Point,
 				this.hierarchy.nodesArray
-					.filter((go) => go.light instanceof PointLight)
-					.map((lightObject) => lightObject.light) as PointLight[]
+					.filter((go) => go.light && go.light.type === LightType.Point)
+					.map((lightObject) => lightObject.light)
 			);
 		});
 	}
@@ -186,13 +187,13 @@ export default class Scene {
 
 		if (this.isRunning) {
 			this.runtimeHierarchy.forEachDrawableNode((gameObject: GameObject) => {
-				gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+				gameObject.draw(this.mProjection, viewWorldPosition, pov);
 			});
 
 			this.run();
 		} else {
 			this.hierarchy.forEachDrawableNode((gameObject: GameObject) => {
-				gameObject.mesh.draw(this.mProjection, viewWorldPosition, pov);
+				gameObject.draw(this.mProjection, viewWorldPosition, pov);
 			});
 		}
 	}

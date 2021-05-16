@@ -40,19 +40,25 @@ export default class Hierarchy {
 
 	forEachDrawableNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((gameObject) => gameObject && gameObject.mesh)
+			.filter((gameObject) => gameObject.material && gameObject.mesh)
+			.forEach(callback);
+	}
+
+	forEachMaterialNode(callback: (node: GameObject) => void) {
+		this.nodesArray
+			.filter((gameObject) => gameObject.material)
 			.forEach(callback);
 	}
 
 	forEachPhysicsNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((gameObject) => gameObject && gameObject.rigidBody)
+			.filter((gameObject) => gameObject.rigidBody)
 			.forEach(callback);
 	}
 
 	forEachScriptedNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((gameObject) => gameObject && gameObject.scripts.length > 0)
+			.filter((gameObject) => gameObject.scripts.length > 0)
 			.forEach(callback);
 	}
 

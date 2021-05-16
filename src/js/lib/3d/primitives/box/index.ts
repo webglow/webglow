@@ -1,31 +1,25 @@
 import { vec3 } from 'gl-matrix';
+import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
+import { BoxConfig } from './types';
 
 export default class Box extends Mesh {
-	constructor(
-		gl,
-		gameObject,
-		{
-			size = [1, 1, 1],
-			color,
-			enableSpecular,
-			specularStrength,
-			texture,
-			innerFacing = false,
-			enableLighting,
-		}
-	) {
-		super(gl, gameObject, {
-			enableSpecular,
-			specularStrength,
-			enableLighting,
-		});
+	innerFacing: boolean;
+	size: vec3;
+	positions: Float32Array;
+	normals: Float32Array;
+	textureCoords: Float32Array;
 
-		this.color = color;
-		this.size = size;
+	constructor(
+		gl: WebGL2RenderingContext,
+		gameObject: GameObject,
+		{ size = [1, 1, 1], innerFacing = false }: BoxConfig
+	) {
+		super(gl, gameObject);
+
+		this.size = size as vec3;
 		this.innerFacing = innerFacing;
-		this.texture = texture;
 
 		this.setup();
 	}
@@ -39,21 +33,13 @@ export default class Box extends Mesh {
 		this.setPositions(this.positions);
 		this.setNormals(this.normals);
 		this.setTextureCoords(this.textureCoords);
-
-		if (typeof this.texture === 'number') {
-			this.setupTexture(this.texture);
-		} else {
-			this.setupColor(this.color);
-		}
 	}
 
-	draw(...args) {
-		super.draw(...args);
-
+	draw() {
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
 	}
 
-	getNormalsForSegment(p00, p01, p10) {
+	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {
 		const n = vec3.normalize(
 			vec3.create(),
 			vec3.cross(
@@ -68,16 +54,16 @@ export default class Box extends Mesh {
 	// prettier-ignore
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
-	getGeometry(size) {
+	getGeometry(size: vec3) {
 		const halfSize = vec3.scale(vec3.create(), size, 0.5);
-		const p000 = [-halfSize[0], -halfSize[1], -halfSize[2]];
-		const p100 = [ halfSize[0], -halfSize[1], -halfSize[2]];
-		const p101 = [ halfSize[0], -halfSize[1],  halfSize[2]];
-		const p001 = [-halfSize[0], -halfSize[1],  halfSize[2]];
-		const p010 = [-halfSize[0],  halfSize[1], -halfSize[2]];
-		const p110 = [ halfSize[0],  halfSize[1], -halfSize[2]];
-		const p111 = [ halfSize[0],  halfSize[1],  halfSize[2]];
-		const p011 = [-halfSize[0],  halfSize[1],  halfSize[2]];
+		const p000 = [-halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
+		const p100 = [ halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
+		const p101 = [ halfSize[0], -halfSize[1],  halfSize[2]] as vec3;
+		const p001 = [-halfSize[0], -halfSize[1],  halfSize[2]] as vec3;
+		const p010 = [-halfSize[0],  halfSize[1], -halfSize[2]] as vec3;
+		const p110 = [ halfSize[0],  halfSize[1], -halfSize[2]] as vec3;
+		const p111 = [ halfSize[0],  halfSize[1],  halfSize[2]] as vec3;
+		const p011 = [-halfSize[0],  halfSize[1],  halfSize[2]] as vec3;
 
 		return {
 			positions: [

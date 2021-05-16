@@ -2,7 +2,6 @@ import BoxCollider from '../../../lib/3d/physics/collider/box-collider';
 import CollisionDetector from '../../../lib/3d/physics/collision-detector';
 import Plane from '../../../lib/3d/primitives/plane';
 import Color from '../../../lib/utils/color';
-import PointLight from '../../../lib/3d/standard/light/point';
 import Scene from '../../../lib/3d/standard/scene';
 import CubeShape from './shapes/cube-shape';
 import LShape from './shapes/l-shape';
@@ -12,6 +11,8 @@ import TShape from './shapes/t-shape';
 import GameObject from '../../../lib/utils/game-object';
 import Shape from './shapes';
 import Script from '../../../lib/utils/script';
+import { LightType } from '../../../lib/3d/standard/light/types';
+import { PlaneConfig } from '../../../lib/3d/primitives/plane/types';
 
 export default class Tetris extends Scene {
 	collisionDetector: CollisionDetector;
@@ -29,8 +30,9 @@ export default class Tetris extends Scene {
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
 		const pointLight = new GameObject({ gl: this.gl });
-		pointLight.addLight(PointLight, {
+		pointLight.addLight({
 			position: [0, -1000, 1000],
+			type: LightType.Point,
 			intensity: 1,
 			color: new Color('#ffffff'),
 		});
@@ -63,14 +65,14 @@ export default class Tetris extends Scene {
 			length: 50000,
 			widthSegments: 1,
 			lengthSegments: 1,
-			color: new Color('#222222').toVec4(),
-			enableSpecular: true,
-		});
+		} as PlaneConfig);
 
 		ground.addCollider(BoxCollider, {
 			min: [-25000, -50, -25000],
 			max: [25000, 50, 25000],
 		});
+
+		ground.addMaterial();
 
 		ground.transform.translate([0, -2000, 0]);
 

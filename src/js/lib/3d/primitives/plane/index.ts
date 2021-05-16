@@ -1,30 +1,33 @@
 import { vec3 } from 'gl-matrix';
+import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
+import { PlaneConfig } from './types';
 
 export default class Plane extends Mesh {
+	positions: Float32Array;
+	normals: Float32Array;
+	textureCoords: Float32Array;
+	width: number;
+	length: number;
+	widthSegments: number;
+	lengthSegments: number;
+	gap: number;
+	heightMap: Array<number>;
+
 	constructor(
-		gl,
-		gameObject,
+		gl: WebGL2RenderingContext,
+		gameObject: GameObject,
 		{
 			width,
 			length,
 			widthSegments,
 			lengthSegments,
-			color = [1, 1, 1],
 			gap = 0,
-			texture,
 			heightMap,
-			enableLighting,
-			enableSpecular,
-			specularStrength,
-		}
+		}: PlaneConfig
 	) {
-		super(gl, gameObject, {
-			enableLighting,
-			enableSpecular,
-			specularStrength,
-		});
+		super(gl, gameObject);
 
 		this.heightMap =
 			heightMap ||
@@ -35,8 +38,6 @@ export default class Plane extends Mesh {
 		this.widthSegments = widthSegments;
 		this.lengthSegments = lengthSegments;
 		this.gap = gap;
-		this.color = color;
-		this.texture = texture;
 
 		this.setup();
 	}
@@ -51,21 +52,13 @@ export default class Plane extends Mesh {
 		this.setPositions(this.positions);
 		this.setNormals(this.normals);
 		this.setTextureCoords(this.textureCoords);
-
-		if (typeof this.texture === 'number') {
-			this.setupTexture(this.texture);
-		} else {
-			this.setupColor(this.color);
-		}
 	}
 
-	draw(...args) {
-		super.draw(...args);
-
+	draw() {
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
 	}
 
-	getNormalsForSegment(p00, p01, p10) {
+	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {
 		const n = vec3.normalize(
 			vec3.create(),
 			vec3.cross(
@@ -93,22 +86,22 @@ export default class Plane extends Mesh {
 					x * segmentWidth + this.gap,
 					this.heightMap[j * this.widthSegments + i],
 					y * segmentLength + this.gap,
-				];
+				] as vec3;
 				const p10 = [
 					(x + 1) * segmentWidth - this.gap,
 					this.heightMap[j * this.widthSegments + (i + 1)],
 					y * segmentLength + this.gap,
-				];
+				] as vec3;
 				const p11 = [
 					(x + 1) * segmentWidth - this.gap,
 					this.heightMap[(j + 1) * this.widthSegments + (i + 1)],
 					(y + 1) * segmentLength - this.gap,
-				];
+				] as vec3;
 				const p01 = [
 					x * segmentWidth + this.gap,
 					this.heightMap[(j + 1) * this.widthSegments + i],
 					(y + 1) * segmentLength - this.gap,
-				];
+				] as vec3;
 				positions.push(getSegment(p00, p10, p11, p01));
 
 				normals.push(this.getNormalsForSegment(p00, p01, p10));

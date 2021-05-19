@@ -1,4 +1,4 @@
-export interface PlaneConfig {
+export interface IPlaneConfig {
 	width: number;
 	length: number;
 	widthSegments: number;

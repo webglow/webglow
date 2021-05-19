@@ -1,12 +1,12 @@
 import GameObject from '../../lib/utils/game-object';
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	node: GameObject;
 	onSelectNode?: (node: GameObject) => void;
 	selectedObject?: GameObject;
 }
 
-export interface TitleProps {
+export interface ITitleProps {
 	selected: boolean;
 }

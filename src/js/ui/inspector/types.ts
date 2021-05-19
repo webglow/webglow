@@ -1,8 +1,8 @@
 import GameObject from '../../lib/utils/game-object';
 import File from '../../lib/utils/project-hierarchy/file';
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	selectedObject?: GameObject | File;
 	onNameChange: (node: GameObject, newName: string) => void;
 }

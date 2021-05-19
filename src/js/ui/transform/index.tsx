@@ -2,25 +2,25 @@ import React from 'react';
 import { vec3 } from 'gl-matrix';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
-import { Props } from './types';
+import { IProps } from './types';
 import { Info, Title, Wrapper } from './styles';
-import { TransformInfo } from '../../lib/3d/standard/transform/types';
+import { ITransformInfo } from '../../lib/3d/standard/transform/types';
 import TransformParameter from '../transform-parameter';
 
 export default function Transform({
 	className,
 	transformInfo,
 	onChange,
-}: Props) {
+}: IProps) {
 	if (!transformInfo) {
 		return null;
 	}
 
 	const onParamChange = (
-		name: keyof TransformInfo,
+		name: keyof ITransformInfo,
 		newValue: [number, number, number]
 	) => {
-		const newInfo: TransformInfo = {
+		const newInfo: ITransformInfo = {
 			position: [...transformInfo.position] as vec3,
 			rotation: [...transformInfo.rotation] as vec3,
 			scale: [...transformInfo.scale] as vec3,

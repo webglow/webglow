@@ -1,11 +1,11 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faFileCode } from '@fortawesome/free-solid-svg-icons';
-import { Props } from './types';
+import { IProps } from './types';
 import { Title, Wrapper, ScriptName } from './styles';
 import Editor from '../editor';
 
-export default function ScriptSection({ className, script }: Props) {
+export default function ScriptSection({ className, script }: IProps) {
 	return (
 		<Wrapper className={className}>
 			<Title>

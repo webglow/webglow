@@ -7,9 +7,9 @@ import {
 	faSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import ContextMenu from '../context-menu';
-import { ContextMenuItem } from '../context-menu/types';
+import { IContextMenuItem } from '../context-menu/types';
 import { NodeList, Title, Wrapper } from './styles';
-import { Props } from './types';
+import { IProps } from './types';
 import HierarchyNodeUI from '../hierarchy-node';
 
 export default function HierarchyUI({
@@ -17,11 +17,11 @@ export default function HierarchyUI({
 	className,
 	onSelectNode,
 	selectedObject,
-}: Props) {
+}: IProps) {
 	const [menuVisible, setMenuVisible] = useState<boolean>(false);
 	const [menuPosition, setMenuPosition] = useState<[number, number]>([0, 0]);
 
-	const contextMenuItems: ContextMenuItem[] = [
+	const contextMenuItems: IContextMenuItem[] = [
 		{
 			id: 'add-box',
 			name: 'Add Box',

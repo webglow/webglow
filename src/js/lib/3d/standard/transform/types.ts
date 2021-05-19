@@ -1,11 +1,11 @@
 import { vec3 } from 'gl-matrix';
 
-export interface TransformInfo {
+export interface ITransformInfo {
 	position: vec3;
 	rotation: vec3;
 	scale: vec3;
 }
 
-export interface Subscriber {
-	[key: string]: (info: TransformInfo) => void;
+export interface ISubscriber {
+	[key: string]: (info: ITransformInfo) => void;
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Props } from './types';
+import { IProps } from './types';
 import { Section, StyledObjectNameEditor, Wrapper } from './styles';
-import { TransformInfo } from '../../lib/3d/standard/transform/types';
+import { ITransformInfo } from '../../lib/3d/standard/transform/types';
 import Transform from '../../lib/3d/standard/transform';
 import { default as TransformUI } from '../transform';
 import ScriptSection from '../script-section';
@@ -10,8 +10,8 @@ export default function GameObjectInspector({
 	className,
 	selectedObject,
 	onNameChange,
-}: Props) {
-	const [transformInfo, setTransformInfo] = useState<TransformInfo | null>(
+}: IProps) {
+	const [transformInfo, setTransformInfo] = useState<ITransformInfo | null>(
 		null
 	);
 	const [transform, setTransform] = useState<Transform | null>(null);
@@ -47,7 +47,7 @@ export default function GameObjectInspector({
 		}
 	};
 
-	const onTransformChange = (newTransform: TransformInfo) => {
+	const onTransformChange = (newTransform: ITransformInfo) => {
 		transform.setTransform(newTransform);
 	};
 

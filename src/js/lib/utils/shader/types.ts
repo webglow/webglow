@@ -1,14 +1,14 @@
 import { UniformType } from '../shader-program/types';
 
-export interface ShaderParam {
+export interface IShaderParam {
 	displayName: string;
 	key: string;
 	type: UniformType;
 	value: any;
 }
 
-export interface Shader {
-	params?: ShaderParam[];
+export interface IShader {
+	params?: IShaderParam[];
 	vertex: string;
 	fragment: string;
 }

@@ -1,4 +1,4 @@
-export interface SphereConfig {
+export interface ISphereConfig {
 	widthSegments: number;
 	heightSegments: number;
 	radius: number;

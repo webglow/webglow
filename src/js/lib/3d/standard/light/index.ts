@@ -1,7 +1,7 @@
 import { mat3, vec3 } from 'gl-matrix';
 import Color from '../../../utils/color';
 import GameObject from '../../../utils/game-object';
-import { LightConfig, LightType } from './types';
+import { ILightConfig, LightType } from './types';
 
 export default class Light {
 	gameObject: GameObject;
@@ -18,7 +18,7 @@ export default class Light {
 			direction = [0, 0, 0],
 			intensity,
 			color,
-		}: LightConfig
+		}: ILightConfig
 	) {
 		this.gameObject = gameObject;
 		this.direction = vec3.normalize(vec3.create(), direction);

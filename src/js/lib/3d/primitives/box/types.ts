@@ -1,6 +1,6 @@
 import { vec3 } from 'gl-matrix';
 
-export interface BoxConfig {
+export interface IBoxConfig {
 	size?: vec3;
 	innerFacing?: boolean;
 }

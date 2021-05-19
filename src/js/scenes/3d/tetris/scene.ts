@@ -11,7 +11,7 @@ import GameObject from '../../../lib/utils/game-object';
 import Shape from './shapes';
 import Script from '../../../lib/utils/script';
 import { LightType } from '../../../lib/3d/standard/light/types';
-import { PlaneConfig } from '../../../lib/3d/primitives/plane/types';
+import { IPlaneConfig } from '../../../lib/3d/primitives/plane/types';
 
 export default class Tetris extends Scene {
 	collisionDetector: CollisionDetector;
@@ -57,7 +57,7 @@ export default class Tetris extends Scene {
 			length: 500,
 			widthSegments: 1,
 			lengthSegments: 1,
-		} as PlaneConfig);
+		} as IPlaneConfig);
 
 		ground.addMaterial();
 
@@ -90,12 +90,5 @@ export default class Tetris extends Scene {
 				this.randomShape.setVelocity([0, 0, 0]);
 			}
 		});
-	}
-
-	draw() {
-		super.draw(
-			this.sceneCamera.transform.position,
-			this.sceneCamera.transform.viewMatrix
-		);
 	}
 }

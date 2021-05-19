@@ -1,7 +1,7 @@
 import File from '../../lib/utils/project-hierarchy/file';
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	onSelectFile: (file: File) => void;
 	selectedObject: File;
 }

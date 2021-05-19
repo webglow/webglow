@@ -1,8 +1,8 @@
 import Color from '../color';
 import { UniformType } from '../shader-program/types';
-import { Shader } from './types';
+import { IShader } from './types';
 
-const defaultShader: Shader = {
+const defaultShader: IShader = {
 	params: [
 		{
 			displayName: 'Enable Specular',

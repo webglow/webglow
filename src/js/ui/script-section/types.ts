@@ -1,6 +1,6 @@
 import Script from '../../lib/utils/script';
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	script: Script;
 }

@@ -1,3 +1,3 @@
-export interface ComponentProps {
+export interface IComponentProps {
 	className?: string;
 }

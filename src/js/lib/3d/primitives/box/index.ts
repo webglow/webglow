@@ -3,7 +3,7 @@ import { MF } from '../../../utils/constants';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
-import { BoxConfig } from './types';
+import { IBoxConfig } from './types';
 
 export default class Box extends Mesh {
 	innerFacing: boolean;
@@ -15,7 +15,7 @@ export default class Box extends Mesh {
 	constructor(
 		gl: WebGL2RenderingContext,
 		gameObject: GameObject,
-		{ size = [1, 1, 1], innerFacing = false }: BoxConfig
+		{ size = [1, 1, 1], innerFacing = false }: IBoxConfig
 	) {
 		super(gl, gameObject);
 

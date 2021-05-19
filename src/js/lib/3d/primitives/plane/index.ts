@@ -3,7 +3,7 @@ import { MF } from '../../../utils/constants';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
-import { PlaneConfig } from './types';
+import { IPlaneConfig } from './types';
 
 export default class Plane extends Mesh {
 	positions: Float32Array;
@@ -26,7 +26,7 @@ export default class Plane extends Mesh {
 			lengthSegments,
 			gap = 0,
 			heightMap,
-		}: PlaneConfig
+		}: IPlaneConfig
 	) {
 		super(gl, gameObject);
 

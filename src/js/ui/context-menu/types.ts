@@ -1,19 +1,19 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import React from 'react';
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	visible?: boolean;
-	items: ContextMenuItem[];
+	items: IContextMenuItem[];
 	position: [number, number];
 	onOutsideClick: () => void;
 }
 
-export interface WrapperProps {
+export interface IWrapperProps {
 	position: [number, number];
 }
 
-export interface ContextMenuItem {
+export interface IContextMenuItem {
 	id: string;
 	name: string;
 	icon: IconDefinition;

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Props } from './types';
+import { IProps } from './types';
 import { ParamComponentName, ParamComponentValue, ParamName } from './styles';
 
-export default function TransformParameter({ name, onChange, value }: Props) {
+export default function TransformParameter({ name, onChange, value }: IProps) {
 	const [param, setParam] = useState<
 		[string | number, string | number, string | number]
 	>([...value]);

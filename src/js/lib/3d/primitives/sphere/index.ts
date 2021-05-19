@@ -2,7 +2,7 @@ import { vec2, vec3 } from 'gl-matrix';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment } from '../helpers';
-import { SphereConfig } from './types';
+import { ISphereConfig } from './types';
 
 export default class Sphere extends Mesh {
 	positions: Float32Array;
@@ -25,7 +25,7 @@ export default class Sphere extends Mesh {
 			gap,
 			innerFacing = false,
 			polygonal = false,
-		}: SphereConfig
+		}: ISphereConfig
 	) {
 		super(gl, gameObject);
 

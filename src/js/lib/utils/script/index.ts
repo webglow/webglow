@@ -11,15 +11,19 @@ export default class Script {
 	text: string;
 	gameObject: GameObject;
 
-	constructor(name: string) {
+	constructor(name: string, behaviour?: Behaviour) {
 		this.name = name;
 		this.className = upperFirst(camelCase(name));
 		this.text = getDefaultText(this.className);
+		this.behaviour = behaviour;
 	}
 
 	assign(gameObject: GameObject) {
 		this.gameObject = gameObject;
-		this.parse();
+
+		if (!this.behaviour) {
+			this.parse();
+		}
 	}
 
 	parse() {

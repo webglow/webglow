@@ -3,19 +3,20 @@ import BoxCollider from '../../3d/physics/collider/box-collider';
 import RigidBody from '../../3d/physics/rigidbody';
 import Box from '../../3d/primitives/box';
 import Transform from '../../3d/standard/transform';
-import { GameObjectParams } from './types';
+import { IGameObjectParams } from './types';
 import Mesh from '../../3d/standard/mesh';
 import Collider from '../../3d/physics/collider';
 import Script from '../script';
 import Material from '../material';
 import Light from '../../3d/standard/light';
-import { LightConfig } from '../../3d/standard/light/types';
-import { SphereConfig } from '../../3d/primitives/sphere/types';
+import { ILightConfig } from '../../3d/standard/light/types';
+import { ISphereConfig } from '../../3d/primitives/sphere/types';
 import Sphere from '../../3d/primitives/sphere';
 import Plane from '../../3d/primitives/plane';
-import { PlaneConfig } from '../../3d/primitives/plane/types';
-import { BoxConfig } from '../../3d/primitives/box/types';
+import { IPlaneConfig } from '../../3d/primitives/plane/types';
+import { IBoxConfig } from '../../3d/primitives/box/types';
 import defaultShader from '../shader';
+import Camera from '../../3d/standard/camera';
 
 export default class GameObject {
 	gl: WebGL2RenderingContext;
@@ -26,6 +27,7 @@ export default class GameObject {
 	rigidBody: RigidBody;
 	collider: Collider;
 	material: Material;
+	camera: Camera;
 
 	isRoot: boolean;
 	id: string;
@@ -36,7 +38,7 @@ export default class GameObject {
 		gl,
 		TransformType = Transform,
 		isRoot = false,
-	}: GameObjectParams = {}) {
+	}: IGameObjectParams = {}) {
 		this.gl = gl;
 		this.transform = new TransformType(this);
 
@@ -45,12 +47,12 @@ export default class GameObject {
 		this.children = [];
 	}
 
-	addMesh(MeshType: typeof Sphere, config: SphereConfig): void;
-	addMesh(MeshType: typeof Plane, config: PlaneConfig): void;
-	addMesh(MeshType: typeof Box, config: BoxConfig): void;
+	addMesh(MeshType: typeof Sphere, config: ISphereConfig): void;
+	addMesh(MeshType: typeof Plane, config: IPlaneConfig): void;
+	addMesh(MeshType: typeof Box, config: IBoxConfig): void;
 	addMesh(
 		MeshType: typeof Box | typeof Sphere | typeof Plane,
-		config: BoxConfig & SphereConfig & PlaneConfig
+		config: IBoxConfig & ISphereConfig & IPlaneConfig
 	) {
 		this.mesh = new MeshType(this.gl, this, config);
 	}
@@ -65,7 +67,7 @@ export default class GameObject {
 		this.scripts.push(script);
 	}
 
-	addLight(config: LightConfig) {
+	addLight(config: ILightConfig) {
 		this.light = new Light(this, config);
 	}
 
@@ -77,6 +79,10 @@ export default class GameObject {
 				gameObject.addCollider(BoxCollider);
 			}
 		});
+	}
+
+	addCamera() {
+		this.camera = new Camera(this.gl, this);
 	}
 
 	addCollider(ColliderType: typeof Collider, config = {}) {

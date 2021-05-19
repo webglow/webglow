@@ -5,7 +5,7 @@ import {
 	faFolder,
 	faPalette,
 } from '@fortawesome/free-solid-svg-icons';
-import { Props } from './types';
+import { IProps } from './types';
 import { Wrapper, Title, FileUI, Contents, FileName } from './styles';
 import ProjectHierarchy, {
 	getTestHierarchy,
@@ -19,7 +19,7 @@ export default function ProjectHierarchyUI({
 	className,
 	onSelectFile,
 	selectedObject,
-}: Props) {
+}: IProps) {
 	const [hierarchy, setHierarchy] = useState<ProjectHierarchy>(null);
 	const [cwd, setCwd] = useState<File>(null);
 

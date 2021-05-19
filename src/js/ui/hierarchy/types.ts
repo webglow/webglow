@@ -1,8 +1,8 @@
 import GameObject from '../../lib/utils/game-object';
 import Hierarchy from '../../lib/utils/hierarchy';
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	hierarchy: Hierarchy;
 	onSelectNode: (node: GameObject) => void;
 	selectedObject?: GameObject;

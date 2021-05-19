@@ -6,7 +6,7 @@ export enum LightType {
 	Point,
 }
 
-export interface LightConfig {
+export interface ILightConfig {
 	position?: vec3;
 	direction?: vec3;
 	intensity: number;

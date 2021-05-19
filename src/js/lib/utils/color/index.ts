@@ -1,7 +1,7 @@
-import { RawColor } from './types';
+import { IRawColor } from './types';
 
 export default class Color {
-	rgb: RawColor;
+	rgb: IRawColor;
 
 	constructor(hex?: string) {
 		if (!hex) {
@@ -12,7 +12,7 @@ export default class Color {
 		this.rgb = this.hexToRgb(hex);
 	}
 
-	toNormalizedRgb(): RawColor {
+	toNormalizedRgb(): IRawColor {
 		return {
 			r: this.rgb.r / 255,
 			g: this.rgb.g / 255,
@@ -36,7 +36,7 @@ export default class Color {
 		return [this.rgb.r / 255, this.rgb.g / 255, this.rgb.b / 255, 1];
 	}
 
-	hexToRgb(hex: string): RawColor {
+	hexToRgb(hex: string): IRawColor {
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return {
 			r: parseInt(result[1], 16),

@@ -6,13 +6,13 @@ import File from '../../lib/utils/project-hierarchy/file';
 import FileInspector from '../file-inspector';
 import GameObjectInspector from '../game-object-inspector';
 import { Title, Wrapper } from './styles';
-import { Props } from './types';
+import { IProps } from './types';
 
 export default function Inspector({
 	className,
 	selectedObject,
 	onNameChange,
-}: Props) {
+}: IProps) {
 	const getInspector = () => {
 		if (selectedObject instanceof GameObject) {
 			return (

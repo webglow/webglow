@@ -1,12 +1,12 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Props } from './types';
+import { IProps } from './types';
 import { Content, FileName, Wrapper } from './styles';
 import { FileContent } from '../../lib/utils/project-hierarchy/types';
 import Script from '../../lib/utils/script';
 import { getIconByFileType } from '../helpers';
 
-export default function FileInspector({ className, file }: Props) {
+export default function FileInspector({ className, file }: IProps) {
 	const formatContent = (content: FileContent) => {
 		if (content instanceof Script) {
 			return (content as Script).text;

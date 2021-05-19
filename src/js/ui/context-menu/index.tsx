@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Props } from './types';
+import { IProps } from './types';
 import { MenuItem, Wrapper } from './styles';
 
 export default function ContextMenu({
@@ -9,7 +9,7 @@ export default function ContextMenu({
 	onOutsideClick,
 	items,
 	position,
-}: Props) {
+}: IProps) {
 	const wrapperRef = useRef();
 
 	useEffect(() => {

@@ -4,13 +4,13 @@ import { MF } from '../../../utils/constants';
 import { Space } from '../../../utils/enums';
 import GameObject from '../../../utils/game-object';
 import { getEuler } from '../../../utils/helpers';
-import { Subscriber, TransformInfo } from './types';
+import { ISubscriber, ITransformInfo } from './types';
 
 export default class Transform {
 	mTranslation: mat4;
 	mRotation: mat4;
 	mScale: mat4;
-	subscribers: Subscriber;
+	subscribers: ISubscriber;
 	gameObject: GameObject;
 
 	constructor(gameObject?: GameObject) {
@@ -127,7 +127,7 @@ export default class Transform {
 		return mat4.getScaling(vec3.create(), this.mScale);
 	}
 
-	get transform(): TransformInfo {
+	get transform(): ITransformInfo {
 		return {
 			position: this.position,
 			rotation: this.rotation,
@@ -172,7 +172,7 @@ export default class Transform {
 		return local;
 	}
 
-	subscribe(callback: (info: TransformInfo) => void) {
+	subscribe(callback: (info: ITransformInfo) => void) {
 		const id = uuidv4();
 		this.subscribers[id] = callback;
 
@@ -191,7 +191,7 @@ export default class Transform {
 		});
 	}
 
-	setTransform(transform: TransformInfo) {
+	setTransform(transform: ITransformInfo) {
 		this.setPosition(transform.position, false);
 		this.setRotationFromEuler(
 			transform.rotation as [number, number, number],

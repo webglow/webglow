@@ -5,7 +5,7 @@ import Light from '../../3d/standard/light';
 import GameObject from '../game-object';
 import ShaderProgram from '../shader-program';
 import { UniformType } from '../shader-program/types';
-import { Shader, ShaderParam } from '../shader/types';
+import { IShader, IShaderParam } from '../shader/types';
 
 export default class Material {
 	gl: WebGL2RenderingContext;
@@ -13,11 +13,11 @@ export default class Material {
 	program: WebGLProgram;
 	texture: WebGLTexture;
 	shaderProgram: ShaderProgram;
-	shader: Shader;
+	shader: IShader;
 	gameObject: GameObject;
 	params: any;
 
-	constructor(shader: Shader) {
+	constructor(shader: IShader) {
 		this.shader = shader;
 		this.params = shader.params;
 	}
@@ -42,7 +42,7 @@ export default class Material {
 		this.setUniforms(this.params);
 	}
 
-	setUniforms(params: ShaderParam[]) {
+	setUniforms(params: IShaderParam[]) {
 		params.forEach((param) => {
 			this.shaderProgram.setUniform(param.type, param.key, param.value);
 		});

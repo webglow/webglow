@@ -1,6 +1,6 @@
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {
+export interface IProps extends IComponentProps {
 	isRunning: boolean;
 	onPlayPauseClick: () => void;
 }

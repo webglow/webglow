@@ -1,6 +1,6 @@
 import Material from '../material';
 import Script from '../script';
-import { Shader } from '../shader/types';
+import { IShader } from '../shader/types';
 import File from './file';
 
 export enum FileType {
@@ -10,4 +10,4 @@ export enum FileType {
 	Material,
 }
 
-export type FileContent = Script | Material | Shader | File[];
+export type FileContent = Script | Material | IShader | File[];

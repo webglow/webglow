@@ -1,6 +1,6 @@
 ---
 to: src/js/ui/<%= h.changeCase.paramCase(name) %>/types.ts
 ---
-import { ComponentProps } from '../common/types';
+import { IComponentProps } from '../common/types';
 
-export interface Props extends ComponentProps {}
+export interface IProps extends ComponentProps {}

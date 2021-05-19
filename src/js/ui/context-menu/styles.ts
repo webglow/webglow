@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 import { SmallText } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
-import { WrapperProps } from './types';
+import { IWrapperProps } from './types';
 
-export const Wrapper = styled.div<WrapperProps>`
+export const Wrapper = styled.div<IWrapperProps>`
 	position: fixed;
 	background: var(--dark-grey);
 	border: 1px solid var(--black);

@@ -1,6 +1,6 @@
 import { vec3 } from 'gl-matrix';
 import Box from '../../../../lib/3d/primitives/box';
-import { BoxConfig } from '../../../../lib/3d/primitives/box/types';
+import { IBoxConfig } from '../../../../lib/3d/primitives/box/types';
 import Scene from '../../../../lib/3d/standard/scene';
 import Color from '../../../../lib/utils/color';
 import GameObject from '../../../../lib/utils/game-object';
@@ -38,16 +38,16 @@ export default class Shape {
 		this.b4 = new GameObject({ gl });
 		this.b1.addMesh(Box, {
 			size: [size, size, size],
-		} as BoxConfig);
+		} as IBoxConfig);
 		this.b2.addMesh(Box, {
 			size: [size, size, size],
-		} as BoxConfig);
+		} as IBoxConfig);
 		this.b3.addMesh(Box, {
 			size: [size, size, size],
-		} as BoxConfig);
+		} as IBoxConfig);
 		this.b4.addMesh(Box, {
 			size: [size, size, size],
-		} as BoxConfig);
+		} as IBoxConfig);
 
 		this.b1.addMaterial();
 		this.b2.addMaterial();

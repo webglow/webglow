@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import HierarchyNodeUI from '.';
 import { TextWithIcon } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
-import { TitleProps } from './types';
+import { ITitleProps } from './types';
 
 export const Wrapper = styled.div``;
 
 export const Title = styled((props) =>
 	React.createElement(TextWithIcon, { ...props, svgWidth: 11 })
-)<TitleProps>`
+)<ITitleProps>`
 	& > div {
 		white-space: nowrap;
 		text-overflow: ellipsis;
@@ -26,7 +26,7 @@ export const Title = styled((props) =>
 		background: var(--dark-dark-grey);
 	}
 
-	${(props: TitleProps) =>
+	${(props: ITitleProps) =>
 		props.selected && 'background: var(--dark-dark-grey)'};
 `;
 

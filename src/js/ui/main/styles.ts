@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { pxToRem } from '../../../styles/helpers';
 import HierarchyUI from '../hierarchy';
 import Inspector from '../inspector';
+import ProjectHierarchy from '../project-hierarchy';
 
 export const Wrapper = styled.div`
 	display: grid;
@@ -15,6 +16,11 @@ export const Canvas = styled.canvas`
 	width: 100%;
 	min-width: 0;
 	grid-row: 2 / 3;
+`;
+
+export const StyledProjectHierarchy = styled(ProjectHierarchy)`
+	grid-row: 3 / 4;
+	border-top: 1px solid var(--black);
 `;
 
 export const StyledHierarchy = styled(HierarchyUI)`

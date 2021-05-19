@@ -23,7 +23,7 @@ export default class Scene {
 	constructor(
 		gl: WebGL2RenderingContext,
 		{
-			cameraSpeed = 50,
+			cameraSpeed = 0.5,
 			cameraPosition = [0, 0, 0],
 			projectionType = PROJECTION_TYPE.PERSPECTIVE,
 			backgroundColor = new Color('#000000'),
@@ -32,8 +32,10 @@ export default class Scene {
 		this.gl = gl;
 		this.canvas = this.gl.canvas as HTMLCanvasElement;
 		this.hierarchy = new Hierarchy('root');
+
 		this.sceneCamera = new Camera(this.gl, cameraSpeed, cameraPosition);
 		this.sceneCameraMovement = new CameraMovement(this.sceneCamera, this.gl);
+
 		this.projectionType = projectionType;
 
 		this.backgroundColor = backgroundColor;

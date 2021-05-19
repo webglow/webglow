@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { vec3 } from 'gl-matrix';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';

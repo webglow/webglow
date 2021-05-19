@@ -1,4 +1,5 @@
 import { vec2, vec3 } from 'gl-matrix';
+import { Space } from '../../../utils/enums';
 
 export default class CameraMovement {
 	constructor(camera, gl) {
@@ -72,6 +73,7 @@ export default class CameraMovement {
 					)
 			);
 
-		this.camera.transform.rotate(deltaAngle, [-deltaY, -deltaX, 0]);
+		this.camera.transform.rotate(deltaAngle, [-deltaY, 0, 0]);
+		this.camera.transform.rotate(deltaAngle, [0, -deltaX, 0], Space.World);
 	}
 }

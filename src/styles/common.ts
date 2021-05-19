@@ -18,6 +18,7 @@ export const TextWithIcon = styled.div<{ svgWidth?: number }>`
 
 	& > svg.svg-inline--fa {
 		width: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
+		height: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
 	}
 
 	svg + div {

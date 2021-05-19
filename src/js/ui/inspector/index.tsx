@@ -1,78 +1,41 @@
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
-import Transform from '../../lib/3d/standard/transform';
-import { TransformInfo } from '../../lib/3d/standard/transform/types';
-import ScriptSection from '../script-section';
-import { default as TransformUI } from '../transform';
-import { Section, StyledObjectNameEditor, Title, Wrapper } from './styles';
+import React from 'react';
+import GameObject from '../../lib/utils/game-object';
+import File from '../../lib/utils/project-hierarchy/file';
+import FileInspector from '../file-inspector';
+import GameObjectInspector from '../game-object-inspector';
+import { Title, Wrapper } from './styles';
 import { Props } from './types';
 
 export default function Inspector({
 	className,
-	selectedNode,
+	selectedObject,
 	onNameChange,
 }: Props) {
-	if (!selectedNode) {
+	const getInspector = () => {
+		if (selectedObject instanceof GameObject) {
+			return (
+				<GameObjectInspector
+					selectedObject={selectedObject as GameObject}
+					onNameChange={onNameChange}
+				/>
+			);
+		}
+		if (selectedObject instanceof File) {
+			return <FileInspector file={selectedObject} />;
+		}
 		return null;
-	}
-
-	const [transformInfo, setTransformInfo] = useState<TransformInfo | null>(
-		null
-	);
-	const [transform, setTransform] = useState<Transform | null>(null);
-	const [subscriptionId, setSubscriptionId] = useState<string>();
-
-	useEffect(() => {
-		if (subscriptionId && transform) {
-			transform.unsubscribe(subscriptionId);
-			setTransform(null);
-			setSubscriptionId('');
-		}
-
-		const objectTransform = selectedNode?.transform;
-
-		if (!objectTransform) {
-			return;
-		}
-
-		setTransformInfo(objectTransform.transform);
-		setTransform(objectTransform);
-
-		setSubscriptionId(
-			objectTransform.subscribe((info) => {
-				setTransformInfo(info);
-			})
-		);
-	}, [selectedNode]);
-
-	const onTransformChange = (newTransform: TransformInfo) => {
-		transform.setTransform(newTransform);
 	};
 
 	return (
 		<Wrapper className={className}>
-			<Section>
-				<Title>
-					<FontAwesomeIcon icon={faInfoCircle} />
-					<div>Inspector</div>
-				</Title>
-				<StyledObjectNameEditor
-					name={selectedNode.id}
-					onChange={(newName) => onNameChange(selectedNode, newName)}
-				/>
-			</Section>
-			<Section>
-				<TransformUI
-					transformInfo={transformInfo}
-					onChange={onTransformChange}
-				/>
-			</Section>
-			{selectedNode.scripts.map((script) => (
-				<Section key={script.name}>
-					<ScriptSection script={script} />
-				</Section>
-			))}
+			<Title>
+				<FontAwesomeIcon icon={faInfoCircle} />
+				<div>Inspector</div>
+			</Title>
+
+			{getInspector()}
 		</Wrapper>
 	);
 }

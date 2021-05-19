@@ -1,7 +1,7 @@
 import Shape from '.';
 
 export default class LShape extends Shape {
-	constructor(gl, scene, color, size = 100, gap = 10, mirror) {
+	constructor(gl, scene, color, size = 1, gap = 10, mirror) {
 		super(gl, scene, color, size);
 
 		const boxLength = size + gap;

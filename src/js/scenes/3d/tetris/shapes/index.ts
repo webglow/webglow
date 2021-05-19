@@ -1,6 +1,6 @@
 import { vec3 } from 'gl-matrix';
 import Box from '../../../../lib/3d/primitives/box';
-import {BoxConfig} from '../../../../lib/3d/primitives/box/types';
+import { BoxConfig } from '../../../../lib/3d/primitives/box/types';
 import Scene from '../../../../lib/3d/standard/scene';
 import Color from '../../../../lib/utils/color';
 import GameObject from '../../../../lib/utils/game-object';
@@ -17,7 +17,7 @@ export default class Shape {
 		gl: WebGL2RenderingContext,
 		scene: Scene,
 		color: Color,
-		size = 500
+		size = 1
 	) {
 		this.setupStructure(gl, scene, color, size);
 

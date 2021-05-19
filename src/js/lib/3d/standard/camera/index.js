@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix';
-import CameraTransform from './transform';
+import Transform from '../transform';
 
 export default class Camera {
 	constructor(gl, movementSpeed, initialPosition = [0, 0, 0]) {
@@ -15,7 +15,7 @@ export default class Camera {
 		this.focalLength = 35;
 		this.zoomStep = 5;
 
-		this.transform = new CameraTransform();
+		this.transform = new Transform();
 
 		this.speed = movementSpeed;
 		this.isMoving = false;

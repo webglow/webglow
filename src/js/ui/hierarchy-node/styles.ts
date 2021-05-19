@@ -5,9 +5,7 @@ import { TextWithIcon } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import { TitleProps } from './types';
 
-export const Wrapper = styled.div`
-	margin-top: ${pxToRem(5)}rem;
-`;
+export const Wrapper = styled.div``;
 
 export const Title = styled((props) =>
 	React.createElement(TextWithIcon, { ...props, svgWidth: 11 })
@@ -19,15 +17,17 @@ export const Title = styled((props) =>
 	}
 
 	cursor: pointer;
-	padding: ${pxToRem(3)}rem ${pxToRem(4)}rem;
+	padding: ${pxToRem(5)}rem ${pxToRem(4)}rem;
 	border-radius: 3px;
 	transition: background 0.2s ease-in-out;
+	user-select: none;
 
 	&:hover {
-		background: var(--black);
+		background: var(--dark-dark-grey);
 	}
 
-	${(props: TitleProps) => props.selected && 'background: var(--black)'};
+	${(props: TitleProps) =>
+		props.selected && 'background: var(--dark-dark-grey)'};
 `;
 
 export const StyledHierarchyNode = styled(HierarchyNodeUI)`

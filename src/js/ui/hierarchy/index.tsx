@@ -8,15 +8,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ContextMenu from '../context-menu';
 import { ContextMenuItem } from '../context-menu/types';
-import HierarchyNodeUI from '../hierarchy-node';
 import { NodeList, Title, Wrapper } from './styles';
 import { Props } from './types';
+import HierarchyNodeUI from '../hierarchy-node';
 
 export default function HierarchyUI({
 	hierarchy,
 	className,
 	onSelectNode,
-	selectedNode,
+	selectedObject,
 }: Props) {
 	const [menuVisible, setMenuVisible] = useState<boolean>(false);
 	const [menuPosition, setMenuPosition] = useState<[number, number]>([0, 0]);
@@ -67,7 +67,7 @@ export default function HierarchyUI({
 						key={node.id}
 						node={node}
 						onSelectNode={(n) => onSelectNode(n)}
-						selectedNode={selectedNode}
+						selectedObject={selectedObject}
 					/>
 				))}
 			</NodeList>

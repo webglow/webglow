@@ -1,5 +1,7 @@
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { v4 as uuidv4 } from 'uuid';
+import { MF } from '../../../utils/constants';
+import { Space } from '../../../utils/enums';
 import GameObject from '../../../utils/game-object';
 import { getEuler } from '../../../utils/helpers';
 import { Subscriber, TransformInfo } from './types';
@@ -21,13 +23,40 @@ export default class Transform {
 	}
 
 	translate(translation: vec3) {
-		mat4.translate(this.mTranslation, this.mTranslation, translation);
+		mat4.translate(
+			this.mTranslation,
+			this.mTranslation,
+			vec3.scale(vec3.create(), translation, MF)
+		);
 
 		this.onChange();
 	}
 
-	rotate(angle: number, axis: vec3) {
+	rotateLocalSpace(angle: number, axis: vec3) {
 		mat4.rotate(this.mRotation, this.mRotation, angle, axis);
+	}
+
+	rotateWorldSpace(angle: number, axis: vec3) {
+		const inverseRotation = mat4.invert(mat4.create(), this.mRotation);
+		const worldRotation = vec3.transformMat4(
+			vec3.create(),
+			axis,
+			inverseRotation
+		);
+		mat4.rotate(this.mRotation, this.mRotation, angle, worldRotation);
+	}
+
+	rotate(angle: number, axis: vec3, space = Space.Local) {
+		switch (space) {
+			case Space.Local:
+				this.rotateLocalSpace(angle, axis);
+				break;
+			case Space.World:
+				this.rotateWorldSpace(angle, axis);
+				break;
+			default:
+				break;
+		}
 
 		this.onChange();
 	}
@@ -40,7 +69,11 @@ export default class Transform {
 
 	setPosition(position: vec3, notify: boolean = true) {
 		this.mTranslation = mat4.create();
-		mat4.translate(this.mTranslation, this.mTranslation, position);
+		mat4.translate(
+			this.mTranslation,
+			this.mTranslation,
+			vec3.scale(vec3.create(), position, MF)
+		);
 
 		if (notify) {
 			this.onChange();
@@ -80,7 +113,10 @@ export default class Transform {
 	}
 
 	get position() {
-		return mat4.getTranslation(vec3.create(), this.mTranslation);
+		const position = vec3.create();
+		mat4.getTranslation(position, this.mTranslation);
+		vec3.scale(position, position, 1 / MF);
+		return position;
 	}
 
 	get rotation() {

@@ -1,8 +1,8 @@
 export enum UniformType {
-	t_float = 'uniform1f',
-	t_vec3 = 'uniform3f',
-	t_mat3 = 'uniformMatrix3fv',
-	t_mat4 = 'uniformMatrix4fv',
-	t_int = 'uniform1i',
-	t_uint = 'uniform1ui',
+	t_float = 't_float',
+	t_vec3 = 't_vec3',
+	t_mat3 = 't_mat3',
+	t_mat4 = 't_mat4',
+	t_int = 't_int',
+	t_uint = 't_uint',
 }

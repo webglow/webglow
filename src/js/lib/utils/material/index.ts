@@ -13,33 +13,36 @@ export default class Material {
 	program: WebGLProgram;
 	texture: WebGLTexture;
 	shaderProgram: ShaderProgram;
+	shader: Shader;
 	gameObject: GameObject;
 	params: any;
 
-	constructor(
+	constructor(shader: Shader) {
+		this.shader = shader;
+		this.params = shader.params;
+	}
+
+	assign(
 		gl: WebGL2RenderingContext,
 		gameObject: GameObject,
-		attribLocations: { [key: string]: number },
-		shader: Shader
+		attribLocations: { [key: string]: number }
 	) {
 		this.gl = gl;
 		this.gameObject = gameObject;
 		this.shaderProgram = new ShaderProgram(
 			gl,
 			'default',
-			shader.vertex,
-			shader.fragment,
+			this.shader.vertex,
+			this.shader.fragment,
 			attribLocations
 		);
 
 		this.setupColor(new Color('#ffcc00').toVec4());
 
-		this.params = shader.params;
-
-		this.setDefaultValues(this.params);
+		this.setUniforms(this.params);
 	}
 
-	setDefaultValues(params: ShaderParam[]) {
+	setUniforms(params: ShaderParam[]) {
 		params.forEach((param) => {
 			this.shaderProgram.setUniform(param.type, param.key, param.value);
 		});

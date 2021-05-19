@@ -1,7 +1,7 @@
 import Shape from '.';
 
 export default class StickShape extends Shape {
-	constructor(gl, scene, color, size = 100, gap = 10) {
+	constructor(gl, scene, color, size = 1, gap = 10) {
 		super(gl, scene, color, size);
 
 		const boxLength = size + gap;

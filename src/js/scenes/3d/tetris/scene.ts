@@ -1,4 +1,3 @@
-import BoxCollider from '../../../lib/3d/physics/collider/box-collider';
 import CollisionDetector from '../../../lib/3d/physics/collision-detector';
 import Plane from '../../../lib/3d/primitives/plane';
 import Color from '../../../lib/utils/color';
@@ -24,14 +23,14 @@ export default class Tetris extends Scene {
 	constructor(gl: WebGL2RenderingContext, config: any) {
 		super(gl, {
 			...config,
-			cameraPosition: [0, 0, -5000],
+			cameraPosition: [0, 0, -5],
 			backgroundColor: new Color('#2980b9'),
 		});
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
 		const pointLight = new GameObject({ gl: this.gl });
 		pointLight.addLight({
-			position: [0, -1000, 1000],
+			position: [0, -1, 1],
 			type: LightType.Point,
 			intensity: 1,
 			color: new Color('#ffffff'),
@@ -46,14 +45,7 @@ export default class Tetris extends Scene {
 	getRandomShape() {
 		const shape = new this.shapes[
 			Math.floor(Math.random() * this.shapes.length)
-		](
-			this.gl,
-			this,
-			new Color().toVec4(),
-			200,
-			0,
-			Math.floor(Math.random() * 2)
-		);
+		](this.gl, this, new Color().toVec4(), 1, 0, Math.floor(Math.random() * 2));
 
 		return shape;
 	}
@@ -61,27 +53,23 @@ export default class Tetris extends Scene {
 	setup() {
 		const ground = new GameObject({ gl: this.gl });
 		ground.addMesh(Plane, {
-			width: 50000,
-			length: 50000,
+			width: 500,
+			length: 500,
 			widthSegments: 1,
 			lengthSegments: 1,
 		} as PlaneConfig);
 
-		ground.addCollider(BoxCollider, {
-			min: [-25000, -50, -25000],
-			max: [25000, 50, 25000],
-		});
-
 		ground.addMaterial();
 
-		ground.transform.translate([0, -2000, 0]);
+		ground.transform.translate([0, -20, 0]);
 
 		this.hierarchy.addObject(ground, 'ground');
 
 		this.randomShape = this.getRandomShape();
-		this.randomShape.parent.transform.translate([0, 3000, 0]);
-		const randomShapeScript = new Script('movement', this.randomShape.parent);
+		this.randomShape.parent.transform.translate([0, 3, 0]);
+		const randomShapeScript = new Script('movement');
 		this.randomShape.parent.addScript(randomShapeScript);
+		randomShapeScript.assign(this.randomShape.parent);
 
 		this.hierarchy.addObject(this.randomShape.parent, 'shape');
 
@@ -109,9 +97,5 @@ export default class Tetris extends Scene {
 			this.sceneCamera.transform.position,
 			this.sceneCamera.transform.viewMatrix
 		);
-
-		// this.collisionDetector.checkCollision();
-
-		// this.randomShape.move();
 	}
 }

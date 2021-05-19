@@ -8,13 +8,13 @@ export default function HierarchyNodeUI({
 	node,
 	className,
 	onSelectNode,
-	selectedNode,
+	selectedObject,
 }: Props) {
 	return (
 		<Wrapper className={className}>
 			<Title
 				onClick={() => onSelectNode(node)}
-				selected={selectedNode === node}
+				selected={selectedObject === node}
 			>
 				<FontAwesomeIcon icon={faCubes} />
 				<div>{node.id}</div>
@@ -25,7 +25,7 @@ export default function HierarchyNodeUI({
 					key={n.id}
 					node={n}
 					onSelectNode={() => onSelectNode(n)}
-					selectedNode={selectedNode}
+					selectedObject={selectedObject}
 				></StyledHierarchyNode>
 			))}
 		</Wrapper>

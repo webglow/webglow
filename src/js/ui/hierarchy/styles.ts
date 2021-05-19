@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import { Header } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
+import HierarchyNodeUI from '../hierarchy-node';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div``;
+
+export const Title = styled(Header)`
+	border-bottom: 1px solid var(--black);
 	padding: ${pxToRem(10)}rem;
 `;
 
-export const Title = styled(Header)``;
-
 export const NodeList = styled.div`
-	margin-top: ${pxToRem(10)}rem;
+	padding: ${pxToRem(10)}rem;
 `;

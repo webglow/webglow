@@ -1,7 +1,7 @@
 import Shape from '.';
 
 export default class StairsShape extends Shape {
-	constructor(gl, scene, color, size = 100, gap = 10, mirror) {
+	constructor(gl, scene, color, size = 1, gap = 10, mirror) {
 		super(gl, scene, color, size);
 		const boxLength = size + gap;
 		const boxRadius = size / 2 + gap / 2;

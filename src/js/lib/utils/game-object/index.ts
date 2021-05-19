@@ -56,12 +56,9 @@ export default class GameObject {
 	}
 
 	addMaterial(shader = defaultShader) {
-		this.material = new Material(
-			this.gl,
-			this,
-			this.mesh.attribLocations,
-			shader
-		);
+		this.material = new Material(shader);
+
+		this.material.assign(this.gl, this, this.mesh.attribLocations);
 	}
 
 	addScript(script: Script) {

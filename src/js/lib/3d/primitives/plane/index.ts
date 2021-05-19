@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import { MF } from '../../../utils/constants';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
@@ -33,8 +34,8 @@ export default class Plane extends Mesh {
 			heightMap ||
 			new Array((widthSegments + 1) * (lengthSegments + 1)).fill(0);
 
-		this.width = width;
-		this.length = length;
+		this.width = width * MF;
+		this.length = length * MF;
 		this.widthSegments = widthSegments;
 		this.lengthSegments = lengthSegments;
 		this.gap = gap;

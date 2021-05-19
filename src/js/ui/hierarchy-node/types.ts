@@ -4,7 +4,7 @@ import { ComponentProps } from '../common/types';
 export interface Props extends ComponentProps {
 	node: GameObject;
 	onSelectNode?: (node: GameObject) => void;
-	selectedNode?: GameObject;
+	selectedObject?: GameObject;
 }
 
 export interface TitleProps {

@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import { MF } from '../../../utils/constants';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment, getTextureCoordsForSegment } from '../helpers';
@@ -55,7 +56,7 @@ export default class Box extends Mesh {
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
 	getGeometry(size: vec3) {
-		const halfSize = vec3.scale(vec3.create(), size, 0.5);
+		const halfSize = vec3.scale(vec3.create(), size, MF / 2);
 		const p000 = [-halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
 		const p100 = [ halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
 		const p101 = [ halfSize[0], -halfSize[1],  halfSize[2]] as vec3;

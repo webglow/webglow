@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import EngineGlobals from '../../../../globals';
 import { MF } from '../../../utils/constants';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
@@ -13,11 +14,10 @@ export default class Box extends Mesh {
 	textureCoords: Float32Array;
 
 	constructor(
-		gl: WebGL2RenderingContext,
 		gameObject: GameObject,
 		{ size = [1, 1, 1], innerFacing = false }: IBoxConfig
 	) {
-		super(gl, gameObject);
+		super(gameObject);
 
 		this.size = size as vec3;
 		this.innerFacing = innerFacing;
@@ -37,7 +37,11 @@ export default class Box extends Mesh {
 	}
 
 	draw() {
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
+		EngineGlobals.gl.drawArrays(
+			EngineGlobals.gl.TRIANGLES,
+			0,
+			this.positions.length / 3
+		);
 	}
 
 	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {

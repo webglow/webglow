@@ -6,9 +6,9 @@ import GameObject from '../game-object';
 import ShaderProgram from '../shader-program';
 import { UniformType } from '../shader-program/types';
 import { IShader, IShaderParam } from '../shader/types';
+import EngineGlobals from '../../../globals';
 
 export default class Material {
-	gl: WebGL2RenderingContext;
 	uniforms: { [key: string]: WebGLUniformLocation };
 	program: WebGLProgram;
 	texture: WebGLTexture;
@@ -22,15 +22,9 @@ export default class Material {
 		this.params = shader.params;
 	}
 
-	assign(
-		gl: WebGL2RenderingContext,
-		gameObject: GameObject,
-		attribLocations: { [key: string]: number }
-	) {
-		this.gl = gl;
+	attach(gameObject: GameObject, attribLocations: { [key: string]: number }) {
 		this.gameObject = gameObject;
 		this.shaderProgram = new ShaderProgram(
-			gl,
 			'default',
 			this.shader.vertex,
 			this.shader.fragment,
@@ -105,19 +99,19 @@ export default class Material {
 	}
 
 	setupColor(color: number[]) {
-		this.texture = this.gl.createTexture();
-		this.gl.activeTexture(this.gl.TEXTURE0);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+		this.texture = EngineGlobals.gl.createTexture();
+		EngineGlobals.gl.activeTexture(EngineGlobals.gl.TEXTURE0);
+		EngineGlobals.gl.bindTexture(EngineGlobals.gl.TEXTURE_2D, this.texture);
 
 		const level = 0;
 		const width = 1;
 		const height = 1;
 		const border = 0;
-		const format = this.gl.RGBA;
-		const type = this.gl.UNSIGNED_BYTE;
+		const format = EngineGlobals.gl.RGBA;
+		const type = EngineGlobals.gl.UNSIGNED_BYTE;
 		const data = new Uint8Array(color);
-		this.gl.texImage2D(
-			this.gl.TEXTURE_2D,
+		EngineGlobals.gl.texImage2D(
+			EngineGlobals.gl.TEXTURE_2D,
 			level,
 			format,
 			width,
@@ -128,32 +122,32 @@ export default class Material {
 			data
 		);
 
-		this.gl.texParameteri(
-			this.gl.TEXTURE_2D,
-			this.gl.TEXTURE_MIN_FILTER,
-			this.gl.NEAREST
+		EngineGlobals.gl.texParameteri(
+			EngineGlobals.gl.TEXTURE_2D,
+			EngineGlobals.gl.TEXTURE_MIN_FILTER,
+			EngineGlobals.gl.NEAREST
 		);
-		this.gl.texParameteri(
-			this.gl.TEXTURE_2D,
-			this.gl.TEXTURE_MAG_FILTER,
-			this.gl.NEAREST
+		EngineGlobals.gl.texParameteri(
+			EngineGlobals.gl.TEXTURE_2D,
+			EngineGlobals.gl.TEXTURE_MAG_FILTER,
+			EngineGlobals.gl.NEAREST
 		);
-		this.gl.texParameteri(
-			this.gl.TEXTURE_2D,
-			this.gl.TEXTURE_WRAP_S,
-			this.gl.CLAMP_TO_EDGE
+		EngineGlobals.gl.texParameteri(
+			EngineGlobals.gl.TEXTURE_2D,
+			EngineGlobals.gl.TEXTURE_WRAP_S,
+			EngineGlobals.gl.CLAMP_TO_EDGE
 		);
-		this.gl.texParameteri(
-			this.gl.TEXTURE_2D,
-			this.gl.TEXTURE_WRAP_T,
-			this.gl.CLAMP_TO_EDGE
+		EngineGlobals.gl.texParameteri(
+			EngineGlobals.gl.TEXTURE_2D,
+			EngineGlobals.gl.TEXTURE_WRAP_T,
+			EngineGlobals.gl.CLAMP_TO_EDGE
 		);
 
 		this.setTexture(0);
 	}
 
 	bindTexture() {
-		this.gl.activeTexture(this.gl.TEXTURE0);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+		EngineGlobals.gl.activeTexture(EngineGlobals.gl.TEXTURE0);
+		EngineGlobals.gl.bindTexture(EngineGlobals.gl.TEXTURE_2D, this.texture);
 	}
 }

@@ -1,4 +1,5 @@
 import { vec2, vec3 } from 'gl-matrix';
+import EngineGlobals from '../../../../globals';
 import { Space } from '../../../utils/enums';
 import Behaviour from '../../../utils/script/behaviour';
 
@@ -35,14 +36,14 @@ export default class SceneCameraMovement extends Behaviour {
 		document.addEventListener('keyup', (event) => {
 			this.onKeyUp(event.code);
 		});
-		this.gameObject.gl.canvas.addEventListener('mousedown', () => {
-			(this.gameObject.gl.canvas as HTMLCanvasElement).requestPointerLock();
+		EngineGlobals.canvas.addEventListener('mousedown', () => {
+			EngineGlobals.canvas.requestPointerLock();
 			this.setIsLocked(true);
 		});
 		document.addEventListener('mousemove', (event: MouseEvent) => {
 			this.rotateCamera(event.movementX, event.movementY);
 		});
-		this.gameObject.gl.canvas.addEventListener('mouseup', () => {
+		EngineGlobals.canvas.addEventListener('mouseup', () => {
 			document.exitPointerLock();
 			this.setIsLocked(false);
 		});
@@ -127,8 +128,8 @@ export default class SceneCameraMovement extends Behaviour {
 				vec2.length(vec2.fromValues(deltaX, deltaY)) /
 					vec2.length(
 						vec2.fromValues(
-							(this.gameObject.gl.canvas as HTMLCanvasElement).clientWidth,
-							(this.gameObject.gl.canvas as HTMLCanvasElement).clientHeight
+							EngineGlobals.canvas.clientWidth,
+							EngineGlobals.canvas.clientHeight
 						)
 					)
 			);

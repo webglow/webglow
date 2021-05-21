@@ -1,8 +1,8 @@
 import Shape from '.';
 
 export default class CubeShape extends Shape {
-	constructor(gl, scene, color, size = 1, gap = 10) {
-		super(gl, scene, color, size);
+	constructor(size = 1, gap = 10) {
+		super(size);
 
 		const boxRadius = size / 2 + gap / 2;
 		this.b1.transform.translate([boxRadius, boxRadius, 0]);

@@ -3,6 +3,7 @@ import { resizeCanvasToDisplaySize } from './lib/utils/helpers';
 import Tetris from './scenes/3d/tetris/scene';
 import Color from './lib/utils/color';
 import Scene from './lib/3d/standard/scene';
+import EngineGlobals from './globals';
 
 export default class Engine {
 	canvas: HTMLCanvasElement;
@@ -16,21 +17,28 @@ export default class Engine {
 	};
 
 	constructor(canvas: HTMLCanvasElement) {
-		this.canvas = canvas;
-
-		this.gl = this.canvas.getContext('webgl2');
+		const gl = canvas.getContext('webgl2');
 		this.global = {};
-		window.global = this.global as any;
+
+		const globals = new EngineGlobals(gl, canvas);
 	}
 
 	async setupGl() {
-		resizeCanvasToDisplaySize(this.gl.canvas, 4);
-		this.gl.enable(this.gl.DEPTH_TEST);
-		this.gl.enable(this.gl.BLEND);
-		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-		this.gl.enable(this.gl.CULL_FACE);
+		resizeCanvasToDisplaySize(EngineGlobals.canvas, 4);
+		EngineGlobals.gl.enable(EngineGlobals.gl.DEPTH_TEST);
+		EngineGlobals.gl.enable(EngineGlobals.gl.BLEND);
+		EngineGlobals.gl.blendFunc(
+			EngineGlobals.gl.SRC_ALPHA,
+			EngineGlobals.gl.ONE_MINUS_SRC_ALPHA
+		);
+		EngineGlobals.gl.enable(EngineGlobals.gl.CULL_FACE);
 
-		this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+		EngineGlobals.gl.viewport(
+			0,
+			0,
+			EngineGlobals.canvas.width,
+			EngineGlobals.canvas.height
+		);
 	}
 
 	async start() {
@@ -40,7 +48,7 @@ export default class Engine {
 		this.stats.showPanel(0);
 		// document.body.appendChild(this.stats.dom);
 
-		this.activeScene = new Tetris(this.gl, {
+		this.activeScene = new Tetris({
 			backgroundColor: new Color('#000000'),
 		});
 

@@ -1,8 +1,8 @@
 import Shape from '.';
 
 export default class LShape extends Shape {
-	constructor(gl, scene, color, size = 1, gap = 10, mirror) {
-		super(gl, scene, color, size);
+	constructor(size = 1, gap = 10, mirror) {
+		super(size);
 
 		const boxLength = size + gap;
 		const boxRadius = size / 2 + gap / 2;

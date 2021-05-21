@@ -1,8 +1,8 @@
 import Shape from '.';
 
 export default class TShape extends Shape {
-	constructor(gl, scene, color, size = 1, gap = 10) {
-		super(gl, scene, color, size);
+	constructor(size = 1, gap = 10) {
+		super(size);
 
 		const boxLength = size + gap;
 		const boxRadius = size / 2 + gap / 2;

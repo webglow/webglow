@@ -1,4 +1,5 @@
 import { vec2, vec3 } from 'gl-matrix';
+import EngineGlobals from '../../../../globals';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
 import { getSegment } from '../helpers';
@@ -16,7 +17,6 @@ export default class Sphere extends Mesh {
 	polygonal: boolean;
 
 	constructor(
-		gl: WebGL2RenderingContext,
 		gameObject: GameObject,
 		{
 			widthSegments,
@@ -27,7 +27,7 @@ export default class Sphere extends Mesh {
 			polygonal = false,
 		}: ISphereConfig
 	) {
-		super(gl, gameObject);
+		super(gameObject);
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;
@@ -52,7 +52,11 @@ export default class Sphere extends Mesh {
 	}
 
 	draw() {
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
+		EngineGlobals.gl.drawArrays(
+			EngineGlobals.gl.TRIANGLES,
+			0,
+			this.positions.length / 3
+		);
 	}
 
 	getPoint(i: number, j: number, width: number, height: number): vec3 {

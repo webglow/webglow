@@ -5,22 +5,19 @@ import fragmentSource from './default-shaders/fragment.glsl';
 
 import { createShader, createProgram } from '../helpers';
 import { UniformType } from './types';
+import EngineGlobals from '../../../globals';
 
 export default class ShaderProgram {
-	gl: WebGL2RenderingContext;
 	name: string;
 	program: WebGLProgram;
 	uniformLocations: { [key: string]: WebGLUniformLocation };
 
 	constructor(
-		gl: WebGL2RenderingContext,
 		name: string,
 		vertexSrc: string,
 		fragmentSrc: string,
 		attribLocations: { [key: string]: number }
 	) {
-		this.gl = gl;
-
 		this.name = name;
 
 		this.uniformLocations = {};
@@ -42,18 +39,18 @@ export default class ShaderProgram {
 		attribLocations: { [key: string]: number }
 	) {
 		const vertexShader = createShader(
-			this.gl,
-			this.gl.VERTEX_SHADER,
+			EngineGlobals.gl,
+			EngineGlobals.gl.VERTEX_SHADER,
 			vertexSrc
 		);
 		const fragmentShader = createShader(
-			this.gl,
-			this.gl.FRAGMENT_SHADER,
+			EngineGlobals.gl,
+			EngineGlobals.gl.FRAGMENT_SHADER,
 			fragmentSrc
 		);
 
 		return createProgram(
-			this.gl,
+			EngineGlobals.gl,
 			vertexShader,
 			fragmentShader,
 			attribLocations
@@ -61,30 +58,30 @@ export default class ShaderProgram {
 	}
 
 	setUniform(type: UniformType, name: string, value: any) {
-		this.gl.useProgram(this.program);
+		EngineGlobals.gl.useProgram(this.program);
 
 		const uniformLocation =
 			this.uniformLocations[name] ||
-			this.gl.getUniformLocation(this.program, name);
+			EngineGlobals.gl.getUniformLocation(this.program, name);
 
 		switch (type) {
 			case UniformType.t_int:
-				this.gl.uniform1i(uniformLocation, value);
+				EngineGlobals.gl.uniform1i(uniformLocation, value);
 				return;
 			case UniformType.t_uint:
-				this.gl.uniform1ui(uniformLocation, value);
+				EngineGlobals.gl.uniform1ui(uniformLocation, value);
 				return;
 			case UniformType.t_float:
-				this.gl.uniform1f(uniformLocation, value);
+				EngineGlobals.gl.uniform1f(uniformLocation, value);
 				return;
 			case UniformType.t_vec3:
-				this.gl.uniform3f(
+				EngineGlobals.gl.uniform3f(
 					uniformLocation,
 					...(value as [number, number, number])
 				);
 				return;
 			case UniformType.t_mat3:
-				this.gl.uniformMatrix3fv(
+				EngineGlobals.gl.uniformMatrix3fv(
 					uniformLocation,
 					false,
 					value[0],
@@ -93,7 +90,7 @@ export default class ShaderProgram {
 				);
 				return;
 			case UniformType.t_mat4:
-				this.gl.uniformMatrix4fv(uniformLocation, false, value);
+				EngineGlobals.gl.uniformMatrix4fv(uniformLocation, false, value);
 				return;
 			default:
 				throw new Error(`Unrecognized uniform type ${type}`);

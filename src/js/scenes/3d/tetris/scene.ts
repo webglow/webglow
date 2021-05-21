@@ -20,15 +20,15 @@ export default class Tetris extends Scene {
 
 	randomShape: Shape;
 
-	constructor(gl: WebGL2RenderingContext, config: any) {
-		super(gl, {
+	constructor(config: any) {
+		super({
 			...config,
 			cameraPosition: [0, 0, -5],
 			backgroundColor: new Color('#2980b9'),
 		});
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
-		const pointLight = new GameObject({ gl: this.gl });
+		const pointLight = new GameObject();
 		pointLight.addLight({
 			position: [0, -1, 1],
 			type: LightType.Point,
@@ -45,13 +45,13 @@ export default class Tetris extends Scene {
 	getRandomShape() {
 		const shape = new this.shapes[
 			Math.floor(Math.random() * this.shapes.length)
-		](this.gl, this, new Color().toVec4(), 1, 0, Math.floor(Math.random() * 2));
+		](1, 0, Math.floor(Math.random() * 2));
 
 		return shape;
 	}
 
 	setup() {
-		const ground = new GameObject({ gl: this.gl });
+		const ground = new GameObject();
 		ground.addMesh(Plane, {
 			width: 500,
 			length: 500,

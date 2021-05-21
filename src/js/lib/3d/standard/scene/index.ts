@@ -1,15 +1,12 @@
-import { mat4, vec3 } from 'gl-matrix';
 import cloneDeep from 'lodash/cloneDeep';
-import Camera from '../camera';
 import SceneCameraMovement from '../scene-camera-movement';
 import Hierarchy from '../../../utils/hierarchy';
 import Color from '../../../utils/color';
 import GameObject from '../../../utils/game-object';
 import { LightType } from '../light/types';
-import Script from '../../../utils/script';
+import EngineGlobals from '../../../../globals';
 
 export default class Scene {
-	gl: WebGL2RenderingContext;
 	hierarchy: Hierarchy;
 	runtimeHierarchy: Hierarchy;
 	sceneCamera: GameObject;
@@ -18,31 +15,25 @@ export default class Scene {
 	backgroundColor: Color;
 	isRunning: boolean;
 
-	constructor(
-		gl: WebGL2RenderingContext,
-		{ backgroundColor = new Color('#000000') } = {}
-	) {
-		this.gl = gl;
-		this.canvas = gl.canvas as HTMLCanvasElement;
+	constructor({ backgroundColor = new Color('#000000') } = {}) {
 		this.hierarchy = new Hierarchy('root');
 
 		this.setSceneCamera();
 
 		this.backgroundColor = backgroundColor;
-		this.gl.clearColor(...this.backgroundColor.toNormalizedVec3(), 1.0);
+		EngineGlobals.gl.clearColor(
+			...this.backgroundColor.toNormalizedVec3(),
+			1.0
+		);
 
 		this.isRunning = false;
 	}
 
 	setSceneCamera() {
-		this.sceneCamera = new GameObject({ gl: this.gl });
-		const cameraMovementScript = new Script(
-			'camera-movement',
-			new SceneCameraMovement(this.sceneCamera)
-		);
+		this.sceneCamera = new GameObject();
+		this.sceneCamera.addBehaviour(SceneCameraMovement);
 		this.sceneCamera.addCamera();
-		this.sceneCamera.addScript(cameraMovementScript);
-		this.sceneCamera.scripts[0].behaviour.start();
+		this.sceneCamera.behaviour[0].start();
 	}
 
 	setupLight() {
@@ -78,7 +69,9 @@ export default class Scene {
 	}
 
 	draw() {
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		EngineGlobals.gl.clear(
+			EngineGlobals.gl.COLOR_BUFFER_BIT | EngineGlobals.gl.DEPTH_BUFFER_BIT
+		);
 
 		if (this.isRunning) {
 			this.runtimeHierarchy.forEachDrawableNode((gameObject: GameObject) => {
@@ -91,7 +84,7 @@ export default class Scene {
 
 			this.run();
 		} else {
-			this.sceneCamera.scripts[0].behaviour.update();
+			this.sceneCamera.behaviour[0].update();
 
 			this.hierarchy.forEachDrawableNode((gameObject: GameObject) => {
 				gameObject.draw(

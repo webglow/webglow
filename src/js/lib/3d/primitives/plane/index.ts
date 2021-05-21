@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import EngineGlobals from '../../../../globals';
 import { MF } from '../../../utils/constants';
 import GameObject from '../../../utils/game-object';
 import Mesh from '../../standard/mesh';
@@ -17,7 +18,6 @@ export default class Plane extends Mesh {
 	heightMap: Array<number>;
 
 	constructor(
-		gl: WebGL2RenderingContext,
 		gameObject: GameObject,
 		{
 			width,
@@ -28,7 +28,7 @@ export default class Plane extends Mesh {
 			heightMap,
 		}: IPlaneConfig
 	) {
-		super(gl, gameObject);
+		super(gameObject);
 
 		this.heightMap =
 			heightMap ||
@@ -56,7 +56,11 @@ export default class Plane extends Mesh {
 	}
 
 	draw() {
-		this.gl.drawArrays(this.gl.TRIANGLES, 0, this.positions.length / 3);
+		EngineGlobals.gl.drawArrays(
+			EngineGlobals.gl.TRIANGLES,
+			0,
+			this.positions.length / 3
+		);
 	}
 
 	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {

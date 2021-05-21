@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
+    "typeRoots": ["./src/js/globals.d.ts"],
     "noImplicitAny": true,
     "module": "es6",
     "target": "es6",

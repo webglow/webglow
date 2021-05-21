@@ -1,8 +1,6 @@
 import { vec3 } from 'gl-matrix';
 import Box from '../../../../lib/3d/primitives/box';
 import { IBoxConfig } from '../../../../lib/3d/primitives/box/types';
-import Scene from '../../../../lib/3d/standard/scene';
-import Color from '../../../../lib/utils/color';
 import GameObject from '../../../../lib/utils/game-object';
 
 export default class Shape {
@@ -13,29 +11,19 @@ export default class Shape {
 	b3: GameObject;
 	b4: GameObject;
 
-	constructor(
-		gl: WebGL2RenderingContext,
-		scene: Scene,
-		color: Color,
-		size = 1
-	) {
-		this.setupStructure(gl, scene, color, size);
+	constructor(size = 1) {
+		this.setupStructure(size);
 
 		this.velocity = [0, 0, 0];
 	}
 
-	setupStructure(
-		gl: WebGL2RenderingContext,
-		scene: Scene,
-		color: Color,
-		size: number
-	) {
-		this.parent = new GameObject({ gl });
+	setupStructure(size: number) {
+		this.parent = new GameObject();
 
-		this.b1 = new GameObject({ gl });
-		this.b2 = new GameObject({ gl });
-		this.b3 = new GameObject({ gl });
-		this.b4 = new GameObject({ gl });
+		this.b1 = new GameObject();
+		this.b2 = new GameObject();
+		this.b3 = new GameObject();
+		this.b4 = new GameObject();
 		this.b1.addMesh(Box, {
 			size: [size, size, size],
 		} as IBoxConfig);

@@ -17,9 +17,9 @@ import { IPlaneConfig } from '../../3d/primitives/plane/types';
 import { IBoxConfig } from '../../3d/primitives/box/types';
 import defaultShader from '../shader';
 import Camera from '../../3d/standard/camera';
+import Behaviour from '../script/behaviour';
 
 export default class GameObject {
-	gl: WebGL2RenderingContext;
 	transform: Transform;
 	scripts: Script[];
 	mesh: Mesh;
@@ -28,6 +28,7 @@ export default class GameObject {
 	collider: Collider;
 	material: Material;
 	camera: Camera;
+	behaviour: Behaviour[];
 
 	isRoot: boolean;
 	id: string;
@@ -35,16 +36,15 @@ export default class GameObject {
 	children: GameObject[];
 
 	constructor({
-		gl,
 		TransformType = Transform,
 		isRoot = false,
 	}: IGameObjectParams = {}) {
-		this.gl = gl;
 		this.transform = new TransformType(this);
 
 		this.scripts = [];
 		this.isRoot = isRoot;
 		this.children = [];
+		this.behaviour = [];
 	}
 
 	addMesh(MeshType: typeof Sphere, config: ISphereConfig): void;
@@ -54,13 +54,13 @@ export default class GameObject {
 		MeshType: typeof Box | typeof Sphere | typeof Plane,
 		config: IBoxConfig & ISphereConfig & IPlaneConfig
 	) {
-		this.mesh = new MeshType(this.gl, this, config);
+		this.mesh = new MeshType(this, config);
 	}
 
 	addMaterial(shader = defaultShader) {
 		this.material = new Material(shader);
 
-		this.material.assign(this.gl, this, this.mesh.attribLocations);
+		this.material.attach(this, this.mesh.attribLocations);
 	}
 
 	addScript(script: Script) {
@@ -69,6 +69,10 @@ export default class GameObject {
 
 	addLight(config: ILightConfig) {
 		this.light = new Light(this, config);
+	}
+
+	addBehaviour(CustomBehaviour: typeof Behaviour) {
+		this.behaviour.push(new CustomBehaviour(this));
 	}
 
 	addRigidBody(config = {}) {
@@ -82,7 +86,7 @@ export default class GameObject {
 	}
 
 	addCamera() {
-		this.camera = new Camera(this.gl, this);
+		this.camera = new Camera(this);
 	}
 
 	addCollider(ColliderType: typeof Collider, config = {}) {

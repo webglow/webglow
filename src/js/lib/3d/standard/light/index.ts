@@ -5,34 +5,38 @@ import { ILightConfig, LightType } from './types';
 
 export default class Light {
 	gameObject: GameObject;
-	direction: vec3;
 	intensity: number;
 	color: Color;
 	type: LightType;
 
 	constructor(
 		gameObject: GameObject,
-		{
-			position = [0, 0, 0],
-			type,
-			direction = [0, 0, 0],
-			intensity,
-			color,
-		}: ILightConfig
+		{ type, intensity, color }: ILightConfig
 	) {
 		this.gameObject = gameObject;
-		this.direction = vec3.normalize(vec3.create(), direction);
-		this.gameObject.transform.setPosition(position);
 		this.intensity = intensity;
 		this.color = color;
 		this.type = type;
 	}
 
+	toJSON() {
+		return {
+			color: this.color,
+			type: this.type,
+			intensity: this.intensity,
+		};
+	}
+
 	toMat3() {
 		if (this.type === LightType.Directional) {
+			const world = this.gameObject.transform.getWorld();
+			const direction = vec3.fromValues(0, 0, 1);
+			vec3.transformMat4(direction, direction, world);
+			vec3.normalize(direction, direction);
+
 			// prettier-ignore
 			return mat3.fromValues(
-				...this.direction as [number, number, number],
+				...direction as [number, number, number],
 				this.intensity, 0, 0,
 				...this.color.toNormalizedVec3()
 			);

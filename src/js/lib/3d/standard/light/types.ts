@@ -7,8 +7,6 @@ export enum LightType {
 }
 
 export interface ILightConfig {
-	position?: vec3;
-	direction?: vec3;
 	intensity: number;
 	color: Color;
 	type: LightType;

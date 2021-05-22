@@ -14,19 +14,11 @@ export default class Plane extends Mesh {
 	length: number;
 	widthSegments: number;
 	lengthSegments: number;
-	gap: number;
 	heightMap: Array<number>;
 
 	constructor(
 		gameObject: GameObject,
-		{
-			width,
-			length,
-			widthSegments,
-			lengthSegments,
-			gap = 0,
-			heightMap,
-		}: IPlaneConfig
+		{ width, length, widthSegments, lengthSegments, heightMap }: IPlaneConfig
 	) {
 		super(gameObject);
 
@@ -38,9 +30,19 @@ export default class Plane extends Mesh {
 		this.length = length * MF;
 		this.widthSegments = widthSegments;
 		this.lengthSegments = lengthSegments;
-		this.gap = gap;
 
 		this.setup();
+	}
+
+	toJSON() {
+		return {
+			type: 'Plane',
+			width: this.width / MF,
+			length: this.length / MF,
+			widthSegments: this.widthSegments,
+			lengthSegments: this.lengthSegments,
+			heightMap: this.heightMap,
+		};
 	}
 
 	setup() {
@@ -88,24 +90,24 @@ export default class Plane extends Mesh {
 				const y = j - this.lengthSegments / 2;
 
 				const p00 = [
-					x * segmentWidth + this.gap,
+					x * segmentWidth,
 					this.heightMap[j * this.widthSegments + i],
-					y * segmentLength + this.gap,
+					y * segmentLength,
 				] as vec3;
 				const p10 = [
-					(x + 1) * segmentWidth - this.gap,
+					(x + 1) * segmentWidth,
 					this.heightMap[j * this.widthSegments + (i + 1)],
-					y * segmentLength + this.gap,
+					y * segmentLength,
 				] as vec3;
 				const p11 = [
-					(x + 1) * segmentWidth - this.gap,
+					(x + 1) * segmentWidth,
 					this.heightMap[(j + 1) * this.widthSegments + (i + 1)],
-					(y + 1) * segmentLength - this.gap,
+					(y + 1) * segmentLength,
 				] as vec3;
 				const p01 = [
-					x * segmentWidth + this.gap,
+					x * segmentWidth,
 					this.heightMap[(j + 1) * this.widthSegments + i],
-					(y + 1) * segmentLength - this.gap,
+					(y + 1) * segmentLength,
 				] as vec3;
 				positions.push(getSegment(p00, p10, p11, p01));
 

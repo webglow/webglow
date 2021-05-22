@@ -20,6 +20,8 @@ export default class Scene {
 
 		this.setSceneCamera();
 
+		(window as any).hierarchy = this.hierarchy;
+
 		this.backgroundColor = backgroundColor;
 		EngineGlobals.gl.clearColor(
 			...this.backgroundColor.toNormalizedVec3(),

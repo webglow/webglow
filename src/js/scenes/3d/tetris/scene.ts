@@ -30,13 +30,22 @@ export default class Tetris extends Scene {
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
 		const pointLight = new GameObject();
 		pointLight.addLight({
-			position: [0, -1, 1],
 			type: LightType.Point,
 			intensity: 1,
 			color: new Color('#ffffff'),
 		});
 
 		this.hierarchy.addObject(pointLight, 'pointLight');
+
+		const directionalLight = new GameObject();
+		directionalLight.addLight({
+			type: LightType.Directional,
+			intensity: 0.5,
+			color: new Color('#ffffff'),
+		});
+		directionalLight.transform.rotate(-Math.PI / 2, [1, 0, 0]);
+
+		this.hierarchy.addObject(directionalLight, 'directionalLight');
 
 		this.shapes = [TShape, LShape, StairsShape, StickShape, CubeShape];
 		this.setup();

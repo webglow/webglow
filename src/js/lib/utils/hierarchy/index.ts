@@ -38,6 +38,10 @@ export default class Hierarchy {
 		return id;
 	}
 
+	toJSON() {
+		return this.root;
+	}
+
 	forEachDrawableNode(callback: (node: GameObject) => void) {
 		this.nodesArray
 			.filter((gameObject) => gameObject.material && gameObject.mesh)

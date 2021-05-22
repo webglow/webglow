@@ -22,6 +22,14 @@ export default class Transform {
 		this.subscribers = {};
 	}
 
+	toJSON() {
+		return {
+			mTranslation: Array.from(this.mTranslation),
+			mRotation: Array.from(this.mRotation),
+			mScale: Array.from(this.mScale),
+		};
+	}
+
 	translate(translation: vec3) {
 		mat4.translate(
 			this.mTranslation,

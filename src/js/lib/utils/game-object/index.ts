@@ -47,6 +47,18 @@ export default class GameObject {
 		this.behaviour = [];
 	}
 
+	toJSON() {
+		return {
+			transform: this.transform,
+			scripts: this.scripts,
+			mesh: this.mesh,
+			material: this.material,
+			camera: this.camera,
+			id: this.id,
+			children: this.children,
+		};
+	}
+
 	addMesh(MeshType: typeof Sphere, config: ISphereConfig): void;
 	addMesh(MeshType: typeof Plane, config: IPlaneConfig): void;
 	addMesh(MeshType: typeof Box, config: IBoxConfig): void;

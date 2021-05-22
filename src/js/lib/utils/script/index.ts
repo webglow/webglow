@@ -18,6 +18,14 @@ export default class Script {
 		this.behaviour = behaviour;
 	}
 
+	toJSON() {
+		return {
+			name: this.name,
+			className: this.className,
+			text: this.text,
+		};
+	}
+
 	assign(gameObject: GameObject) {
 		this.gameObject = gameObject;
 

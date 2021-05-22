@@ -22,6 +22,12 @@ export default class Material {
 		this.params = shader.params;
 	}
 
+	toJSON() {
+		return {
+			shader: this.shader,
+		};
+	}
+
 	attach(gameObject: GameObject, attribLocations: { [key: string]: number }) {
 		this.gameObject = gameObject;
 		this.shaderProgram = new ShaderProgram(

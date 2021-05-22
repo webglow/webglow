@@ -3,6 +3,5 @@ export interface IPlaneConfig {
 	length: number;
 	widthSegments: number;
 	lengthSegments: number;
-	gap: number;
 	heightMap: Array<number>;
 }

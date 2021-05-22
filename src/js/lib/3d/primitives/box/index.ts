@@ -7,22 +7,24 @@ import { getSegment, getTextureCoordsForSegment } from '../helpers';
 import { IBoxConfig } from './types';
 
 export default class Box extends Mesh {
-	innerFacing: boolean;
 	size: vec3;
 	positions: Float32Array;
 	normals: Float32Array;
 	textureCoords: Float32Array;
 
-	constructor(
-		gameObject: GameObject,
-		{ size = [1, 1, 1], innerFacing = false }: IBoxConfig
-	) {
+	constructor(gameObject: GameObject, { size = [1, 1, 1] }: IBoxConfig) {
 		super(gameObject);
 
 		this.size = size as vec3;
-		this.innerFacing = innerFacing;
 
 		this.setup();
+	}
+
+	toJSON() {
+		return {
+			type: 'Box',
+			size: Array.from(this.size),
+		};
 	}
 
 	setup() {
@@ -73,22 +75,22 @@ export default class Box extends Mesh {
 		return {
 			positions: [
 			// bottom
-			...getSegment(p000, p001, p101, p100, this.innerFacing),
+			...getSegment(p000, p001, p101, p100),
 
 			// front
-			...getSegment(p011, p111, p101, p001, this.innerFacing),
+			...getSegment(p011, p111, p101, p001),
 
 			// top
-			...getSegment(p010, p110, p111, p011, this.innerFacing),
+			...getSegment(p010, p110, p111, p011),
 
 			// left
-			...getSegment(p010, p011, p001, p000, this.innerFacing),
+			...getSegment(p010, p011, p001, p000),
 
 			// right
-			...getSegment(p111, p110, p100, p101, this.innerFacing),
+			...getSegment(p111, p110, p100, p101),
 
 			// back
-			...getSegment(p110, p010, p000, p100, this.innerFacing),
+			...getSegment(p110, p010, p000, p100),
 			],
 			normals: [
 				...this.getNormalsForSegment(p000, p001, p101),
@@ -99,12 +101,12 @@ export default class Box extends Mesh {
 				...this.getNormalsForSegment(p010, p000, p100),
 			],
 			textureCoords: [
-				...getTextureCoordsForSegment(this.innerFacing),
-				...getTextureCoordsForSegment(this.innerFacing),
-				...getTextureCoordsForSegment(this.innerFacing),
-				...getTextureCoordsForSegment(this.innerFacing),
-				...getTextureCoordsForSegment(this.innerFacing),
-				...getTextureCoordsForSegment(this.innerFacing),
+				...getTextureCoordsForSegment(),
+				...getTextureCoordsForSegment(),
+				...getTextureCoordsForSegment(),
+				...getTextureCoordsForSegment(),
+				...getTextureCoordsForSegment(),
+				...getTextureCoordsForSegment(),
 			]
 		};
 	}

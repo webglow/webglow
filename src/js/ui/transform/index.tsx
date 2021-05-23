@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
 import { Info, Title, Wrapper } from './styles';
-import { ITransformInfo } from '../../lib/3d/standard/transform/types';
 import TransformParameter from '../transform-parameter';
 
 export default function Transform({
@@ -16,21 +15,6 @@ export default function Transform({
 		return null;
 	}
 
-	const onParamChange = (
-		name: keyof ITransformInfo,
-		newValue: [number, number, number]
-	) => {
-		const newInfo: ITransformInfo = {
-			position: [...transformInfo.position] as vec3,
-			rotation: [...transformInfo.rotation] as vec3,
-			scale: [...transformInfo.scale] as vec3,
-		};
-
-		newInfo[name] = [...newValue];
-
-		onChange(newInfo);
-	};
-
 	return (
 		<Wrapper className={className}>
 			<Title>
@@ -41,17 +25,17 @@ export default function Transform({
 			<Info>
 				<TransformParameter
 					name={'position'}
-					onChange={(param) => onParamChange('position', param)}
+					onChange={(param) => onChange('position', param)}
 					value={transformInfo.position as [number, number, number]}
 				/>
 				<TransformParameter
 					name={'rotation'}
-					onChange={(param) => onParamChange('rotation', param)}
+					onChange={(param) => onChange('rotation', param)}
 					value={transformInfo.rotation as [number, number, number]}
 				/>
 				<TransformParameter
 					name={'scale'}
-					onChange={(param) => onParamChange('scale', param)}
+					onChange={(param) => onChange('scale', param)}
 					value={transformInfo.scale as [number, number, number]}
 				/>
 			</Info>

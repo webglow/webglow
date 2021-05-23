@@ -47,8 +47,11 @@ export default function GameObjectInspector({
 		}
 	};
 
-	const onTransformChange = (newTransform: ITransformInfo) => {
-		transform.setTransform(newTransform);
+	const onTransformChange = (
+		name: keyof ITransformInfo,
+		newValue: [number, number, number]
+	) => {
+		transform[name] = newValue;
 	};
 
 	return (

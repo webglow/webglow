@@ -51,20 +51,12 @@ export default class SceneCameraMovement extends Behaviour {
 
 	update() {
 		if (this.isMoving) {
-			this.gameObject.transform.translate(
-				vec3.scale(
-					vec3.create(),
-					vec3.normalize(
-						vec3.create(),
-						vec3.transformMat4(
-							vec3.create(),
-							this.direction,
-							this.gameObject.transform.mRotation
-						)
-					),
-					this.speed
-				)
+			const direction = vec3.transformQuat(
+				vec3.create(),
+				vec3.scale(vec3.create(), this.direction, this.speed),
+				this.gameObject.transform.quatRotation
 			);
+			this.gameObject.transform.translate(direction);
 		}
 	}
 
@@ -122,19 +114,7 @@ export default class SceneCameraMovement extends Behaviour {
 			return;
 		}
 
-		const deltaAngle =
-			3 *
-			Math.asin(
-				vec2.length(vec2.fromValues(deltaX, deltaY)) /
-					vec2.length(
-						vec2.fromValues(
-							EngineGlobals.canvas.clientWidth,
-							EngineGlobals.canvas.clientHeight
-						)
-					)
-			);
-
-		this.gameObject.transform.rotate(deltaAngle, [-deltaY, 0, 0]);
-		this.gameObject.transform.rotate(deltaAngle, [0, -deltaX, 0], Space.World);
+		this.gameObject.transform.rotate([Math.sign(-deltaY), 0, 0]);
+		this.gameObject.transform.rotate([0, Math.sign(-deltaX), 0], Space.World);
 	}
 }

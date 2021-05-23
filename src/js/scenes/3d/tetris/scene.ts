@@ -43,7 +43,7 @@ export default class Tetris extends Scene {
 			intensity: 0.5,
 			color: new Color('#ffffff'),
 		});
-		directionalLight.transform.rotate(-Math.PI / 2, [1, 0, 0]);
+		directionalLight.transform.rotate([-90, 0, 0]);
 
 		this.hierarchy.addObject(directionalLight, 'directionalLight');
 
@@ -86,7 +86,7 @@ export default class Tetris extends Scene {
 
 		document.addEventListener('keydown', (event) => {
 			if (event.code === 'Space') {
-				this.randomShape.parent.transform.rotate(Math.PI / 2, [0, 0, 1]);
+				this.randomShape.parent.transform.rotate([0, 0, 90]);
 			} else if (event.code === 'ArrowRight') {
 				this.randomShape.setVelocity([100, 0, 0]);
 			} else if (event.code === 'ArrowLeft') {

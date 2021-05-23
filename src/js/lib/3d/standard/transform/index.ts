@@ -7,60 +7,92 @@ import { getEuler } from '../../../utils/helpers';
 import { ISubscriber, ITransformInfo } from './types';
 
 export default class Transform {
-	mTranslation: mat4;
-	mRotation: mat4;
-	mScale: mat4;
+	_position: vec3;
+	_rotation: quat;
+	_scale: vec3;
+
 	subscribers: ISubscriber;
 	gameObject: GameObject;
 
-	constructor(gameObject?: GameObject) {
-		this.mTranslation = mat4.create();
-		this.mRotation = mat4.create();
-		this.mScale = mat4.create();
+	constructor(
+		gameObject: GameObject,
+		{
+			position = vec3.create(),
+			rotation = quat.create(),
+			scale = vec3.fromValues(1, 1, 1),
+		} = {}
+	) {
+		this._position = position;
+		this._rotation = rotation;
+		this._scale = scale;
 		this.gameObject = gameObject;
 
 		this.subscribers = {};
 	}
 
+	get position() {
+		return vec3.scale(vec3.create(), this._position, 1 / MF);
+	}
+
+	get rotation() {
+		return getEuler(this._rotation) as [number, number, number];
+	}
+
+	get quatRotation() {
+		return quat.fromValues(
+			...(this._rotation as [number, number, number, number])
+		);
+	}
+
+	get scale() {
+		return vec3.fromValues(...(this._scale as [number, number, number]));
+	}
+
+	set position(newValue: vec3) {
+		this._position = vec3.scale(vec3.create(), newValue, MF);
+
+		this.onChange();
+	}
+
+	set rotation(newValue: [number, number, number]) {
+		quat.fromEuler(this._rotation, ...newValue);
+
+		this.onChange();
+	}
+
+	set scale(newValue: vec3) {
+		this._scale = newValue;
+
+		this.onChange();
+	}
+
 	toJSON() {
 		return {
-			mTranslation: Array.from(this.mTranslation),
-			mRotation: Array.from(this.mRotation),
-			mScale: Array.from(this.mScale),
+			position: Array.from(this._position),
+			rotation: Array.from(this._rotation),
+			scale: Array.from(this._scale),
 		};
 	}
 
 	translate(translation: vec3) {
-		mat4.translate(
-			this.mTranslation,
-			this.mTranslation,
+		vec3.add(
+			this._position,
+			this._position,
 			vec3.scale(vec3.create(), translation, MF)
 		);
 
 		this.onChange();
 	}
 
-	rotateLocalSpace(angle: number, axis: vec3) {
-		mat4.rotate(this.mRotation, this.mRotation, angle, axis);
-	}
+	rotate(eulerAngles: [number, number, number], space = Space.Local) {
+		const quatRotation = quat.fromEuler(quat.create(), ...eulerAngles);
 
-	rotateWorldSpace(angle: number, axis: vec3) {
-		const inverseRotation = mat4.invert(mat4.create(), this.mRotation);
-		const worldRotation = vec3.transformMat4(
-			vec3.create(),
-			axis,
-			inverseRotation
-		);
-		mat4.rotate(this.mRotation, this.mRotation, angle, worldRotation);
-	}
-
-	rotate(angle: number, axis: vec3, space = Space.Local) {
 		switch (space) {
 			case Space.Local:
-				this.rotateLocalSpace(angle, axis);
+				quat.mul(this._rotation, this._rotation, quatRotation);
 				break;
 			case Space.World:
-				this.rotateWorldSpace(angle, axis);
+				quat.mul(this._rotation, quatRotation, this._rotation);
 				break;
 			default:
 				break;
@@ -69,77 +101,11 @@ export default class Transform {
 		this.onChange();
 	}
 
-	scale(scale: vec3) {
-		mat4.scale(this.mScale, this.mScale, scale);
-
-		this.onChange();
-	}
-
-	setPosition(position: vec3, notify: boolean = true) {
-		this.mTranslation = mat4.create();
-		mat4.translate(
-			this.mTranslation,
-			this.mTranslation,
-			vec3.scale(vec3.create(), position, MF)
-		);
-
-		if (notify) {
-			this.onChange();
-		}
-	}
-
-	setRotation(angle: number, axis: vec3, notify: boolean = true) {
-		this.mRotation = mat4.create();
-		mat4.rotate(this.mRotation, this.mRotation, angle, axis);
-
-		if (notify) {
-			this.onChange();
-		}
-	}
-
-	setRotationFromEuler(
-		eulerAngles: [number, number, number],
-		notify: boolean = true
-	) {
-		mat4.fromQuat(
-			this.mRotation,
-			quat.fromEuler(quat.create(), ...eulerAngles)
-		);
-
-		if (notify) {
-			this.onChange();
-		}
-	}
-
-	setScale(scale: vec3, notify: boolean = true) {
-		this.mScale = mat4.create();
-		mat4.scale(this.mScale, this.mScale, scale);
-
-		if (notify) {
-			this.onChange();
-		}
-	}
-
-	get position() {
-		const position = vec3.create();
-		mat4.getTranslation(position, this.mTranslation);
-		vec3.scale(position, position, 1 / MF);
-		return position;
-	}
-
-	get rotation() {
-		return getEuler(mat4.getRotation(quat.create(), this.mRotation));
-	}
-
-	get scaling() {
-		return mat4.getScaling(vec3.create(), this.mScale);
-	}
-
 	get transform(): ITransformInfo {
 		return {
 			position: this.position,
 			rotation: this.rotation,
-			scale: this.scaling,
+			scale: this.scale,
 		};
 	}
 
@@ -172,10 +138,10 @@ export default class Transform {
 	}
 
 	getLocal(): mat4 {
-		const local = mat4.create();
-		mat4.multiply(local, local, this.mTranslation);
-		mat4.multiply(local, local, this.mRotation);
-		mat4.multiply(local, local, this.mScale);
+		const local = mat4.identity(mat4.create());
+		mat4.translate(local, local, this._position);
+		mat4.multiply(local, local, mat4.fromQuat(mat4.create(), this._rotation));
+		mat4.scale(local, local, this._scale);
 
 		return local;
 	}
@@ -197,16 +163,5 @@ export default class Transform {
 		Object.keys(this.subscribers).forEach((key) => {
 			this.subscribers[key](info);
 		});
-	}
-
-	setTransform(transform: ITransformInfo) {
-		this.setPosition(transform.position, false);
-		this.setRotationFromEuler(
-			transform.rotation as [number, number, number],
-			false
-		);
-		this.setScale(transform.scale, false);
-
-		this.onChange();
 	}
 }

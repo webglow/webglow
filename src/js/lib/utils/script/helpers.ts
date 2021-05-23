@@ -6,7 +6,7 @@ export function getDefaultText(className: string) {
 
 	update() {
 		// add your update behaviour here
-		this.gameObject.transform.rotate(Math.PI / 1000, [0, 1, 0]);
+		this.gameObject.transform.rotate([0, 1, 0]);
 	}
 }`;
 }

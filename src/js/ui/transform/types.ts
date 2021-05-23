@@ -3,5 +3,8 @@ import { IComponentProps } from '../common/types';
 
 export interface IProps extends IComponentProps {
 	transformInfo?: ITransformInfo;
-	onChange: (transform: ITransformInfo) => void;
+	onChange: (
+		name: keyof ITransformInfo,
+		newValue: [number, number, number]
+	) => void;
 }

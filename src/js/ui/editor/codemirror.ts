@@ -20,7 +20,7 @@ import { commentKeymap } from '@codemirror/comment';
 import { rectangularSelection } from '@codemirror/rectangular-selection';
 import { lintKeymap } from '@codemirror/lint';
 import { defaultHighlightStyle } from '@codemirror/highlight';
-import { getDefaultText } from '../../lib/utils/script/helpers';
+import { getDefaultText } from 'engine/utils/script/helpers';
 import { darculaHighlightStyle, darculaTheme } from './darcula-theme';
 
 const {

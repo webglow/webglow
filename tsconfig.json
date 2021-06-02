@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "typeRoots": ["./src/js/globals.d.ts"],
+    "typeRoots": ["./src/js/engine/globals.d.ts"],
+    "baseUrl": ".",
+    "paths": {
+      "engine/*": ["src/js/engine/*"]
+    },
     "noImplicitAny": true,
     "module": "es6",
     "target": "es6",

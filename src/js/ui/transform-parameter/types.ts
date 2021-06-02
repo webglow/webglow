@@ -1,4 +1,4 @@
-import { ITransformInfo } from '../../lib/3d/standard/transform/types';
+import { ITransformInfo } from 'engine/standard/transform/types';
 import { IComponentProps } from '../common/types';
 
 export interface IProps extends IComponentProps {

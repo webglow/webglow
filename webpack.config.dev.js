@@ -6,7 +6,7 @@ module.exports = {
 	entry: {
 		index: [
 			'react-hot-loader/patch',
-			path.resolve(__dirname, 'src', 'js', 'index.ts'),
+			path.resolve(__dirname, 'src', 'js', 'ui', 'index.ts'),
 		],
 		codemirror: path.resolve(
 			__dirname,
@@ -41,6 +41,7 @@ module.exports = {
 		extensions: ['.glsl', '.js', '.ts', '.tsx'],
 		alias: {
 			'react-dom': '@hot-loader/react-dom',
+			engine: path.resolve(__dirname, 'src', 'js', 'engine'),
 		},
 	},
 	output: {

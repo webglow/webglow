@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { pxToRem } from '../../../styles/helpers';
-import HierarchyUI from '../hierarchy';
+import SceneHierarchyUI from '../scene-hierarchy';
 import Inspector from '../inspector';
 import ProjectHierarchy from '../project-hierarchy';
 
@@ -23,7 +23,7 @@ export const StyledProjectHierarchy = styled(ProjectHierarchy)`
 	border-top: 1px solid var(--black);
 `;
 
-export const StyledHierarchy = styled(HierarchyUI)`
+export const StyledSceneHierarchy = styled(SceneHierarchyUI)`
 	grid-row: 1 / 4;
 	min-width: 0;
 	border-right: 1px solid var(--black);

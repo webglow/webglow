@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { ITransformInfo } from 'engine/standard/transform/types';
+import Transform from 'engine/standard/transform';
 import { IProps } from './types';
 import { Section, StyledObjectNameEditor, Wrapper } from './styles';
-import { ITransformInfo } from '../../lib/3d/standard/transform/types';
-import Transform from '../../lib/3d/standard/transform';
 import { default as TransformUI } from '../transform';
 import ScriptSection from '../script-section';
 

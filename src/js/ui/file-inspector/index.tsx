@@ -1,9 +1,9 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FileContent } from 'engine/utils/project-hierarchy/types';
+import Script from 'engine/utils/script';
 import { IProps } from './types';
 import { Content, FileName, Wrapper } from './styles';
-import { FileContent } from '../../lib/utils/project-hierarchy/types';
-import Script from '../../lib/utils/script';
 import { getIconByFileType } from '../helpers';
 
 export default function FileInspector({ className, file }: IProps) {

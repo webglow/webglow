@@ -5,27 +5,22 @@ import {
 	faFolder,
 	faPalette,
 } from '@fortawesome/free-solid-svg-icons';
+import File from 'engine/utils/project-hierarchy/file';
+import { FileType } from 'engine/utils/project-hierarchy/types';
+import Scene from 'engine/standard/scene';
 import { IProps } from './types';
 import { Wrapper, Title, FileUI, Contents, FileName } from './styles';
-import ProjectHierarchy, {
-	getTestHierarchy,
-} from '../../lib/utils/project-hierarchy';
-import File from '../../lib/utils/project-hierarchy/file';
-import { FileType } from '../../lib/utils/project-hierarchy/types';
 import { getIconByFileType } from '../helpers';
 import Breadcrumbs from '../breadcrumbs';
 
 export default function ProjectHierarchyUI({
 	className,
 	onSelectFile,
+	onOpenScene,
+	hierarchy,
 	selectedObject,
 }: IProps) {
-	const [hierarchy, setHierarchy] = useState<ProjectHierarchy>(null);
 	const [cwd, setCwd] = useState<File>(null);
-
-	useEffect(() => {
-		setHierarchy(getTestHierarchy());
-	}, []);
 
 	useEffect(() => {
 		if (!hierarchy) {
@@ -36,7 +31,7 @@ export default function ProjectHierarchyUI({
 	}, [hierarchy]);
 
 	const handleFileClick = (file: File) => {
-		if (file.type !== FileType.Folder) {
+		if (file.type !== FileType.Folder && file.type !== FileType.Scene) {
 			onSelectFile(file);
 		}
 	};
@@ -45,6 +40,9 @@ export default function ProjectHierarchyUI({
 		switch (file.type) {
 			case FileType.Folder:
 				setCwd(file);
+				break;
+			case FileType.Scene:
+				onOpenScene(file.content as Scene);
 				break;
 			default:
 				break;

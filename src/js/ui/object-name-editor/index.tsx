@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { IProps } from './types';
 import { Wrapper, Name } from './styles';
 
-export default function ObjectNameEditor({ className, name, onChange }: IProps) {
+export default function ObjectNameEditor({
+	className,
+	name,
+	onChange,
+}: IProps) {
 	const [objectName, setObjectName] = useState<string>(name);
 
 	useEffect(() => {

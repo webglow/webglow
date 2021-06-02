@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import File from 'engine/utils/project-hierarchy/file';
 import { IProps } from './types';
 import { Breadcrumb, Wrapper, BreadcrumbWrapper } from './styles';
-import File from '../../lib/utils/project-hierarchy/file';
 
 export default function Breadcrumbs({ className, cwd, onNavigate }: IProps) {
 	const [breadcrumbs, setBreadcrumbs] = useState<File[]>([]);

@@ -72,6 +72,10 @@
     "import/resolver": {
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "alias": {
+        "map": [ [ "engine", "./src/js/engine" ] ],
+        "extensions": [".ts", ".js", ".jsx", ".json"]
       }
     }
   }

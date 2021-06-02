@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
 	mode: 'production',
 	entry: {
-		index: path.resolve(__dirname, 'src', 'js', 'index.ts'),
+		index: path.resolve(__dirname, 'src', 'js', 'ui', 'index.ts'),
 		codemirror: path.resolve(
 			__dirname,
 			'src',
@@ -40,5 +40,8 @@ module.exports = {
 	},
 	resolve: {
 		extensions: ['.glsl', '.js', '.ts', '.tsx'],
+		alias: {
+			engine: path.resolve(__dirname, 'src', 'js', 'engine'),
+		},
 	},
 };

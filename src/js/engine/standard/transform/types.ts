@@ -9,3 +9,9 @@ export interface ITransformInfo {
 export interface ISubscriber {
 	[key: string]: (info: ITransformInfo) => void;
 }
+
+export interface ITransformJSON {
+	position: [number, number, number];
+	rotation: [number, number, number, number];
+	scale: [number, number, number];
+}

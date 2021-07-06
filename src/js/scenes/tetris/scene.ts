@@ -3,15 +3,15 @@ import CollisionDetector from 'engine/physics/collision-detector';
 import Color from 'engine/utils/color';
 import GameObject from 'engine/utils/game-object';
 import { LightType } from 'engine/standard/light/types';
+import Plane from 'engine/primitives/plane';
+import { IPlaneConfig } from 'engine/primitives/plane/types';
+import Script from 'engine/utils/script';
 import CubeShape from './shapes/cube-shape';
 import LShape from './shapes/l-shape';
 import StairsShape from './shapes/stairs-shape';
 import StickShape from './shapes/stick-shape';
 import TShape from './shapes/t-shape';
 import Shape from './shapes';
-import Plane from 'engine/primitives/plane';
-import {IPlaneConfig} from 'engine/primitives/plane/types';
-import Script from 'engine/utils/script';
 
 export default class Tetris extends Scene {
 	collisionDetector: CollisionDetector;
@@ -20,12 +20,8 @@ export default class Tetris extends Scene {
 
 	randomShape: Shape;
 
-	constructor(config: any = {}) {
-		super({
-			...config,
-			cameraPosition: [0, 0, -5],
-			backgroundColor: new Color('#2980b9'),
-		});
+	constructor() {
+		super();
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
 		const pointLight = new GameObject();

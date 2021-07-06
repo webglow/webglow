@@ -1,5 +1,4 @@
 import Color from 'engine/utils/color';
-import { vec3 } from 'gl-matrix';
 
 export enum LightType {
 	Directional,
@@ -10,4 +9,10 @@ export interface ILightConfig {
 	intensity: number;
 	color: Color;
 	type: LightType;
+}
+
+export interface ILightJSON {
+	color: string;
+	type: LightType;
+	intensity: number;
 }

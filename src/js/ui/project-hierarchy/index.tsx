@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import File from 'engine/utils/project-hierarchy/file';
 import { FileType } from 'engine/utils/project-hierarchy/types';
-import Scene from 'engine/standard/scene';
+import { ISceneJSON } from 'engine/standard/scene/types';
 import { IProps } from './types';
 import { Wrapper, Title, FileUI, Contents, FileName } from './styles';
 import { getIconByFileType } from '../helpers';
@@ -42,7 +42,7 @@ export default function ProjectHierarchyUI({
 				setCwd(file);
 				break;
 			case FileType.Scene:
-				onOpenScene(file.content as Scene);
+				onOpenScene(file.content as ISceneJSON);
 				break;
 			default:
 				break;

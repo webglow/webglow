@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faFileCode } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
 import { Title, Wrapper, ScriptName } from './styles';
-import Editor from '../editor';
+import CodeEditor from '../code-editor';
 
 export default function ScriptSection({ className, script }: IProps) {
 	return (
@@ -14,7 +14,7 @@ export default function ScriptSection({ className, script }: IProps) {
 			</Title>
 			<ScriptName
 				onClick={() =>
-					new Editor(script.text, (newText) => script.setText(newText))
+					new CodeEditor(script.text, (newText) => script.setText(newText))
 				}
 			>
 				<FontAwesomeIcon icon={faFileCode} />

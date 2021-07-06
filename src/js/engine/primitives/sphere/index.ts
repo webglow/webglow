@@ -3,7 +3,7 @@ import EngineGlobals from 'engine/globals';
 import GameObject from 'engine/utils/game-object';
 import Mesh from 'engine/standard/mesh';
 import { getSegment } from 'engine/primitives/helpers';
-import { ISphereConfig } from './types';
+import { ISphereConfig, ISphereJSON } from './types';
 
 export default class Sphere extends Mesh {
 	positions: Float32Array;
@@ -12,31 +12,34 @@ export default class Sphere extends Mesh {
 	widthSegments: number;
 	heightSegments: number;
 	radius: number;
-	gap: number;
-	innerFacing: boolean;
 	polygonal: boolean;
 
 	constructor(
 		gameObject: GameObject,
-		{
-			widthSegments,
-			heightSegments,
-			radius,
-			gap,
-			innerFacing = false,
-			polygonal = false,
-		}: ISphereConfig
+		{ widthSegments, heightSegments, radius, polygonal = false }: ISphereConfig
 	) {
 		super(gameObject);
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;
 		this.radius = radius;
-		this.gap = gap;
-		this.innerFacing = innerFacing;
 		this.polygonal = polygonal;
 
 		this.setup();
+	}
+
+	toJSON(): ISphereJSON {
+		return {
+			type: 'Sphere',
+			widthSegments: this.widthSegments,
+			heightSegments: this.heightSegments,
+			radius: this.radius,
+			polygonal: this.polygonal,
+		};
+	}
+
+	static fromJSON(gameObject: GameObject, json: ISphereJSON): Sphere {
+		return new Sphere(gameObject, json);
 	}
 
 	setup() {
@@ -62,15 +65,11 @@ export default class Sphere extends Mesh {
 	getPoint(i: number, j: number, width: number, height: number): vec3 {
 		const longitude = ((i % width) / width) * 2 * Math.PI;
 		const latitude = (j / height) * Math.PI;
-		let point = [
+		const point = [
 			this.radius * Math.sin(latitude) * Math.cos(longitude),
 			this.radius * Math.sin(latitude) * Math.sin(longitude),
 			this.radius * Math.cos(latitude),
 		];
-
-		if (this.innerFacing) {
-			point = [point[0], point[2], point[1]];
-		}
 
 		return point as vec3;
 	}
@@ -96,10 +95,8 @@ export default class Sphere extends Mesh {
 		return [...nA, ...nD, ...nC, ...nA, ...nC, ...nB];
 	}
 
-	getTextureCoordsForSegment(a: vec2, b: vec2, c: vec2, d: vec2, cw = false) {
-		return cw
-			? [...a, ...c, ...d, ...a, ...b, ...c]
-			: [...a, ...d, ...c, ...a, ...c, ...b];
+	getTextureCoordsForSegment(a: vec2, b: vec2, c: vec2, d: vec2) {
+		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
 	getGeometry() {
@@ -109,26 +106,26 @@ export default class Sphere extends Mesh {
 		for (let i = 0; i < this.widthSegments; i++) {
 			for (let j = 0; j < this.heightSegments; j++) {
 				const p00 = this.getPoint(
-					i + this.gap,
-					j + this.gap,
+					i,
+					j,
 					this.widthSegments,
 					this.heightSegments
 				);
 				const p10 = this.getPoint(
-					i + 1 - this.gap,
-					j + this.gap,
+					i + 1,
+					j,
 					this.widthSegments,
 					this.heightSegments
 				);
 				const p01 = this.getPoint(
-					i + this.gap,
-					j + 1 - this.gap,
+					i,
+					j,
 					this.widthSegments,
 					this.heightSegments
 				);
 				const p11 = this.getPoint(
-					i + 1 - this.gap,
-					j + 1 - this.gap,
+					i + 1,
+					j + 1,
 					this.widthSegments,
 					this.heightSegments
 				);
@@ -140,8 +137,7 @@ export default class Sphere extends Mesh {
 						[i / this.widthSegments, j / this.heightSegments],
 						[(i + 1) / this.widthSegments, j / this.heightSegments],
 						[(i + 1) / this.widthSegments, (j + 1) / this.heightSegments],
-						[i / this.widthSegments, (j + 1) / this.heightSegments],
-						this.innerFacing
+						[i / this.widthSegments, (j + 1) / this.heightSegments]
 					)
 				);
 			}

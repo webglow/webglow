@@ -1,7 +1,7 @@
 import EngineGlobals from 'engine/globals';
 import GameObject from 'engine/utils/game-object';
 import { mat4 } from 'gl-matrix';
-import { ProjectionType, ISensor } from './types';
+import { ProjectionType, ISensor, ICameraJSON } from './types';
 
 export default class Camera {
 	gameObject: GameObject;
@@ -28,6 +28,12 @@ export default class Camera {
 		this.projectionType = projectionType;
 
 		this.setProjectionMatrix();
+	}
+
+	toJSON(): ICameraJSON {
+		return {
+			projectionType: this.projectionType,
+		};
 	}
 
 	get fieldOfView() {

@@ -1,4 +1,4 @@
-import Scene from 'engine/standard/scene';
+import { ISceneJSON } from 'engine/standard/scene/types';
 import Material from 'engine/utils/material';
 import File from 'engine/utils/project-hierarchy/file';
 import Script from 'engine/utils/script';
@@ -12,4 +12,14 @@ export enum FileType {
 	Material,
 }
 
-export type FileContent = Script | Material | IShader | File[] | Scene;
+export type FileContent = Script | Material | IShader | File[] | ISceneJSON;
+
+export interface IFileJSON {
+	name: string;
+	type: FileType;
+	content: FileContent;
+}
+
+export interface IProjectJSON {
+	root: IFileJSON;
+}

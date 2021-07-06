@@ -11,18 +11,20 @@ import Camera from 'engine/standard/camera';
 import Light from 'engine/standard/light';
 import { ILightConfig } from 'engine/standard/light/types';
 import Mesh from 'engine/standard/mesh';
+import { MeshType } from 'engine/standard/mesh/types';
 import Transform from 'engine/standard/transform';
+import Color from 'engine/utils/color';
 import Material from 'engine/utils/material';
 import Script from 'engine/utils/script';
 import Behaviour from 'engine/utils/script/behaviour';
 import defaultShader from 'engine/utils/shader';
 import { mat4, vec3 } from 'gl-matrix';
-import { IGameObjectParams } from './types';
+import { IGameObjectJSON, IGameObjectParams } from './types';
 
 export default class GameObject {
 	transform: Transform;
 	scripts: Script[];
-	mesh: Mesh;
+	mesh: MeshType;
 	light: Light;
 	rigidBody: RigidBody;
 	collider: Collider;
@@ -47,26 +49,92 @@ export default class GameObject {
 		this.behaviour = [];
 	}
 
-	toJSON() {
+	toJSON(): IGameObjectJSON {
 		return {
-			transform: this.transform,
-			scripts: this.scripts,
-			mesh: this.mesh,
-			material: this.material,
-			camera: this.camera,
+			transform: this.transform.toJSON(),
+			scripts: this.scripts.map((script) => script.toJSON()),
+			mesh: this.mesh?.toJSON(),
+			isRoot: this.isRoot,
+			material: this.material?.toJSON(),
+			light: this.light?.toJSON(),
+			camera: this.camera?.toJSON(),
 			id: this.id,
-			children: this.children,
+			children: this.children.map((child) => child.toJSON()),
 		};
+	}
+
+	static fromJSON({
+		transform,
+		scripts,
+		mesh,
+		isRoot,
+		material,
+		light,
+		camera,
+		id,
+		children,
+	}: IGameObjectJSON): GameObject {
+		const gameObject = new GameObject();
+		gameObject.isRoot = isRoot;
+		gameObject.id = id;
+		gameObject.transform = Transform.fromJSON(gameObject, transform);
+
+		if (light) {
+			const color = new Color(light.color);
+			gameObject.addLight({
+				color,
+				intensity: light.intensity,
+				type: light.type,
+			});
+		}
+
+		if (mesh) {
+			switch (mesh.type) {
+				case 'Plane':
+					gameObject.addMesh(Plane, mesh as IPlaneConfig);
+					break;
+				case 'Sphere':
+					gameObject.addMesh(Sphere, mesh as ISphereConfig);
+					break;
+				case 'Box':
+					gameObject.addMesh(Box, mesh as IBoxConfig);
+					break;
+				default:
+					console.error('Unsupported mesh type', mesh.type);
+			}
+		}
+
+		if (camera) {
+			gameObject.addCamera();
+		}
+
+		if (material) {
+			gameObject.addMaterial(material.shader);
+		}
+
+		gameObject.scripts = scripts.map((scriptJson) => {
+			const script = Script.fromJSON(scriptJson);
+			script.assign(gameObject);
+			return script;
+		});
+
+		gameObject.children = children.map((childJson) => {
+			const child = GameObject.fromJSON(childJson);
+			child.parent = gameObject;
+			return child;
+		});
+
+		return gameObject;
 	}
 
 	addMesh(MeshType: typeof Sphere, config: ISphereConfig): void;
 	addMesh(MeshType: typeof Plane, config: IPlaneConfig): void;
 	addMesh(MeshType: typeof Box, config: IBoxConfig): void;
 	addMesh(
-		MeshType: typeof Box | typeof Sphere | typeof Plane,
+		_MeshType: typeof Box | typeof Sphere | typeof Plane,
 		config: IBoxConfig & ISphereConfig & IPlaneConfig
 	) {
-		this.mesh = new MeshType(this, config);
+		this.mesh = new _MeshType(this, config);
 	}
 
 	addMaterial(shader = defaultShader) {

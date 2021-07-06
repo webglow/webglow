@@ -7,7 +7,7 @@ import {
 	getSegment,
 	getTextureCoordsForSegment,
 } from 'engine/primitives/helpers';
-import { IBoxConfig } from './types';
+import { IBoxConfig, IBoxJSON } from './types';
 
 export default class Box extends Mesh {
 	size: vec3;
@@ -23,11 +23,15 @@ export default class Box extends Mesh {
 		this.setup();
 	}
 
-	toJSON() {
+	toJSON(): IBoxJSON {
 		return {
 			type: 'Box',
-			size: Array.from(this.size),
+			size: Array.from(this.size) as [number, number, number],
 		};
+	}
+
+	static fromJSON(gameObject: GameObject, json: IBoxJSON): Box {
+		return new Box(gameObject, json);
 	}
 
 	setup() {

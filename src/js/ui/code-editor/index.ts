@@ -1,4 +1,4 @@
-export default class Editor {
+export default class CodeEditor {
 	constructor(text: string, onChange: (newText: string) => void) {
 		const editor = window.open(
 			`${location.href}editor.html`,

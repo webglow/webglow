@@ -1,6 +1,11 @@
 import Stats from 'stats.js';
 import Scene from 'engine/standard/scene';
 import { resizeCanvasToDisplaySize } from 'engine/utils/helpers';
+import EditorLayer from 'engine/utils/layer/editor';
+import { ILayer } from 'engine/utils/layer';
+import RuntimeLayer from 'engine/utils/layer/runtime';
+import { cloneDeep } from 'lodash';
+import Color from 'engine/utils/color';
 import EngineGlobals from './globals';
 
 export default class Engine {
@@ -10,6 +15,11 @@ export default class Engine {
 	activeScene: Scene;
 	frameEndTime?: number;
 	startTime?: number;
+	activeLayer: ILayer;
+	editorLayer: EditorLayer;
+	runtimeLayer: RuntimeLayer;
+	isRunning: boolean = false;
+
 	global: {
 		deltaTime?: number;
 	};
@@ -19,6 +29,10 @@ export default class Engine {
 		this.global = {};
 
 		const globals = new EngineGlobals(gl, canvas);
+
+		this.editorLayer = new EditorLayer();
+		this.runtimeLayer = new RuntimeLayer();
+		this.activeLayer = this.editorLayer;
 	}
 
 	async setupGl() {
@@ -46,18 +60,40 @@ export default class Engine {
 		this.stats.showPanel(0);
 		// document.body.appendChild(this.stats.dom);
 
+		EngineGlobals.gl.clearColor(
+			...new Color('#000000').toNormalizedVec3(),
+			1.0
+		);
+
 		this.startTime = Date.now();
 		requestAnimationFrame(this.draw.bind(this));
 	}
 
 	setActiveScene(scene: Scene) {
 		this.activeScene = scene;
+		this.editorLayer.scene = scene;
+	}
+
+	toggleRunning() {
+		if (!this.isRunning) {
+			this.runtimeLayer.scene = cloneDeep(this.activeScene);
+			this.activeLayer = this.runtimeLayer;
+			this.runtimeLayer.setCamera();
+		} else {
+			this.activeLayer = this.editorLayer;
+		}
+
+		this.isRunning = !this.isRunning;
 	}
 
 	draw(now: number) {
 		if (!this.activeScene) {
 			return;
 		}
+
+		EngineGlobals.gl.clear(
+			EngineGlobals.gl.COLOR_BUFFER_BIT | EngineGlobals.gl.DEPTH_BUFFER_BIT
+		);
 
 		if (!this.frameEndTime) {
 			this.frameEndTime = now;
@@ -71,7 +107,8 @@ export default class Engine {
 
 		this.stats.begin();
 
-		this.activeScene.draw();
+		this.activeLayer.draw();
+		this.activeLayer.run();
 
 		this.stats.end();
 		requestAnimationFrame(this.draw.bind(this));

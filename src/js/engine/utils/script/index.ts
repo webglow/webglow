@@ -2,6 +2,7 @@ import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
 import Behaviour from 'engine/utils/script/behaviour';
 import GameObject from 'engine/utils/game-object';
+import { IScriptJSON } from 'engine/utils/script/types';
 import { getDefaultText } from './helpers';
 
 export default class Script {
@@ -18,12 +19,18 @@ export default class Script {
 		this.behaviour = behaviour;
 	}
 
-	toJSON() {
+	toJSON(): IScriptJSON {
 		return {
 			name: this.name,
-			className: this.className,
 			text: this.text,
 		};
+	}
+
+	static fromJSON({ name, text }: IScriptJSON): Script {
+		const script = new Script(name);
+		script.text = text;
+
+		return script;
 	}
 
 	assign(gameObject: GameObject) {

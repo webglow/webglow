@@ -9,7 +9,7 @@ module.exports = {
 			'src',
 			'js',
 			'ui',
-			'editor',
+			'code-editor',
 			'codemirror.ts'
 		),
 	},

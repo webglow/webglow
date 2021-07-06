@@ -7,6 +7,10 @@ html, body {
 	font-size: 14px;
 }
 
+* {
+	box-sizing: border-box;
+}
+
 #react-container {
 	width: 100%;
 	height: 100%;
@@ -15,6 +19,8 @@ html, body {
 	--dark-grey: #2b2b2b;
 	--white: #A9B7C6;
 	--orange: #CC7832;
+	--green: #6A8759;
+	--grey: #323232;
 	--yellow: #FFC66D;
 	--black: #181818;
 	--blue: #3592C4;

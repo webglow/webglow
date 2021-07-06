@@ -2,6 +2,7 @@ import { IRawColor } from './types';
 
 export default class Color {
 	rgb: IRawColor;
+	hex: string;
 
 	constructor(hex?: string) {
 		if (!hex) {
@@ -9,6 +10,8 @@ export default class Color {
 			const hexOffset = '000000'.substring(0, 6 - randomHex.length);
 			hex = `#${hexOffset}${randomHex}`;
 		}
+		this.hex = hex;
+
 		this.rgb = this.hexToRgb(hex);
 	}
 

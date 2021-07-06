@@ -20,9 +20,9 @@ export const FileUI = styled.div`
 	flex-flow: column;
 	align-items: center;
 	cursor: pointer;
-	padding: ${pxToRem(5)}rem;
+	padding: ${pxToRem(10)}rem;
 	border-radius: 3px;
-	transition: background 0.2s ease-in-out;
+	transition: box-shadow 0.2s ease-in-out;
 	justify-content: center;
 	user-select: none;
 
@@ -32,11 +32,18 @@ export const FileUI = styled.div`
 	}
 
 	&:hover {
-		background: var(--dark-dark-grey);
+		box-shadow: var(--dark-dark-grey) 3px 3px 6px 0px inset,
+			var(--grey) -3px -3px 6px 1px inset;
+	}
+
+	&:active {
+		box-shadow: var(--black) 3px 3px 6px 0px inset,
+			#303030 -3px -3px 6px 1px inset;
 	}
 `;
 
 export const FileName = styled(SmallText)`
 	text-align: center;
 	margin-top: ${pxToRem(5)}rem;
+	word-break: break-all;
 `;

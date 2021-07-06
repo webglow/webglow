@@ -7,7 +7,7 @@ import {
 	getSegment,
 	getTextureCoordsForSegment,
 } from 'engine/primitives/helpers';
-import { IPlaneConfig } from './types';
+import { IPlaneConfig, IPlaneJSON } from './types';
 
 export default class Plane extends Mesh {
 	positions: Float32Array;
@@ -37,7 +37,7 @@ export default class Plane extends Mesh {
 		this.setup();
 	}
 
-	toJSON() {
+	toJSON(): IPlaneJSON {
 		return {
 			type: 'Plane',
 			width: this.width / MF,
@@ -46,6 +46,10 @@ export default class Plane extends Mesh {
 			lengthSegments: this.lengthSegments,
 			heightMap: this.heightMap,
 		};
+	}
+
+	static fromJSON(gameObject: GameObject, json: IPlaneJSON): Plane {
+		return new Plane(gameObject, json);
 	}
 
 	setup() {

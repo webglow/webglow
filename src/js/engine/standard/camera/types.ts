@@ -8,3 +8,7 @@ export enum ProjectionType {
 	Ortho,
 	Perspective,
 }
+
+export interface ICameraJSON {
+	projectionType: ProjectionType;
+}

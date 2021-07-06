@@ -4,7 +4,7 @@ import GameObject from 'engine/utils/game-object';
 import { getEuler } from 'engine/utils/helpers';
 import { mat4, quat, vec3 } from 'gl-matrix';
 import { v4 as uuidv4 } from 'uuid';
-import { ISubscriber, ITransformInfo } from './types';
+import { ISubscriber, ITransformInfo, ITransformJSON } from './types';
 
 export default class Transform {
 	_position: vec3;
@@ -28,6 +28,21 @@ export default class Transform {
 		this.gameObject = gameObject;
 
 		this.subscribers = {};
+	}
+
+	toJSON(): ITransformJSON {
+		return {
+			position: Array.from(this._position) as [number, number, number],
+			rotation: Array.from(this._rotation) as [number, number, number, number],
+			scale: Array.from(this._scale) as [number, number, number],
+		};
+	}
+
+	static fromJSON(
+		gameObject: GameObject,
+		{ position, rotation, scale }: ITransformJSON
+	): Transform {
+		return new Transform(gameObject, { position, rotation, scale });
 	}
 
 	get position() {
@@ -64,14 +79,6 @@ export default class Transform {
 		this._scale = newValue;
 
 		this.onChange();
-	}
-
-	toJSON() {
-		return {
-			position: Array.from(this._position),
-			rotation: Array.from(this._rotation),
-			scale: Array.from(this._scale),
-		};
 	}
 
 	translate(translation: vec3) {

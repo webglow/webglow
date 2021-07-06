@@ -1,4 +1,5 @@
 import EngineGlobals from 'engine/globals';
+import { IMeshJSON, MeshType, MeshTypeString } from 'engine/standard/mesh/types';
 import GameObject from 'engine/utils/game-object';
 import VAO from 'engine/utils/vao';
 
@@ -22,6 +23,12 @@ export default class Mesh {
 		this.gameObject = gameObject;
 
 		this.setupAttributes();
+	}
+
+	toJSON(): IMeshJSON {
+		return {
+			type: this.constructor.name as MeshTypeString,
+		};
 	}
 
 	setupAttributes() {

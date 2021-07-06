@@ -1,7 +1,7 @@
 import Color from 'engine/utils/color';
 import GameObject from 'engine/utils/game-object';
 import { mat3, vec3 } from 'gl-matrix';
-import { ILightConfig, LightType } from './types';
+import { ILightConfig, ILightJSON, LightType } from './types';
 
 export default class Light {
 	gameObject: GameObject;
@@ -19,9 +19,9 @@ export default class Light {
 		this.type = type;
 	}
 
-	toJSON() {
+	toJSON(): ILightJSON {
 		return {
-			color: this.color,
+			color: this.color.hex,
 			type: this.type,
 			intensity: this.intensity,
 		};

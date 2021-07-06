@@ -1,4 +1,5 @@
 import GameObject from 'engine/utils/game-object';
+import { IGameObjectJSON } from 'engine/utils/game-object/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class SceneHierarchy {
@@ -7,11 +8,33 @@ export default class SceneHierarchy {
 	nodes: { [key: string]: GameObject };
 	nodesArray: GameObject[];
 
-	constructor(rootId: string) {
-		this.root = this.createRoot();
+	constructor(rootId: string = 'root', root?: GameObject) {
+		this.root = root || this.createRoot();
 		this.rootId = rootId;
 		this.nodes = { [rootId]: this.root };
 		this.nodesArray = [this.root];
+	}
+
+	toJSON(): IGameObjectJSON {
+		return this.root.toJSON();
+	}
+
+	static fromJSON(root: IGameObjectJSON): SceneHierarchy {
+		const rootNode = GameObject.fromJSON(root);
+		const hierarchy = new SceneHierarchy('root', rootNode);
+
+		const flattenHierarchy = ({ children }: GameObject) => {
+			children.forEach((child: GameObject) => {
+				hierarchy.nodes[child.id] = child;
+				hierarchy.nodesArray.push(child);
+
+				flattenHierarchy(child);
+			});
+		};
+
+		flattenHierarchy(rootNode);
+
+		return hierarchy;
 	}
 
 	createRoot() {
@@ -36,10 +59,6 @@ export default class SceneHierarchy {
 		});
 
 		return id;
-	}
-
-	toJSON() {
-		return this.root;
 	}
 
 	forEachDrawableNode(callback: (node: GameObject) => void) {

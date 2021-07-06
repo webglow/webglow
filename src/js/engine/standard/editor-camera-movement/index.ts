@@ -3,7 +3,7 @@ import { Space } from 'engine/utils/enums';
 import Behaviour from 'engine/utils/script/behaviour';
 import { vec2, vec3 } from 'gl-matrix';
 
-export default class SceneCameraMovement extends Behaviour {
+export default class EditorCameraMovement extends Behaviour {
 	movementKeys: string[];
 	movementKeysDirections: { [key: string]: [number, number, number] };
 	movementKeysPressed: Set<string>;

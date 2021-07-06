@@ -14,11 +14,21 @@ export default class File {
 		this.extension = this.getExtension(type);
 	}
 
-	toJSON() {
+	toJSON(): any {
+		let contentJSON;
+
+		if ('toJSON' in this.content) {
+			contentJSON = this.content.toJSON();
+		} else if (this.content instanceof Array) {
+			contentJSON = this.content.map((file: File) => file.toJSON());
+		} else {
+			contentJSON = this.content;
+		}
+
 		return {
 			name: this.name,
 			type: this.type,
-			content: this.content,
+			content: contentJSON,
 		};
 	}
 

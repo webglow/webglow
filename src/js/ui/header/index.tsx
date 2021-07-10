@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, BrowserRouter as Router } from 'react-router-dom';
 import { IProps } from './types';
 import {
 	ActionButton,
@@ -14,9 +15,9 @@ export default function Header({ className }: IProps) {
 		<Wrapper className={className}>
 			<Logo src="../../../../logo-flat.svg" />
 			<PageLinks>
-				<PageLink>Explore</PageLink>
-				<PageLink>New Project</PageLink>
-				<PageLink>Documentation</PageLink>
+				<PageLink to="/explore">Explore</PageLink>
+				<PageLink to="/editor">New Project</PageLink>
+				<PageLink to="/documentation">Documentation</PageLink>
 			</PageLinks>
 
 			<ButtonsContainer>

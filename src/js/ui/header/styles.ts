@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 import { pxToRem } from '../../../styles/helpers';
 import theme from '../../../styles/theme';
@@ -19,7 +20,7 @@ export const PageLinks = styled.div`
 	display: flex;
 `;
 
-export const PageLink = styled.a`
+export const PageLink = styled(Link)`
 	border-left: 1px solid var(--black);
 	display: flex;
 	height: 100%;
@@ -28,6 +29,7 @@ export const PageLink = styled.a`
 	padding: 0 ${pxToRem(20)}rem;
 	cursor: pointer;
 	color: var(--white);
+	text-decoration: none;
 	transition: box-shadow 0.2s ease-in-out;
 
 	&:hover {

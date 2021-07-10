@@ -1,13 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { IProps } from './types';
-import { Canvas, StyledControlPanel, StyledInspector, StyledProjectHierarchy, StyledSceneHierarchy, Wrapper } from './styles';
+import {
+	Canvas,
+	StyledControlPanel,
+	StyledInspector,
+	StyledProjectHierarchy,
+	StyledSceneHierarchy,
+	Wrapper,
+} from './styles';
 import { useForceUpdate } from '../common/hooks';
 import GameObject from '../../engine/utils/game-object';
 import File from '../../engine/utils/project-hierarchy/file';
-import ProjectHierarchy, {getTestHierarchy} from '../../engine/utils/project-hierarchy';
+import ProjectHierarchy, {
+	getTestHierarchy,
+} from '../../engine/utils/project-hierarchy';
 import SceneHierarchy from '../../engine/utils/scene-hierarchy';
 import Engine from '../../engine';
-import {ISceneJSON} from '../../engine/standard/scene/types';
+import { ISceneJSON } from '../../engine/standard/scene/types';
 import Scene from '../../engine/standard/scene';
 
 export default function Editor({ className }: IProps) {
@@ -30,6 +39,7 @@ export default function Editor({ className }: IProps) {
 
 		const _engine = new Engine(canvasRef.current);
 
+		(window as any).testHierarchy = getTestHierarchy();
 		setProjectHierarchy(ProjectHierarchy.fromJSON(getTestHierarchy().toJSON()));
 
 		setEngine(_engine);

@@ -1,12 +1,25 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import { Wrapper, StyledHeader, StyledEditor } from './styles';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import {
+	Wrapper,
+	StyledHeader,
+	StyledEditor,
+	StyledExplorePage,
+} from './styles';
 
 const Main = () => (
 	<Wrapper>
-		<StyledHeader />
+		<Router>
+			<StyledHeader />
 
-		<StyledEditor />
+			<Route path="/editor">
+				<StyledEditor />
+			</Route>
+			<Route path="/explore">
+				<StyledExplorePage />
+			</Route>
+		</Router>
 	</Wrapper>
 );
 

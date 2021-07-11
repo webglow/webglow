@@ -15,6 +15,10 @@ class EngineGlobals {
 		return instance;
 	}
 
+	static cleanup() {
+		instance = null;
+	}
+
 	static getInstance() {
 		return instance;
 	}

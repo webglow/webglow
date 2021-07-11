@@ -13,7 +13,7 @@ const Main = () => (
 		<Router>
 			<StyledHeader />
 
-			<Route path="/editor">
+			<Route path="/projects/:id">
 				<StyledEditor />
 			</Route>
 			<Route path="/explore">

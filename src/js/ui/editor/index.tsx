@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
 import { IProps } from './types';
 import {
 	Canvas,
@@ -11,17 +12,20 @@ import {
 import { useForceUpdate } from '../common/hooks';
 import GameObject from '../../engine/utils/game-object';
 import File from '../../engine/utils/project-hierarchy/file';
-import ProjectHierarchy, {
-	getTestHierarchy,
-} from '../../engine/utils/project-hierarchy';
+import ProjectHierarchy from '../../engine/utils/project-hierarchy';
 import SceneHierarchy from '../../engine/utils/scene-hierarchy';
 import Engine from '../../engine';
 import { ISceneJSON } from '../../engine/standard/scene/types';
 import Scene from '../../engine/standard/scene';
+import { IProject } from '../project-card/types';
+import { API_URL } from '../constants';
 
 export default function Editor({ className }: IProps) {
 	const canvasRef = useRef();
+	const { id } = useParams<{ id: string }>();
+
 	const [isRunning, setIsRunning] = useState<boolean>(false);
+	const [project, setProject] = useState<IProject>();
 	const [engine, setEngine] = useState<Engine | null>(null);
 	const [sceneHierarchy, setSceneHierarchy] = useState<SceneHierarchy | null>(
 		null
@@ -33,27 +37,26 @@ export default function Editor({ className }: IProps) {
 	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
-		if (!canvasRef.current || engine) {
+		fetch(`${API_URL}projects/${id}`)
+			.then((response) => response.json())
+			.then((_project) => setProject(_project));
+	}, [id]);
+
+	useEffect(() => {
+		if (!canvasRef.current || engine || !project) {
 			return;
 		}
 
 		const _engine = new Engine(canvasRef.current);
 
-		(window as any).testHierarchy = getTestHierarchy();
-		setProjectHierarchy(ProjectHierarchy.fromJSON(getTestHierarchy().toJSON()));
+		setProjectHierarchy(ProjectHierarchy.fromJSON(project.hierarchy));
 
 		setEngine(_engine);
-	}, [canvasRef.current]);
 
-	useEffect(() => {
-		if (!projectHierarchy) {
-			return;
-		}
-
-		(window as any).projectHierarchy = projectHierarchy;
-		(window as any).ProjectHierarchy = ProjectHierarchy;
-		(window as any).sceneHierarchy = sceneHierarchy;
-	}, [projectHierarchy, sceneHierarchy]);
+		return () => {
+			_engine.cleanup();
+		};
+	}, [canvasRef.current, project]);
 
 	const openScene = (sceneData: ISceneJSON) => {
 		const scene = Scene.fromJSON(sceneData);

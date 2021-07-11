@@ -1,13 +1,15 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled(Link)`
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	border: 1px solid var(--black);
 	border-radius: 3px;
 	background: var(--grey);
 	cursor: pointer;
+	text-decoration: none;
 	transition: box-shadow 0.2s ease-in-out, background 0.2s ease-in-out,
 		transform 0.1s ease-in-out;
 

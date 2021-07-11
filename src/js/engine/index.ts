@@ -35,6 +35,10 @@ export default class Engine {
 		this.activeLayer = this.editorLayer;
 	}
 
+	cleanup() {
+		EngineGlobals.cleanup();
+	}
+
 	async setupGl() {
 		resizeCanvasToDisplaySize(EngineGlobals.canvas, 4);
 		EngineGlobals.gl.enable(EngineGlobals.gl.DEPTH_TEST);

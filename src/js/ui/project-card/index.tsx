@@ -4,7 +4,7 @@ import { Description, Image, Info, Title, Wrapper } from './styles';
 
 export default function ProjectCard({ className, project }: IProps) {
 	return (
-		<Wrapper className={className}>
+		<Wrapper className={className} to={`/projects/${project._id}`}>
 			<Image src={project.image} />
 			<Info>
 				<Title>{project.name}</Title>

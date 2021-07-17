@@ -203,7 +203,7 @@ export default class GameObject {
 			pov
 		);
 
-		this.material.setWorldViewProjection(worldViewProjection);
+		this.material.shaderController.setWorldViewProjection(worldViewProjection);
 
 		return worldViewProjection;
 	}
@@ -218,9 +218,11 @@ export default class GameObject {
 			mat4.invert(worldInverseTranspose, world)
 		);
 
-		this.material.setWorld(world);
-		this.material.setWorldInverseTranspose(worldInverseTranspose);
-		this.material.setViewWorldPosition(viewWorldPosition);
+		this.material.shaderController.setWorld(world);
+		this.material.shaderController.setWorldInverseTranspose(
+			worldInverseTranspose
+		);
+		this.material.shaderController.setViewWorldPosition(viewWorldPosition);
 
 		return world;
 	}

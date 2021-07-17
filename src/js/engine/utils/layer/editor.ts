@@ -1,10 +1,10 @@
 import EditorCameraMovement from 'engine/standard/editor-camera-movement';
-import Scene from 'engine/standard/scene';
 import GameObject from 'engine/utils/game-object';
 import { ILayer } from 'engine/utils/layer';
+import Renderer from '../renderer';
 
 export default class EditorLayer implements ILayer {
-	scene: Scene;
+	renderer: Renderer;
 	editorCamera: GameObject;
 
 	constructor() {
@@ -19,7 +19,7 @@ export default class EditorLayer implements ILayer {
 	}
 
 	draw() {
-		this.scene.draw(
+		this.renderer.render(
 			this.editorCamera.camera.mProjection,
 			this.editorCamera.transform.position,
 			this.editorCamera.transform.viewMatrix

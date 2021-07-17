@@ -60,7 +60,6 @@ export default function Editor({ className }: IProps) {
 
 	const openScene = (sceneData: ISceneJSON) => {
 		const scene = Scene.fromJSON(sceneData);
-		scene.setupLight();
 		engine.setActiveScene(scene);
 		setSceneHierarchy(scene.hierarchy);
 		engine.start();

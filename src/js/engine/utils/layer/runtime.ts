@@ -1,9 +1,9 @@
-import Scene from 'engine/standard/scene';
 import GameObject from 'engine/utils/game-object';
 import { ILayer } from 'engine/utils/layer';
+import Renderer from '../renderer';
 
 export default class RuntimeLayer implements ILayer {
-	scene: Scene;
+	renderer: Renderer;
 	mainCamera: GameObject;
 
 	setCamera() {
@@ -12,11 +12,7 @@ export default class RuntimeLayer implements ILayer {
 	}
 
 	start() {
-		this.scene.hierarchy.forEachScriptedNode((gameObject) => {
-			gameObject.scripts.forEach((script) => {
-				script.behaviour.start();
-			});
-		});
+		this.renderer.runScriptsStart();
 	}
 
 	draw() {
@@ -24,7 +20,7 @@ export default class RuntimeLayer implements ILayer {
 			return;
 		}
 
-		this.scene.draw(
+		this.renderer.render(
 			this.mainCamera.camera.mProjection,
 			this.mainCamera.transform.position,
 			this.mainCamera.transform.viewMatrix
@@ -32,7 +28,7 @@ export default class RuntimeLayer implements ILayer {
 	}
 
 	run() {
-		this.scene.runPhysics();
-		this.scene.runScripts();
+		this.renderer.runPhysics();
+		this.renderer.runScripts();
 	}
 }

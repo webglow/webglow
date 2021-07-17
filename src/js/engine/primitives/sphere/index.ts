@@ -4,6 +4,7 @@ import GameObject from 'engine/utils/game-object';
 import Mesh from 'engine/standard/mesh';
 import { getSegment } from 'engine/primitives/helpers';
 import { ISphereConfig, ISphereJSON } from './types';
+import { MF } from '../../utils/constants';
 
 export default class Sphere extends Mesh {
 	positions: Float32Array;
@@ -22,7 +23,7 @@ export default class Sphere extends Mesh {
 
 		this.widthSegments = widthSegments;
 		this.heightSegments = heightSegments;
-		this.radius = radius;
+		this.radius = radius * MF;
 		this.polygonal = polygonal;
 
 		this.setup();
@@ -33,7 +34,7 @@ export default class Sphere extends Mesh {
 			type: 'Sphere',
 			widthSegments: this.widthSegments,
 			heightSegments: this.heightSegments,
-			radius: this.radius,
+			radius: this.radius / MF,
 			polygonal: this.polygonal,
 		};
 	}
@@ -84,7 +85,7 @@ export default class Sphere extends Mesh {
 					vec3.subtract(vec3.create(), vec3.exactEquals(b, a) ? c : b, a)
 				)
 			);
-			// debugger;
+
 			return [...n, ...n, ...n, ...n, ...n, ...n];
 		}
 		const nA = vec3.normalize(vec3.create(), a);

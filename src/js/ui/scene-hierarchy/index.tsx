@@ -11,6 +11,11 @@ import { IContextMenuItem } from '../context-menu/types';
 import { NodeList, Title, Wrapper } from './styles';
 import { IProps } from './types';
 import SceneHierarchyNodeUI from '../scene-hierarchy-node';
+import GameObject from '../../engine/utils/game-object';
+import { useForceUpdate } from '../common/hooks';
+import Plane from '../../engine/primitives/plane';
+import { IPlaneConfig } from '../../engine/primitives/plane/types';
+import { addBox, addPlane, addSphere } from '../../engine/utils/helpers/default-shapes';
 
 export default function SceneHierarchyUI({
 	hierarchy,
@@ -21,13 +26,17 @@ export default function SceneHierarchyUI({
 	const [menuVisible, setMenuVisible] = useState<boolean>(false);
 	const [menuPosition, setMenuPosition] = useState<[number, number]>([0, 0]);
 
+	const forceUpdate = useForceUpdate();
+
 	const contextMenuItems: IContextMenuItem[] = [
 		{
 			id: 'add-box',
 			name: 'Add Box',
 			icon: faCube,
 			onClick() {
-				console.log(this.id);
+				addBox(hierarchy);
+
+				setMenuVisible(false);
 			},
 		},
 		{
@@ -35,7 +44,9 @@ export default function SceneHierarchyUI({
 			name: 'Add Sphere',
 			icon: faCircle,
 			onClick() {
-				console.log(this.id);
+				addSphere(hierarchy);
+
+				setMenuVisible(false);
 			},
 		},
 		{
@@ -43,7 +54,9 @@ export default function SceneHierarchyUI({
 			name: 'Add Plane',
 			icon: faSquare,
 			onClick() {
-				console.log(this.id);
+				addPlane(hierarchy);
+
+				setMenuVisible(false);
 			},
 		},
 	];

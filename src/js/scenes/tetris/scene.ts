@@ -78,8 +78,6 @@ export default class Tetris extends Scene {
 
 		this.hierarchy.addObject(this.randomShape.parent, 'shape');
 
-		this.setupLight();
-
 		document.addEventListener('keydown', (event) => {
 			if (event.code === 'Space') {
 				this.randomShape.parent.transform.rotate([0, 0, 90]);

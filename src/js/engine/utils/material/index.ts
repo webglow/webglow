@@ -1,18 +1,17 @@
 import EngineGlobals from 'engine/globals';
-import Light from 'engine/standard/light';
-import { LightType } from 'engine/standard/light/types';
 import Color from 'engine/utils/color';
 import GameObject from 'engine/utils/game-object';
 import ShaderProgram from 'engine/utils/shader-program';
 import { UniformType } from 'engine/utils/shader-program/types';
 import { IShader, IShaderParam } from 'engine/utils/shader/types';
-import { mat4, vec3 } from 'gl-matrix';
+import ShaderController from '../shader-controller';
 
 export default class Material {
 	uniforms: { [key: string]: WebGLUniformLocation };
 	program: WebGLProgram;
 	texture: WebGLTexture;
 	shaderProgram: ShaderProgram;
+	shaderController: ShaderController;
 	shader: IShader;
 	gameObject: GameObject;
 	params: any;
@@ -37,6 +36,8 @@ export default class Material {
 			attribLocations
 		);
 
+		this.shaderController = new ShaderController(this.shaderProgram);
+
 		this.setupColor(new Color('#ffcc00').toVec4());
 
 		this.setUniforms(this.params);
@@ -48,60 +49,8 @@ export default class Material {
 		});
 	}
 
-	setWorldViewProjection(mWorldViewProjection: mat4) {
-		this.shaderProgram.setUniform(
-			UniformType.t_mat4,
-			'uWorldViewProjection',
-			mWorldViewProjection
-		);
-	}
-
-	setWorld(mWorld: mat4) {
-		this.shaderProgram.setUniform(UniformType.t_mat4, 'uWorld', mWorld);
-	}
-
-	setWorldInverseTranspose(mWorldInverseTranspose: mat4) {
-		this.shaderProgram.setUniform(
-			UniformType.t_mat4,
-			'uWorldInverseTranspose',
-			mWorldInverseTranspose
-		);
-	}
-
-	setViewWorldPosition(vViewWorldPosition: vec3) {
-		this.shaderProgram.setUniform(
-			UniformType.t_vec3,
-			'uViewWorldPosition',
-			vViewWorldPosition
-		);
-	}
-
 	setTexture(textureUnit: number) {
 		this.shaderProgram.setUniform(UniformType.t_int, 'uTexture', textureUnit);
-	}
-
-	setLights(type: LightType, lightSources: Light[]) {
-		if (!lightSources || !lightSources.length) {
-			return;
-		}
-
-		const matKey =
-			type === LightType.Point ? 'uPointLight' : 'uDirectionalLight';
-		const numKey =
-			type === LightType.Point
-				? 'uPointLightNumber'
-				: 'uDirectionalLightNumber';
-
-		this.shaderProgram.setUniform(UniformType.t_mat3, matKey, [
-			new Float32Array(lightSources.map((l) => l.toMat3Array()).flat()),
-			0,
-			lightSources.length * 3 * 3,
-		]);
-		this.shaderProgram.setUniform(
-			UniformType.t_uint,
-			numKey,
-			lightSources.length
-		);
 	}
 
 	setupColor(color: number[]) {

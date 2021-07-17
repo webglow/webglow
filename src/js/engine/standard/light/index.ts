@@ -44,7 +44,7 @@ export default class Light {
 
 		// prettier-ignore
 		return mat3.fromValues(
-			...this.gameObject.transform.position as [number, number, number],
+			...this.gameObject.transform._position as [number, number, number],
 			this.intensity, 0, 0,
 			...this.color.toNormalizedVec3()
 		);

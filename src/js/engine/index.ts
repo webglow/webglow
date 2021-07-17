@@ -7,6 +7,7 @@ import RuntimeLayer from 'engine/utils/layer/runtime';
 import { cloneDeep } from 'lodash';
 import Color from 'engine/utils/color';
 import EngineGlobals from './globals';
+import Renderer from './utils/renderer';
 
 export default class Engine {
 	canvas: HTMLCanvasElement;
@@ -14,6 +15,7 @@ export default class Engine {
 	stats: Stats;
 	activeScene: Scene;
 	frameEndTime?: number;
+	renderer: Renderer;
 	startTime?: number;
 	activeLayer: ILayer;
 	editorLayer: EditorLayer;
@@ -75,12 +77,14 @@ export default class Engine {
 
 	setActiveScene(scene: Scene) {
 		this.activeScene = scene;
-		this.editorLayer.scene = scene;
+		this.renderer = new Renderer(scene);
+		this.editorLayer.renderer = this.renderer;
+		this.runtimeLayer.renderer = this.renderer;
 	}
 
 	toggleRunning() {
 		if (!this.isRunning) {
-			this.runtimeLayer.scene = cloneDeep(this.activeScene);
+			// this.runtimeLayer.scene = cloneDeep(this.activeScene);
 			this.activeLayer = this.runtimeLayer;
 			this.runtimeLayer.setCamera();
 		} else {

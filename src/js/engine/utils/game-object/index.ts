@@ -1,17 +1,9 @@
 import Collider from 'engine/physics/collider';
-import BoxCollider from 'engine/physics/collider/box-collider';
 import RigidBody from 'engine/physics/rigidbody';
-import Box from 'engine/primitives/box';
-import { IBoxConfig } from 'engine/primitives/box/types';
-import Plane from 'engine/primitives/plane';
-import { IPlaneConfig } from 'engine/primitives/plane/types';
-import Sphere from 'engine/primitives/sphere';
-import { ISphereConfig } from 'engine/primitives/sphere/types';
 import Camera from 'engine/standard/camera';
 import Light from 'engine/standard/light';
 import { ILightConfig } from 'engine/standard/light/types';
 import Mesh from 'engine/standard/mesh';
-import { MeshType } from 'engine/standard/mesh/types';
 import Transform from 'engine/standard/transform';
 import Color from 'engine/utils/color';
 import Material from 'engine/utils/material';
@@ -19,12 +11,13 @@ import Script from 'engine/utils/script';
 import Behaviour from 'engine/utils/script/behaviour';
 import defaultShader from 'engine/utils/shader';
 import { mat4, vec3 } from 'gl-matrix';
+import { IGeometry } from '../../standard/geometry';
 import { IGameObjectJSON, IGameObjectParams } from './types';
 
 export default class GameObject {
 	transform: Transform;
 	scripts: Script[];
-	mesh: MeshType;
+	mesh: Mesh;
 	light: Light;
 	rigidBody: RigidBody;
 	collider: Collider;
@@ -89,19 +82,7 @@ export default class GameObject {
 		}
 
 		if (mesh) {
-			switch (mesh.type) {
-				case 'Plane':
-					gameObject.addMesh(Plane, mesh as IPlaneConfig);
-					break;
-				case 'Sphere':
-					gameObject.addMesh(Sphere, mesh as ISphereConfig);
-					break;
-				case 'Box':
-					gameObject.addMesh(Box, mesh as IBoxConfig);
-					break;
-				default:
-					console.error('Unsupported mesh type', mesh.type);
-			}
+			gameObject.mesh = Mesh.fromJSON(gameObject, mesh);
 		}
 
 		if (camera) {
@@ -127,14 +108,8 @@ export default class GameObject {
 		return gameObject;
 	}
 
-	addMesh(MeshType: typeof Sphere, config: ISphereConfig): void;
-	addMesh(MeshType: typeof Plane, config: IPlaneConfig): void;
-	addMesh(MeshType: typeof Box, config: IBoxConfig): void;
-	addMesh(
-		_MeshType: typeof Box | typeof Sphere | typeof Plane,
-		config: IBoxConfig & ISphereConfig & IPlaneConfig
-	) {
-		this.mesh = new _MeshType(this, config);
+	addMesh(geometry: IGeometry) {
+		this.mesh = new Mesh(this, geometry);
 	}
 
 	addMaterial(shader = defaultShader) {
@@ -155,34 +130,34 @@ export default class GameObject {
 		this.behaviour.push(new CustomBehaviour(this));
 	}
 
-	addRigidBody(config = {}) {
-		this.rigidBody = new RigidBody(this, config);
+	// addRigidBody(config = {}) {
+	// this.rigidBody = new RigidBody(this, config);
 
-		this.children.forEach((gameObject) => {
-			if (gameObject && gameObject.mesh && !gameObject.collider) {
-				gameObject.addCollider(BoxCollider);
-			}
-		});
-	}
+	// this.children.forEach((gameObject) => {
+	// if (gameObject && gameObject.mesh && !gameObject.collider) {
+	// gameObject.addCollider(BoxCollider);
+	// }
+	// });
+	// }
 
 	addCamera() {
 		this.camera = new Camera(this);
 	}
 
-	addCollider(ColliderType: typeof Collider, config = {}) {
-		if (!config) {
-			if (ColliderType === BoxCollider && this.mesh instanceof Box) {
-				config = {
-					min: vec3.negate(
-						vec3.create(),
-						vec3.scale(vec3.create(), this.mesh.size as vec3, 0.5)
-					),
-					max: vec3.scale(vec3.create(), this.mesh.size as vec3, 0.5),
-				};
-			}
-		}
-		this.collider = new ColliderType(this, config);
-	}
+	// addCollider(ColliderType: typeof Collider, config = {}) {
+	// if (!config) {
+	// if (ColliderType === BoxCollider && this.mesh instanceof Box) {
+	// config = {
+	// min: vec3.negate(
+	// vec3.create(),
+	// vec3.scale(vec3.create(), this.mesh.size as vec3, 0.5)
+	// ),
+	// max: vec3.scale(vec3.create(), this.mesh.size as vec3, 0.5),
+	// };
+	// }
+	// }
+	// this.collider = new ColliderType(this, config);
+	// }
 
 	setParent(parent: GameObject) {
 		this.parent = parent;

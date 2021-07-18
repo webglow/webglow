@@ -1,56 +1,17 @@
 import { vec3 } from 'gl-matrix';
-import EngineGlobals from 'engine/globals';
 import { MF } from 'engine/utils/constants';
-import GameObject from 'engine/utils/game-object';
-import Mesh from 'engine/standard/mesh';
 import {
 	getSegment,
 	getTextureCoordsForSegment,
 } from 'engine/primitives/helpers';
-import { IBoxConfig, IBoxJSON } from './types';
+import { IBoxConfig } from './types';
+import { IGeometry } from '../../standard/geometry';
 
-export default class Box extends Mesh {
-	size: vec3;
-	positions: Float32Array;
-	normals: Float32Array;
-	textureCoords: Float32Array;
+export default class Box implements IGeometry {
+	config: IBoxConfig;
 
-	constructor(gameObject: GameObject, { size = [1, 1, 1] }: IBoxConfig) {
-		super(gameObject);
-
-		this.size = size as vec3;
-
-		this.setup();
-	}
-
-	toJSON(): IBoxJSON {
-		return {
-			type: 'Box',
-			size: Array.from(this.size) as [number, number, number],
-		};
-	}
-
-	static fromJSON(gameObject: GameObject, json: IBoxJSON): Box {
-		return new Box(gameObject, json);
-	}
-
-	setup() {
-		const { positions, normals, textureCoords } = this.getGeometry(this.size);
-		this.positions = new Float32Array(positions);
-		this.normals = new Float32Array(normals);
-		this.textureCoords = new Float32Array(textureCoords);
-
-		this.setPositions(this.positions);
-		this.setNormals(this.normals);
-		this.setTextureCoords(this.textureCoords);
-	}
-
-	draw() {
-		EngineGlobals.gl.drawArrays(
-			EngineGlobals.gl.TRIANGLES,
-			0,
-			this.positions.length / 3
-		);
+	constructor(config: IBoxConfig) {
+		this.config = config;
 	}
 
 	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {
@@ -68,8 +29,8 @@ export default class Box extends Mesh {
 	// prettier-ignore
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
-	getGeometry(size: vec3) {
-		const halfSize = vec3.scale(vec3.create(), size, MF / 2);
+	getGeometry() {
+		const halfSize = vec3.scale(vec3.create(), this.config.size, MF / 2);
 		const p000 = [-halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
 		const p100 = [ halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
 		const p101 = [ halfSize[0], -halfSize[1],  halfSize[2]] as vec3;

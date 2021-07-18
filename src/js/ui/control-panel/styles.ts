@@ -10,4 +10,10 @@ export const Wrapper = styled.div`
 
 export const PlayPauseButton = styled(Button)`
 	margin-left: auto;
+	color: var(--white);
+	background: var(--dark-dark-grey);
+
+	&:hover {
+		background: var(--black);
+	}
 `;

@@ -1,1 +1,1 @@
-export const MF = 100;
+export const MF = 1000;

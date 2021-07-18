@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { pxToRem } from './helpers';
+import theme from './theme';
 
 export const Input = styled.input`
 	display: block;
@@ -45,17 +46,14 @@ export const SmallText = styled((props) =>
 `;
 
 export const Button = styled.button<{ svgWidth?: number }>`
-	color: var(--white);
-	background: var(--dark-dark-grey);
 	border: 0;
-	padding: ${pxToRem(3)}rem ${pxToRem(10)}rem;
+	padding: ${pxToRem(5)}rem ${pxToRem(20)}rem;
+	font-family: ${theme.fonts.basic};
+	font-weight: bold;
 	border-radius: 3px;
 	cursor: pointer;
 	transition: background 0.2s ease-in-out;
-
-	&:hover {
-		background: var(--black);
-	}
+	box-shadow: ${theme.boxShadows.soft};
 
 	& > svg.svg-inline--fa {
 		width: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;

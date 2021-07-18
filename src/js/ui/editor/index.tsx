@@ -12,7 +12,9 @@ import {
 import { useForceUpdate } from '../common/hooks';
 import GameObject from '../../engine/utils/game-object';
 import File from '../../engine/utils/project-hierarchy/file';
-import ProjectHierarchy from '../../engine/utils/project-hierarchy';
+import ProjectHierarchy, {
+	getTestHierarchy,
+} from '../../engine/utils/project-hierarchy';
 import SceneHierarchy from '../../engine/utils/scene-hierarchy';
 import Engine from '../../engine';
 import { ISceneJSON } from '../../engine/standard/scene/types';
@@ -49,6 +51,7 @@ export default function Editor({ className }: IProps) {
 
 		const _engine = new Engine(canvasRef.current);
 
+		(window as any).testHierarchy = getTestHierarchy();
 		setProjectHierarchy(ProjectHierarchy.fromJSON(project.hierarchy));
 
 		setEngine(_engine);

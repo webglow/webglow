@@ -24,18 +24,26 @@ export default class Shape {
 		this.b2 = new GameObject();
 		this.b3 = new GameObject();
 		this.b4 = new GameObject();
-		this.b1.addMesh(Box, {
-			size: [size, size, size],
-		} as IBoxConfig);
-		this.b2.addMesh(Box, {
-			size: [size, size, size],
-		} as IBoxConfig);
-		this.b3.addMesh(Box, {
-			size: [size, size, size],
-		} as IBoxConfig);
-		this.b4.addMesh(Box, {
-			size: [size, size, size],
-		} as IBoxConfig);
+		this.b1.addMesh(
+			new Box({
+				size: [size, size, size],
+			})
+		);
+		this.b2.addMesh(
+			new Box({
+				size: [size, size, size],
+			})
+		);
+		this.b3.addMesh(
+			new Box({
+				size: [size, size, size],
+			})
+		);
+		this.b4.addMesh(
+			new Box({
+				size: [size, size, size],
+			})
+		);
 
 		this.b1.addMaterial();
 		this.b2.addMaterial();

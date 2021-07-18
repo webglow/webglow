@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ITransformInfo } from 'engine/standard/transform/types';
 import Transform from 'engine/standard/transform';
 import { IProps } from './types';
-import { Section, StyledObjectNameEditor, Wrapper } from './styles';
+import {
+	AddComponentButton,
+	Section,
+	StyledObjectNameEditor,
+	Wrapper,
+} from './styles';
 import { default as TransformUI } from '../transform';
 import ScriptSection from '../script-section';
 
@@ -73,6 +78,9 @@ export default function GameObjectInspector({
 					<ScriptSection script={script} />
 				</Section>
 			))}
+			<Section>
+				<AddComponentButton>Add Component</AddComponentButton>
+			</Section>
 		</Wrapper>
 	);
 }

@@ -57,12 +57,14 @@ export default class Tetris extends Scene {
 
 	setup() {
 		const ground = new GameObject();
-		ground.addMesh(Plane, {
-			width: 500,
-			length: 500,
-			widthSegments: 1,
-			lengthSegments: 1,
-		} as IPlaneConfig);
+		ground.addMesh(
+			new Plane({
+				width: 500,
+				length: 500,
+				widthSegments: 1,
+				lengthSegments: 1,
+			})
+		);
 
 		ground.addMaterial();
 

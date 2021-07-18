@@ -1,4 +1,6 @@
-export function getSegment(a, b, c, d) {
+import { vec3 } from 'gl-matrix';
+
+export function getSegment(a: vec3, b: vec3, c: vec3, d: vec3) {
 	return [...a, ...d, ...c, ...a, ...c, ...b];
 }
 

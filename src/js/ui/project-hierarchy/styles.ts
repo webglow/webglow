@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Header, SmallText } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
+import theme from '../../../styles/theme';
 
 export const Wrapper = styled.div``;
 
@@ -32,13 +33,11 @@ export const FileUI = styled.div`
 	}
 
 	&:hover {
-		box-shadow: var(--dark-dark-grey) 3px 3px 6px 0px inset,
-			var(--grey) -3px -3px 6px 1px inset;
+		box-shadow: ${theme.boxShadows.insetSoft};
 	}
 
 	&:active {
-		box-shadow: var(--black) 3px 3px 6px 0px inset,
-			#303030 -3px -3px 6px 1px inset;
+		box-shadow: ${theme.boxShadows.insetStrong};
 	}
 `;
 

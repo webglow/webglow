@@ -3,8 +3,9 @@ import Color from 'engine/utils/color';
 import GameObject from 'engine/utils/game-object';
 import ShaderProgram from 'engine/utils/shader-program';
 import { UniformType } from 'engine/utils/shader-program/types';
-import { IShader, IShaderParam } from 'engine/utils/shader/types';
+import { IShader } from 'engine/utils/shader/types';
 import ShaderController from '../shader-controller';
+import { IMaterialParam } from './types';
 
 export default class Material {
 	uniforms: { [key: string]: WebGLUniformLocation };
@@ -14,11 +15,17 @@ export default class Material {
 	shaderController: ShaderController;
 	shader: IShader;
 	gameObject: GameObject;
-	params: any;
+	params: IMaterialParam[];
 
 	constructor(shader: IShader) {
 		this.shader = shader;
-		this.params = shader.params;
+		this.params = shader.params.map((param) => ({
+			displayName: param.displayName,
+			key: param.key,
+			type: param.type,
+			value: param.defaultValue,
+			controlType: param.controlType,
+		}));
 	}
 
 	toJSON() {
@@ -43,10 +50,21 @@ export default class Material {
 		this.setUniforms(this.params);
 	}
 
-	setUniforms(params: IShaderParam[]) {
+	setUniforms(params: IMaterialParam[]) {
 		params.forEach((param) => {
 			this.shaderProgram.setUniform(param.type, param.key, param.value);
 		});
+	}
+
+	setParamValue(key: string, newValue: any) {
+		const param = this.params.find((p) => p.key === key);
+
+		if (!param) {
+			return;
+		}
+
+		param.value = newValue;
+		this.shaderProgram.setUniform(param.type, param.key, newValue);
 	}
 
 	setTexture(textureUnit: number) {

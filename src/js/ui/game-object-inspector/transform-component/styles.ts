@@ -1,10 +1,7 @@
 import styled from 'styled-components';
-import { SubHeader } from '../../../styles/common';
-import { pxToRem } from '../../../styles/helpers';
+import { pxToRem } from '../../../../styles/helpers';
 
 export const Wrapper = styled.div``;
-
-export const Title = styled(SubHeader)``;
 
 export const Info = styled.div`
 	display: grid;

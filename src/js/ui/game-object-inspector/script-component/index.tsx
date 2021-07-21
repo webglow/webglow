@@ -2,16 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faFileCode } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
-import { Title, Wrapper, ScriptName } from './styles';
-import CodeEditor from '../code-editor';
+import { Wrapper, ScriptName } from './styles';
+import CodeEditor from '../../code-editor';
+import ComponentTitle from '../component-title';
 
-export default function ScriptSection({ className, script }: IProps) {
+export default function ScriptComponent({ className, script }: IProps) {
 	return (
 		<Wrapper className={className}>
-			<Title>
-				<FontAwesomeIcon icon={faCode} />
-				<div>Script</div>
-			</Title>
+			<ComponentTitle icon={faCode} title="Script" />
 			<ScriptName
 				onClick={() =>
 					new CodeEditor(script.text, (newText) => script.setText(newText))

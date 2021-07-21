@@ -1,4 +1,4 @@
-import { IComponentProps } from '../common/types';
+import { IComponentProps } from '../../common/types';
 
 export interface IProps extends IComponentProps {
 	name: string;

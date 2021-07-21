@@ -25,7 +25,7 @@ export default class EditorCameraMovement extends Behaviour {
 		this.previousMousePosition = vec2.create();
 		this.isLocked = false;
 		this.direction = vec3.create();
-		this.speed = 1;
+		this.speed = 0.1;
 		this.setupEventListeners();
 	}
 

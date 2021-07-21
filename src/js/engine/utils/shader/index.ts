@@ -1,32 +1,35 @@
 import { UniformType } from 'engine/utils/shader-program/types';
-import { IShader } from 'engine/utils/shader/types';
-import Color from '../color';
+import { ControlType, IShader } from 'engine/utils/shader/types';
 
 const defaultShader: IShader = {
 	params: [
 		{
 			displayName: 'Enable Specular',
 			key: 'uEnableSpecular',
-			value: 0,
+			defaultValue: 0,
 			type: UniformType.t_float,
+			controlType: ControlType.Checkbox,
 		},
 		{
 			displayName: 'Specular Strength',
 			key: 'uSpecularStrength',
-			value: 0,
+			defaultValue: 0,
 			type: UniformType.t_float,
+			controlType: ControlType.NumberInput,
 		},
 		{
 			displayName: 'Enable Light',
 			key: 'uEnableLighting',
-			value: 1,
+			defaultValue: 1,
 			type: UniformType.t_float,
+			controlType: ControlType.Checkbox,
 		},
 		{
 			displayName: 'Shade Color',
 			key: 'uShadeColor',
-			value: new Color('#000000').toNormalizedVec3(),
-			type: UniformType.t_vec3,
+			defaultValue: '#000000',
+			type: UniformType.t_color,
+			controlType: ControlType.ColorInput,
 		},
 	],
 	vertex: `vec4 vertex(vec4 position) {

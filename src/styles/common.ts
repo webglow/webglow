@@ -9,7 +9,19 @@ export const Input = styled.input`
 	color: var(--white);
 	min-width: 0;
 	border: 0;
-	padding: ${pxToRem(2)}rem;
+	height: ${pxToRem(20)}rem;
+	padding: ${pxToRem(2)}rem ${pxToRem(4)}rem;
+	border-radius: 3px;
+	width: auto;
+`;
+
+export const Select = styled.select`
+	display: block;
+	background: var(--black);
+	color: var(--white);
+	min-width: 0;
+	border: 0;
+	padding: ${pxToRem(2)}rem ${pxToRem(1)}rem;
 	border-radius: 3px;
 `;
 
@@ -54,8 +66,15 @@ export const Button = styled.button<{ svgWidth?: number }>`
 	cursor: pointer;
 	transition: background 0.2s ease-in-out;
 	box-shadow: ${theme.boxShadows.soft};
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
 	& > svg.svg-inline--fa {
 		width: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
+	}
+
+	& > svg + div {
+		margin-left: ${pxToRem(5)}rem;
 	}
 `;

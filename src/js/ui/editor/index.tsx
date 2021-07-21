@@ -21,17 +21,18 @@ import { ISceneJSON } from '../../engine/standard/scene/types';
 import Scene from '../../engine/standard/scene';
 import { IProject } from '../project-card/types';
 import { API_URL } from '../constants';
+import { FileType } from '../../engine/utils/project-hierarchy/types';
 
 export default function Editor({ className }: IProps) {
 	const canvasRef = useRef();
 	const { id } = useParams<{ id: string }>();
+	const [cwd, setCwd] = useState<File>(null);
 
 	const [isRunning, setIsRunning] = useState<boolean>(false);
+	const [sceneFile, setSceneFile] = useState<File>(null);
 	const [project, setProject] = useState<IProject>();
 	const [engine, setEngine] = useState<Engine | null>(null);
-	const [sceneHierarchy, setSceneHierarchy] = useState<SceneHierarchy | null>(
-		null
-	);
+	const [activeScene, setActiveScene] = useState<Scene | null>(null);
 	const [projectHierarchy, setProjectHierarchy] = useState<ProjectHierarchy>(
 		null
 	);
@@ -43,6 +44,14 @@ export default function Editor({ className }: IProps) {
 			.then((response) => response.json())
 			.then((_project) => setProject(_project));
 	}, [id]);
+
+	useEffect(() => {
+		if (!projectHierarchy) {
+			return;
+		}
+
+		setCwd(projectHierarchy.root);
+	}, [projectHierarchy]);
 
 	useEffect(() => {
 		if (!canvasRef.current || engine || !project) {
@@ -61,17 +70,43 @@ export default function Editor({ className }: IProps) {
 		};
 	}, [canvasRef.current, project]);
 
-	const openScene = (sceneData: ISceneJSON) => {
-		const scene = Scene.fromJSON(sceneData);
+	const handleFileDoubleClick = (file: File) => {
+		switch (file.type) {
+			case FileType.Folder:
+				setCwd(file);
+				break;
+			case FileType.Scene:
+				openScene(file);
+				break;
+			default:
+				break;
+		}
+	};
+
+	const openScene = (file: File) => {
+		const scene = Scene.fromJSON(file.content as ISceneJSON);
 		engine.setActiveScene(scene);
-		setSceneHierarchy(scene.hierarchy);
+		setActiveScene(scene);
+		setSceneFile(file);
 		engine.start();
+	};
+
+	const saveProject = () => {
+		sceneFile.content = activeScene.toJSON();
+		const data = JSON.stringify({ hierarchy: projectHierarchy.toJSON() });
+		fetch(`${API_URL}projects/${project._id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: data,
+		});
 	};
 
 	return (
 		<Wrapper className={className}>
 			<StyledSceneHierarchy
-				hierarchy={sceneHierarchy}
+				hierarchy={activeScene?.hierarchy}
 				onSelectNode={(node: GameObject) => setSelectedObject(node)}
 				selectedObject={selectedObject as GameObject}
 			/>
@@ -82,18 +117,22 @@ export default function Editor({ className }: IProps) {
 					engine.toggleRunning();
 					setIsRunning(!isRunning);
 				}}
+				onSaveClick={() => {
+					saveProject();
+				}}
 			/>
 			<StyledProjectHierarchy
 				selectedObject={selectedObject as File}
-				hierarchy={projectHierarchy}
-				onOpenScene={openScene}
+				cwd={cwd}
+				onNavigate={(file: File) => setCwd(file)}
+				onFileDoubleClick={handleFileDoubleClick}
 				onSelectFile={(file: File) => setSelectedObject(file)}
 			/>
 			<Canvas ref={canvasRef}></Canvas>
 			<StyledInspector
 				selectedObject={selectedObject}
 				onNameChange={(node, newName) => {
-					sceneHierarchy.rename(node, newName);
+					activeScene?.hierarchy.rename(node, newName);
 					forceUpdate();
 				}}
 			/>

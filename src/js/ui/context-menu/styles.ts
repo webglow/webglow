@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { SmallText } from '../../../styles/common';
+import { TextWithIcon } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import theme from '../../../styles/theme';
 import { IWrapperProps } from './types';
@@ -21,12 +21,13 @@ export const Wrapper = styled.div<IWrapperProps>`
 		`}
 `;
 
-export const MenuItem = styled(SmallText)`
+export const MenuItem = styled(TextWithIcon)`
 	cursor: pointer;
 	padding: ${pxToRem(3)}rem ${pxToRem(5)}rem;
 	background: var(--dark-grey);
 	font-size: ${pxToRem(15)}rem;
 	transition: background 0.2s ease-in-out;
+	border-radius: 3px;
 
 	&:hover {
 		background: var(--black);

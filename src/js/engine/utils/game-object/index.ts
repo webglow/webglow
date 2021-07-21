@@ -2,7 +2,7 @@ import Collider from 'engine/physics/collider';
 import RigidBody from 'engine/physics/rigidbody';
 import Camera from 'engine/standard/camera';
 import Light from 'engine/standard/light';
-import { ILightConfig } from 'engine/standard/light/types';
+import { ILightConfig, LightType } from 'engine/standard/light/types';
 import Mesh from 'engine/standard/mesh';
 import Transform from 'engine/standard/transform';
 import Color from 'engine/utils/color';
@@ -122,7 +122,13 @@ export default class GameObject {
 		this.scripts.push(script);
 	}
 
-	addLight(config: ILightConfig) {
+	addLight(
+		config: ILightConfig = {
+			intensity: 1,
+			color: new Color('#ffffff'),
+			type: LightType.Directional,
+		}
+	) {
 		this.light = new Light(this, config);
 	}
 

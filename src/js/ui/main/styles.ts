@@ -13,6 +13,7 @@ export const Wrapper = styled.div`
 
 export const StyledHeader = styled(Header)`
 	height: ${pxToRem(50)}rem;
+	z-index: 1;
 	flex-shrink: 0;
 `;
 

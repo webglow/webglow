@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
@@ -21,7 +21,8 @@ export const PageLinks = styled.div`
 	display: flex;
 `;
 
-export const PageLink = styled(Link)`
+export const PageLink = styled(NavLink)`
+	position: relative;
 	border-left: 1px solid var(--black);
 	display: flex;
 	height: 100%;
@@ -32,6 +33,16 @@ export const PageLink = styled(Link)`
 	color: var(--white);
 	text-decoration: none;
 	transition: box-shadow 0.2s ease-in-out;
+
+	&.page-link--active::after {
+		content: '';
+		position: absolute;
+		height: 3px;
+		background-color: var(--blue);
+		left: 0;
+		bottom: 0;
+		width: 100%;
+	}
 
 	&:hover {
 		box-shadow: ${theme.boxShadows.insetSoft};

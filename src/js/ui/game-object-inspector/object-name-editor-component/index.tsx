@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
 import { Wrapper, Name } from './styles';
+import ComponentTitle from '../component-title';
 
-export default function ObjectNameEditor({
+export default function ObjectNameEditorComponent({
 	className,
 	name,
 	onChange,
@@ -15,6 +17,8 @@ export default function ObjectNameEditor({
 
 	return (
 		<Wrapper className={className}>
+			<ComponentTitle icon={faStickyNote} title="Name" />
+
 			<Name
 				value={objectName}
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) =>

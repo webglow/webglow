@@ -1,13 +1,14 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faPause, faPlay, faSave } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
-import { Wrapper, PlayPauseButton } from './styles';
+import { Wrapper, PlayPauseButton, SaveButton } from './styles';
 
 export default function ControlPanel({
 	className,
 	isRunning,
 	onPlayPauseClick,
+	onSaveClick,
 }: IProps) {
 	return (
 		<Wrapper className={className}>
@@ -18,6 +19,10 @@ export default function ControlPanel({
 					<FontAwesomeIcon icon={faPlay} />
 				)}
 			</PlayPauseButton>
+			<SaveButton onClick={() => onSaveClick()}>
+				<FontAwesomeIcon icon={faSave} />
+				<div>Save</div>
+			</SaveButton>
 		</Wrapper>
 	);
 }

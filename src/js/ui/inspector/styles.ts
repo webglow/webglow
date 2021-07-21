@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Header } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
-import ObjectNameEditor from '../object-name-editor';
 
 export const Wrapper = styled.div``;
 

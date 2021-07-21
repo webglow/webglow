@@ -6,6 +6,7 @@ import ProjectHierarchyUI from '../project-hierarchy';
 import SceneHierarchyUI from '../scene-hierarchy';
 
 export const Wrapper = styled.div`
+	background: var(--dark-grey);
 	display: grid;
 	grid-template-columns: 2fr 7fr 3fr;
 	grid-template-rows: ${pxToRem(30)}rem 1fr 1fr;
@@ -17,6 +18,7 @@ export const StyledControlPanel = styled(ControlPanel)`
 
 export const Canvas = styled.canvas`
 	width: 100%;
+	height: 100%;
 	min-width: 0;
 	grid-row: 2 / 3;
 `;

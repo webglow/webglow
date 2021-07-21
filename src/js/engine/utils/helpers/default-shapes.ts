@@ -43,3 +43,9 @@ export function addSphere(hierarchy: SceneHierarchy) {
 
 	hierarchy.addObject(sphere);
 }
+
+export function addEmpty(hierarchy: SceneHierarchy) {
+	const gameObject = new GameObject();
+
+	hierarchy.addObject(gameObject);
+}

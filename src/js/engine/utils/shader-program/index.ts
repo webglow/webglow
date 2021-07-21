@@ -6,6 +6,7 @@ import vertexSource from './default-shaders/vertex.glsl';
 import fragmentSource from './default-shaders/fragment.glsl';
 
 import { UniformType } from './types';
+import Color from '../color';
 
 export default class ShaderProgram {
 	name: string;
@@ -67,19 +68,25 @@ export default class ShaderProgram {
 		switch (type) {
 			case UniformType.t_int:
 				EngineGlobals.gl.uniform1i(uniformLocation, value);
-				return;
+				break;
 			case UniformType.t_uint:
 				EngineGlobals.gl.uniform1ui(uniformLocation, value);
-				return;
+				break;
 			case UniformType.t_float:
 				EngineGlobals.gl.uniform1f(uniformLocation, value);
-				return;
+				break;
 			case UniformType.t_vec3:
 				EngineGlobals.gl.uniform3f(
 					uniformLocation,
 					...(value as [number, number, number])
 				);
-				return;
+				break;
+			case UniformType.t_color:
+				EngineGlobals.gl.uniform3f(
+					uniformLocation,
+					...new Color(value).toNormalizedVec3()
+				);
+				break;
 			case UniformType.t_mat3:
 				EngineGlobals.gl.uniformMatrix3fv(
 					uniformLocation,
@@ -88,10 +95,10 @@ export default class ShaderProgram {
 					value[1],
 					value[2]
 				);
-				return;
+				break;
 			case UniformType.t_mat4:
 				EngineGlobals.gl.uniformMatrix4fv(uniformLocation, false, value);
-				return;
+				break;
 			default:
 				throw new Error(`Unrecognized uniform type ${type}`);
 		}

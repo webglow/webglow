@@ -1,12 +1,11 @@
 import React from 'react';
-import { vec3 } from 'gl-matrix';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
-import { Info, Title, Wrapper } from './styles';
+import { Info, Wrapper } from './styles';
 import TransformParameter from '../transform-parameter';
+import ComponentTitle from '../component-title';
 
-export default function Transform({
+export default function TransformComponent({
 	className,
 	transformInfo,
 	onChange,
@@ -17,10 +16,7 @@ export default function Transform({
 
 	return (
 		<Wrapper className={className}>
-			<Title>
-				<FontAwesomeIcon icon={faArrowsAlt} />
-				<div>Transform</div>
-			</Title>
+			<ComponentTitle icon={faArrowsAlt} title="Transform" />
 
 			<Info>
 				<TransformParameter

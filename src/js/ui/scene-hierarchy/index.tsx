@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import {
 	faCircle,
 	faCube,
+	faCubes,
 	faSitemap,
 	faSquare,
 } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +14,7 @@ import { IProps } from './types';
 import SceneHierarchyNodeUI from '../scene-hierarchy-node';
 import {
 	addBox,
+	addEmpty,
 	addPlane,
 	addSphere,
 } from '../../engine/utils/helpers/default-shapes';
@@ -53,6 +55,16 @@ export default function SceneHierarchyUI({
 			icon: faSquare,
 			onClick() {
 				addPlane(hierarchy);
+
+				setMenuVisible(false);
+			},
+		},
+		{
+			id: 'add-empty',
+			name: 'Add Empty',
+			icon: faCubes,
+			onClick() {
+				addEmpty(hierarchy);
 
 				setMenuVisible(false);
 			},

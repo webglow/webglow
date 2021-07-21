@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Input, SmallText } from '../../../styles/common';
-import { pxToRem } from '../../../styles/helpers';
+import { Input, SmallText } from '../../../../styles/common';
+import { pxToRem } from '../../../../styles/helpers';
 
 export const Wrapper = styled.div``;
 

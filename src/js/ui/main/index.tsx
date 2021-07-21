@@ -1,6 +1,6 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {
 	Wrapper,
 	StyledHeader,
@@ -13,12 +13,14 @@ const Main = () => (
 		<Router>
 			<StyledHeader />
 
-			<Route path="/projects/:id">
-				<StyledEditor />
-			</Route>
-			<Route path="/explore">
-				<StyledExplorePage />
-			</Route>
+			<Switch>
+				<Route path="/projects/:id">
+					<StyledEditor />
+				</Route>
+				<Route path="/explore">
+					<StyledExplorePage />
+				</Route>
+			</Switch>
 		</Router>
 	</Wrapper>
 );

@@ -9,7 +9,7 @@ export const ParamsList = styled.div`
 	display: grid;
 	align-items: center;
 	grid-gap: ${pxToRem(5)}rem;
-	grid-template-columns: 6fr 18fr;
+	grid-template-columns: 10fr 14fr;
 `;
 
 export const ParamName = styled(SmallText)``;

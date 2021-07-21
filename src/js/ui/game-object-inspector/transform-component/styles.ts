@@ -5,10 +5,8 @@ export const Wrapper = styled.div``;
 
 export const Info = styled.div`
 	display: grid;
-	--input-size: 5fr;
-	grid-template-columns: 6fr 1fr var(--input-size) 1fr var(--input-size) 1fr var(
-			--input-size
-		);
+	--input-size: 3fr;
+	grid-template-columns: 10fr 14fr;
 	align-items: center;
 	margin-top: ${pxToRem(10)}rem;
 	grid-row-gap: ${pxToRem(5)}rem;

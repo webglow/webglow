@@ -8,8 +8,15 @@ export const ParamName = styled(SmallText)`
 	font-size: ${pxToRem(13)}rem;
 `;
 
+export const ParamComponents = styled.div`
+	display: flex;
+	min-width: 0;
+`;
+
 export const ParamComponentName = styled(SmallText)`
-	margin-left: ${pxToRem(10)}rem;
+	&:not(:first-child) {
+		margin-left: ${pxToRem(10)}rem;
+	}
 	font-size: ${pxToRem(13)}rem;
 `;
 

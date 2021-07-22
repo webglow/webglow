@@ -8,7 +8,7 @@ export default class RuntimeLayer implements ILayer {
 
 	setCamera() {
 		// find a camera on an object
-		alert('No active camera!');
+		throw new Error('No active camera');
 	}
 
 	start() {

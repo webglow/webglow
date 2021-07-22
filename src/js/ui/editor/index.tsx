@@ -3,6 +3,8 @@ import { useParams } from 'react-router';
 import { IProps } from './types';
 import {
 	Canvas,
+	CanvasContainer,
+	NoActiveCamera,
 	StyledControlPanel,
 	StyledInspector,
 	StyledProjectHierarchy,
@@ -28,6 +30,7 @@ export default function Editor({ className }: IProps) {
 	const { id } = useParams<{ id: string }>();
 	const [cwd, setCwd] = useState<File>(null);
 
+	const [activeCameraPresent, setActiveCameraPresent] = useState(true);
 	const [isRunning, setIsRunning] = useState<boolean>(false);
 	const [sceneFile, setSceneFile] = useState<File>(null);
 	const [project, setProject] = useState<IProject>();
@@ -114,13 +117,18 @@ export default function Editor({ className }: IProps) {
 			<StyledControlPanel
 				isRunning={isRunning}
 				onPlayPauseClick={() => {
-					engine.toggleRunning();
+					try {
+						engine.toggleRunning();
+					} catch (e) {
+						setActiveCameraPresent(false);
+					}
 					setIsRunning(!isRunning);
 				}}
 				onSaveClick={() => {
 					saveProject();
 				}}
 			/>
+
 			<StyledProjectHierarchy
 				selectedObject={selectedObject as File}
 				cwd={cwd}
@@ -128,7 +136,13 @@ export default function Editor({ className }: IProps) {
 				onFileDoubleClick={handleFileDoubleClick}
 				onSelectFile={(file: File) => setSelectedObject(file)}
 			/>
-			<Canvas ref={canvasRef}></Canvas>
+			<CanvasContainer>
+				<Canvas ref={canvasRef}></Canvas>
+
+				{!activeCameraPresent && isRunning && (
+					<NoActiveCamera>No Active Camera</NoActiveCamera>
+				)}
+			</CanvasContainer>
 			<StyledInspector
 				selectedObject={selectedObject}
 				onNameChange={(node, newName) => {

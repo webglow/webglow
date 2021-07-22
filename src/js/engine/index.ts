@@ -83,15 +83,17 @@ export default class Engine {
 	}
 
 	toggleRunning() {
-		if (!this.isRunning) {
-			// this.runtimeLayer.scene = cloneDeep(this.activeScene);
-			this.activeLayer = this.runtimeLayer;
-			this.runtimeLayer.setCamera();
-		} else {
-			this.activeLayer = this.editorLayer;
+		try {
+			if (!this.isRunning) {
+				// this.runtimeLayer.scene = cloneDeep(this.activeScene);
+				this.activeLayer = this.runtimeLayer;
+				this.runtimeLayer.setCamera();
+			} else {
+				this.activeLayer = this.editorLayer;
+			}
+		} finally {
+			this.isRunning = !this.isRunning;
 		}
-
-		this.isRunning = !this.isRunning;
 	}
 
 	draw(now: number) {

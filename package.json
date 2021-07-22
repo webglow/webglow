@@ -63,6 +63,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hot-loader/react-dom": "^17.0.1",
+    "@material-ui/core": "^4.12.2",
     "gl-matrix": "^3.3.0",
     "lodash": "^4.17.21",
     "react": "17.0.1",

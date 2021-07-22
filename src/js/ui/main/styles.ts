@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { pxToRem } from '../../../styles/helpers';
 import Editor from '../editor';
 import ExplorePage from '../explore-page';
-import Header from '../header';
+import Navbar from '../navbar';
 
 export const Wrapper = styled.div`
 	height: 100%;
@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
 	flex-flow: column;
 `;
 
-export const StyledHeader = styled(Header)`
+export const StyledNavbar = styled(Navbar)`
 	height: ${pxToRem(50)}rem;
 	z-index: 1;
 	flex-shrink: 0;

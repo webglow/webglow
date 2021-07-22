@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {
 	Wrapper,
-	StyledHeader,
+	StyledNavbar,
 	StyledEditor,
 	StyledExplorePage,
 } from './styles';
@@ -11,7 +11,7 @@ import {
 const Main = () => (
 	<Wrapper>
 		<Router>
-			<StyledHeader />
+			<StyledNavbar />
 
 			<Switch>
 				<Route path="/projects/:id">

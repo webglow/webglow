@@ -2,7 +2,7 @@ import React from 'react';
 import { IProps } from './types';
 import { Logo, PageLink, PageLinks, Wrapper } from './styles';
 
-export default function Header({ className }: IProps) {
+export default function Navbar({ className }: IProps) {
 	return (
 		<Wrapper className={className}>
 			<Logo src="../../../../logo-flat.svg" />

@@ -1,14 +1,20 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { pxToRem } from '../../../styles/helpers';
 import Editor from '../editor';
 import ExplorePage from '../explore-page';
 import Navbar from '../navbar';
+import { IWrapperProps } from './types';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<IWrapperProps>`
 	height: 100%;
 	background: var(--dark-grey);
 	display: flex;
 	flex-flow: column;
+	${(props) =>
+		props.blurred &&
+		css`
+			filter: blur(2px);
+		`}
 `;
 
 export const StyledNavbar = styled(Navbar)`

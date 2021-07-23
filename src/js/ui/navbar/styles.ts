@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import theme from '../../../styles/theme';
@@ -21,9 +21,10 @@ export const PageLinks = styled.div`
 	display: flex;
 `;
 
-export const PageLink = styled(NavLink)`
+const Nav = css`
 	position: relative;
 	border-left: 1px solid var(--black);
+	background-color: var(--dark-grey);
 	display: flex;
 	height: 100%;
 	font-size: ${pxToRem(16)}rem;
@@ -55,6 +56,15 @@ export const PageLink = styled(NavLink)`
 	&:last-child {
 		border-right: 1px solid var(--black);
 	}
+`;
+
+export const PageLink = styled(NavLink)`
+	${Nav}
+`;
+
+export const NavButton = styled.button`
+	border: 0;
+	${Nav}
 `;
 
 export const ButtonsContainer = styled.div`

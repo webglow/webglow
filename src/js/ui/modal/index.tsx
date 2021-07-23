@@ -1,20 +1,39 @@
 import React from 'react';
-import { Backdrop, Fade } from '@material-ui/core';
+import { Fade } from '@material-ui/core';
 import { IProps } from './types';
-import { StyledModal } from './styles';
+import {
+	StyledModal,
+	Body,
+	StyledBackdrop,
+	Title,
+	Content,
+	Footer,
+} from './styles';
 
-export default function Modal({ className, children, ...modalProps }: IProps) {
+export default function Modal({
+	className,
+	children,
+	title,
+	footer,
+	...modalProps
+}: IProps) {
 	return (
 		<StyledModal
 			className={className}
 			closeAfterTransition
-			BackdropComponent={Backdrop}
+			BackdropComponent={StyledBackdrop}
 			BackdropProps={{
 				timeout: 500,
 			}}
 			{...modalProps}
 		>
-			<Fade in={modalProps.open}>{children}</Fade>
+			<Fade in={modalProps.open}>
+				<Body>
+					{title && <Title>{title}</Title>}
+					<Content>{children}</Content>
+					<Footer>{footer}</Footer>
+				</Body>
+			</Fade>
 		</StyledModal>
 	);
 }

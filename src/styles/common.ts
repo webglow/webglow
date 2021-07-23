@@ -15,6 +15,18 @@ export const Input = styled.input`
 	width: auto;
 `;
 
+export const TextArea = styled.textarea`
+	display: block;
+	background: var(--black);
+	color: var(--white);
+	min-width: 0;
+	border: 0;
+	padding: ${pxToRem(2)}rem ${pxToRem(4)}rem;
+	font-family: ${theme.fonts.basic};
+	border-radius: 3px;
+	width: auto;
+`;
+
 export const Select = styled.select`
 	display: block;
 	background: var(--black);
@@ -64,7 +76,7 @@ export const Button = styled.button<{ svgWidth?: number }>`
 	font-weight: bold;
 	border-radius: 3px;
 	cursor: pointer;
-	transition: background 0.2s ease-in-out;
+	transition: background 0.2s ease-in-out, filter 0.2s ease-in-out;
 	box-shadow: ${theme.boxShadows.soft};
 	display: flex;
 	align-items: center;
@@ -76,5 +88,14 @@ export const Button = styled.button<{ svgWidth?: number }>`
 
 	& > svg + div {
 		margin-left: ${pxToRem(5)}rem;
+	}
+
+	&[disabled] {
+		background: var(--light-grey);
+		color: var(--grey);
+	}
+
+	&:not([disabled]):hover {
+		filter: saturate(2) brightness(1.2);
 	}
 `;

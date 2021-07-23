@@ -1,8 +1,8 @@
 import React from 'react';
 import { IProps } from './types';
-import { Logo, PageLink, PageLinks, Wrapper } from './styles';
+import { Logo, NavButton, PageLink, PageLinks, Wrapper } from './styles';
 
-export default function Navbar({ className }: IProps) {
+export default function Navbar({ className, onNewProject }: IProps) {
 	return (
 		<Wrapper className={className}>
 			<Logo src="../../../../logo-flat.svg" />
@@ -10,9 +10,7 @@ export default function Navbar({ className }: IProps) {
 				<PageLink to="/explore" activeClassName="page-link--active">
 					Explore
 				</PageLink>
-				<PageLink to="/editor" activeClassName="page-link--active">
-					New Project
-				</PageLink>
+				<NavButton onClick={() => onNewProject()}>New Project</NavButton>
 				<PageLink to="/documentation" activeClassName="page-link--active">
 					Documentation
 				</PageLink>

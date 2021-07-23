@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
 	background: var(--dark-grey);
 	display: grid;
 	grid-template-columns: 2fr 7fr 3fr;
-	grid-template-rows: ${pxToRem(30)}rem 1fr 1fr;
+	grid-template-rows: ${pxToRem(43)}rem 1fr 1fr;
 `;
 
 export const StyledControlPanel = styled(ControlPanel)`

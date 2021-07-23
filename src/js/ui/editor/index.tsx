@@ -64,7 +64,11 @@ export default function Editor({ className }: IProps) {
 		const _engine = new Engine(canvasRef.current);
 
 		(window as any).testHierarchy = getTestHierarchy();
-		setProjectHierarchy(ProjectHierarchy.fromJSON(project.hierarchy));
+		if (project.hierarchy) {
+			setProjectHierarchy(ProjectHierarchy.fromJSON(project.hierarchy));
+		} else {
+			setProjectHierarchy(new ProjectHierarchy());
+		}
 
 		setEngine(_engine);
 

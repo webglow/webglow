@@ -102,4 +102,17 @@ export default class SceneHierarchy {
 
 		delete this.nodes[id];
 	}
+
+	removeNode(node: GameObject, clearParent: boolean = true) {
+		if (node.children) {
+			node.children.forEach((child) => this.removeNode(child, false));
+		}
+
+		if (node.parent && clearParent) {
+			node.parent.children.splice(node.parent.children.indexOf(node), 1);
+		}
+
+		this.nodesArray.splice(this.nodesArray.indexOf(node), 1);
+		delete this.nodes[node.id];
+	}
 }

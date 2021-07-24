@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { TextWithIcon } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import theme from '../../../styles/theme';
 import { IWrapperProps } from './types';
@@ -10,8 +9,9 @@ export const Wrapper = styled.div<IWrapperProps>`
 	border: 1px solid var(--black);
 	box-shadow: ${theme.boxShadows.strong};
 	padding: ${pxToRem(10)}rem;
-	min-width: ${pxToRem(150)}rem;
+	min-width: ${pxToRem(200)}rem;
 	border-radius: 3px;
+	z-index: 2;
 
 	${({ position }) =>
 		position &&
@@ -21,19 +21,8 @@ export const Wrapper = styled.div<IWrapperProps>`
 		`}
 `;
 
-export const MenuItem = styled(TextWithIcon)`
-	cursor: pointer;
-	padding: ${pxToRem(3)}rem ${pxToRem(5)}rem;
-	background: var(--dark-grey);
-	font-size: ${pxToRem(15)}rem;
-	transition: background 0.2s ease-in-out;
-	border-radius: 3px;
-
-	&:hover {
-		background: var(--black);
-	}
-
-	& > svg + div {
-		margin-left: ${pxToRem(10)}rem;
-	}
+export const Separator = styled.div`
+	height: 1px;
+	background: var(--light-grey);
+	margin: ${pxToRem(5)}rem 0;
 `;

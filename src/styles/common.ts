@@ -41,7 +41,7 @@ export const TextWithIcon = styled.div<{ svgWidth?: number }>`
 	display: flex;
 	align-items: center;
 
-	& > svg.svg-inline--fa {
+	& svg.svg-inline--fa {
 		width: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
 		height: ${({ svgWidth = 14 }) => pxToRem(svgWidth)}rem;
 	}

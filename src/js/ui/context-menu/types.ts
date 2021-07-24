@@ -5,8 +5,9 @@ import { IComponentProps } from '../common/types';
 export interface IProps extends IComponentProps {
 	visible?: boolean;
 	items: IContextMenuItem[];
-	position: [number, number];
-	onOutsideClick: () => void;
+	position?: [number, number];
+	onOutsideClick?: () => void;
+	onContextMenuItemClick?: () => void;
 }
 
 export interface IWrapperProps {
@@ -17,5 +18,7 @@ export interface IContextMenuItem {
 	id: string;
 	name: string;
 	icon: IconDefinition;
-	onClick: (event: React.MouseEvent) => void;
+	onClick?: (event: React.MouseEvent) => void;
+	children?: IContextMenuItem[];
+	hasSeparator?: boolean;
 }

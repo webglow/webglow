@@ -5,6 +5,6 @@ export interface IProps extends IComponentProps {
 	onSelectFile: (file: File) => void;
 	onFileDoubleClick: (file: File) => void;
 	onNavigate: (file: File) => void;
-	selectedObject: File;
+	selectedFile: File;
 	cwd?: File;
 }

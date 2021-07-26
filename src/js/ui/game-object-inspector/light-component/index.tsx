@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { faLightbulb } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
 import {
 	ParamName,
 	ParamValueInput,
 	ParamValueSelect,
+	ParamValueTextInput,
 	Settings,
 	Wrapper,
 } from './styles';
@@ -16,28 +17,17 @@ export default function LightComponent({
 	light: { intensity, type, color },
 	onChange,
 }: IProps) {
-	const [intensityParam, setIntensityParam] = useState<string>(
-		intensity.toString()
-	);
-
-	const handleSubmitIntensity = (event: React.KeyboardEvent) => {
-		if (event.code === 'Enter') {
-			onChange('intensity', parseFloat(intensityParam));
-		}
-	};
-
 	return (
 		<Wrapper className={className}>
 			<ComponentTitle icon={faLightbulb} title="Light" />
 
 			<Settings>
 				<ParamName>Intensity:</ParamName>
-				<ParamValueInput
+				<ParamValueTextInput
 					type="number"
-					value={intensityParam}
-					onKeyPress={handleSubmitIntensity}
-					onChange={(event) => {
-						setIntensityParam(event.target.value);
+					value={intensity}
+					onChange={(newValue) => {
+						onChange('intensity', newValue ? parseFloat(newValue) : 0);
 					}}
 				/>
 

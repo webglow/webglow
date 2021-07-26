@@ -1,9 +1,9 @@
 import EngineGlobals from 'engine/globals';
-import Color from 'engine/utils/color';
 import GameObject from 'engine/utils/game-object';
 import ShaderProgram from 'engine/utils/shader-program';
 import { UniformType } from 'engine/utils/shader-program/types';
 import { IShader } from 'engine/utils/shader/types';
+import getDefaultShader from '../shader';
 import ShaderController from '../shader-controller';
 import { IMaterialParam } from './types';
 
@@ -17,20 +17,24 @@ export default class Material {
 	gameObject: GameObject;
 	params: IMaterialParam[];
 
-	constructor(shader: IShader) {
-		this.shader = shader;
-		this.params = shader.params.map((param) => ({
+	constructor(
+		shader: IShader = getDefaultShader(),
+		params: IMaterialParam[] = shader.params.map((param) => ({
 			displayName: param.displayName,
 			key: param.key,
 			type: param.type,
 			value: param.defaultValue,
-			controlType: param.controlType,
-		}));
+		}))
+	) {
+		this.shader = shader;
+
+		this.params = params;
 	}
 
 	toJSON() {
 		return {
 			shader: this.shader,
+			params: this.params,
 		};
 	}
 
@@ -44,8 +48,6 @@ export default class Material {
 		);
 
 		this.shaderController = new ShaderController(this.shaderProgram);
-
-		this.setupColor(new Color('#ffcc00').toVec4());
 
 		this.setUniforms(this.params);
 	}

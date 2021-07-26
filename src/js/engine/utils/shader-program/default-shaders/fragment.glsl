@@ -2,22 +2,25 @@
 
 precision highp float;
 
+vec3 ambientColor = vec3(0.08, 0.08, 0.08);
+
 out vec4 outColor;
 
 uniform mat3 uDirectionalLight[10];
 uniform uint uDirectionalLightNumber;
-uniform vec3 uShadeColor;
 uniform mat3 uPointLight[10];
 uniform uint uPointLightNumber;
-uniform float uEnableLighting;
+uniform bool uEnableLighting;
 uniform sampler2D uTexture;
+uniform vec3 uColor;
+uniform bool uHasTexture;
 
 in vec3 vNormal;
 in vec3 vWorldPosition;
 in vec2 vTextureCoord;
 
 uniform vec3 uViewWorldPosition;
-uniform float uEnableSpecular;
+uniform bool uEnableSpecular;
 uniform float uSpecularStrength;
 
 #{shaderExtension}
@@ -44,7 +47,7 @@ vec3 calcLight(vec3 initialColor, vec4 textureColor) {
 			uPointLight[i][1][0] *
 			uPointLight[i][2];
 
-		if (uEnableSpecular == 1.) {
+		if (uEnableSpecular) {
 			vec3 halfVector = normalize(viewDirection + pointLightDirection);
 			if (light > 0.0) {
 				color += smoothstep(0., 1., light) * pow(dot(normal, halfVector), uSpecularStrength) * uPointLight[i][2];
@@ -56,15 +59,19 @@ vec3 calcLight(vec3 initialColor, vec4 textureColor) {
 }
 
 void main() {
-	vec3 color = uShadeColor;
-	vec4 textureColor = texture(uTexture, vTextureCoord);
+	vec3 color = ambientColor;
+	vec4 objectColor = vec4(uColor, 1);
 
-	if (uEnableLighting == 0.) {
-		outColor = fragment(vec4(textureColor.xyz, 1));
+	if (uHasTexture) {
+		objectColor = texture(uTexture, vTextureCoord);
+	}
+
+	if (!uEnableLighting) {
+		outColor = fragment(vec4(objectColor.xyz, 1));
 		return;
 	}
 
-	color = calcLight(color, textureColor);
+	color = calcLight(color, objectColor);
 
 	outColor = fragment(vec4(color, 1));
 }

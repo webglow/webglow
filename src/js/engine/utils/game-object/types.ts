@@ -3,6 +3,7 @@ import Transform from 'engine/standard/transform';
 import { ITransformJSON } from 'engine/standard/transform/types';
 import { IScriptJSON } from 'engine/utils/script/types';
 import { IMeshJSON } from '../../standard/mesh/types';
+import { IMaterialJSON } from '../material/types';
 
 export interface IGameObjectParams {
 	TransformType?: typeof Transform;
@@ -14,7 +15,7 @@ export interface IGameObjectJSON {
 	scripts: IScriptJSON[];
 	isRoot?: boolean;
 	mesh?: IMeshJSON;
-	material?: any;
+	material?: IMaterialJSON;
 	light?: ILightJSON;
 	camera?: any;
 	id: string;

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { Input, SmallText } from '../../../../styles/common';
+import { SmallText } from '../../../../styles/common';
 import { pxToRem } from '../../../../styles/helpers';
+import TextInput from '../../text-input';
 
 export const Wrapper = styled.div``;
 
@@ -20,6 +21,6 @@ export const ParamComponentName = styled(SmallText)`
 	font-size: ${pxToRem(13)}rem;
 `;
 
-export const ParamComponentValue = styled(Input)`
+export const ParamComponentValue = styled(TextInput)`
 	margin-left: ${pxToRem(5)}rem;
 `;

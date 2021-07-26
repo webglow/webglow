@@ -87,6 +87,12 @@ export default function GameObjectInspector({
 		forceUpdate();
 	};
 
+	const onMaterialChange = (key: string, newValue: any) => {
+		selectedObject.material.setParamValue(key, newValue);
+
+		forceUpdate();
+	};
+
 	const addComponent = (type: GameObjectComponents) => {
 		switch (type) {
 			case GameObjectComponents.Light:
@@ -130,7 +136,10 @@ export default function GameObjectInspector({
 			)}
 			{selectedObject.material && (
 				<Section>
-					<MaterialComponent material={selectedObject.material} />
+					<MaterialComponent
+						material={selectedObject.material}
+						onParamChange={onMaterialChange}
+					/>
 				</Section>
 			)}
 			{selectedObject.light && (

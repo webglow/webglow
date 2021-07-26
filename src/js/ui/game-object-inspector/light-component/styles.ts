@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Input, SmallText, Select } from '../../../../styles/common';
 import { pxToRem } from '../../../../styles/helpers';
+import TextInput from '../../text-input';
 
 export const Wrapper = styled.div``;
 
@@ -12,6 +13,8 @@ export const Settings = styled.div`
 `;
 
 export const ParamName = styled(SmallText)``;
+
+export const ParamValueTextInput = styled(TextInput)``;
 
 export const ParamValueInput = styled(Input)``;
 

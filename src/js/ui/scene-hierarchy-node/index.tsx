@@ -1,7 +1,13 @@
 import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { MouseEvent } from 'react';
-import { Wrapper, StyledHierarchyNode, Title } from './styles';
+import {
+	Wrapper,
+	StyledHierarchyNode,
+	Node,
+	IconWrapper,
+	Text,
+} from './styles';
 import { IProps } from './types';
 
 export default function SceneHierarchyNodeUI({
@@ -16,13 +22,15 @@ export default function SceneHierarchyNodeUI({
 			className={className}
 			onContextMenu={(event: MouseEvent) => onContextMenu(event, node)}
 		>
-			<Title
+			<Node
 				onClick={() => onSelectNode(node)}
 				selected={selectedObject === node}
 			>
-				<FontAwesomeIcon icon={faCubes} />
-				<div>{node.id}</div>
-			</Title>
+				<IconWrapper>
+					<FontAwesomeIcon icon={faCubes} />
+				</IconWrapper>
+				<Text>{node.id}</Text>
+			</Node>
 
 			{node.children.map((n) => (
 				<StyledHierarchyNode

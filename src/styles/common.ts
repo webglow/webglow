@@ -9,7 +9,9 @@ export const Input = styled.input`
 	color: var(--white);
 	min-width: 0;
 	border: 0;
-	height: ${pxToRem(20)}rem;
+	height: ${pxToRem(25)}rem;
+	font-size: ${pxToRem(14)}rem;
+	font-family: ${theme.fonts.basic};
 	padding: ${pxToRem(2)}rem ${pxToRem(4)}rem;
 	border-radius: 3px;
 	width: auto;
@@ -21,6 +23,7 @@ export const TextArea = styled.textarea`
 	color: var(--white);
 	min-width: 0;
 	border: 0;
+	font-size: ${pxToRem(14)}rem;
 	padding: ${pxToRem(2)}rem ${pxToRem(4)}rem;
 	font-family: ${theme.fonts.basic};
 	border-radius: 3px;

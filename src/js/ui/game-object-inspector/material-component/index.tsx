@@ -1,23 +1,48 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
 import { IProps } from './types';
-import { ParamControl, ParamName, ParamsList, Wrapper } from './styles';
+import {
+	ParamControl,
+	ParamName,
+	ParamsList,
+	TextParamControl,
+	Wrapper,
+} from './styles';
 import ComponentTitle from '../component-title';
 import { IMaterialParam } from '../../../engine/utils/material/types';
-import { ControlType } from '../../../engine/utils/shader/types';
 import Checkbox from '../../checkbox';
+import { UniformType } from '../../../engine/utils/shader-program/types';
 
-export default function MaterialComponent({ className, material }: IProps) {
+export default function MaterialComponent({
+	className,
+	material,
+	onParamChange,
+}: IProps) {
 	const getControl = (param: IMaterialParam) => {
-		switch (param.controlType) {
-			case ControlType.Checkbox:
-				return <Checkbox checked={param.value} />;
-			case ControlType.NumberInput:
-				return <ParamControl type="number" value={param.value} />;
-			case ControlType.ColorInput:
-				return <ParamControl type="color" value={param.value} />;
+		switch (param.type) {
+			case UniformType.t_bool:
+				return (
+					<Checkbox
+						checked={param.value}
+						onChange={(event) => onParamChange(param.key, event.target.checked)}
+					/>
+				);
+			case UniformType.t_color:
+				return (
+					<ParamControl
+						type="color"
+						value={param.value}
+						onChange={(event) => onParamChange(param.key, event.target.value)}
+					/>
+				);
 			default:
-				console.error(`Unrecognized control type ${param.controlType}`);
+				return (
+					<TextParamControl
+						type="number"
+						value={param.value}
+						onChange={(newValue) => onParamChange(param.key, newValue)}
+					/>
+				);
 		}
 	};
 
@@ -27,10 +52,10 @@ export default function MaterialComponent({ className, material }: IProps) {
 
 			<ParamsList>
 				{material.params.map((param) => (
-					<>
+					<Fragment key={param.key}>
 						<ParamName>{param.displayName}:</ParamName>
 						{getControl(param)}
-					</>
+					</Fragment>
 				))}
 			</ParamsList>
 		</Wrapper>

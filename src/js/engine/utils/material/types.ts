@@ -1,10 +1,14 @@
 import { UniformType } from '../shader-program/types';
-import { ControlType } from '../shader/types';
+import { IShader } from '../shader/types';
 
 export interface IMaterialParam {
 	displayName: string;
 	key: string;
 	type: UniformType;
 	value: any;
-	controlType: ControlType;
+}
+
+export interface IMaterialJSON {
+	shader: IShader;
+	params: IMaterialParam[];
 }

@@ -40,6 +40,8 @@ export default function Editor({ className }: IProps) {
 		null
 	);
 	const [selectedObject, setSelectedObject] = useState<GameObject | File>(null);
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
 	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
@@ -63,7 +65,6 @@ export default function Editor({ className }: IProps) {
 
 		const _engine = new Engine(canvasRef.current);
 
-		(window as any).testHierarchy = getTestHierarchy();
 		if (project.hierarchy) {
 			setProjectHierarchy(ProjectHierarchy.fromJSON(project.hierarchy));
 		} else {
@@ -99,7 +100,10 @@ export default function Editor({ className }: IProps) {
 	};
 
 	const saveProject = () => {
-		sceneFile.content = activeScene.toJSON();
+		if (activeScene) {
+			sceneFile.content = activeScene.toJSON();
+		}
+
 		const data = JSON.stringify({ hierarchy: projectHierarchy.toJSON() });
 		fetch(`${API_URL}projects/${project._id}`, {
 			method: 'PUT',
@@ -131,14 +135,29 @@ export default function Editor({ className }: IProps) {
 				onSaveClick={() => {
 					saveProject();
 				}}
+				onTestHierarchyClick={() => {
+					const data = JSON.stringify({
+						hierarchy: getTestHierarchy().toJSON(),
+					});
+					fetch(`${API_URL}projects/${project._id}`, {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: data,
+					});
+				}}
 			/>
 
 			<StyledProjectHierarchy
-				selectedObject={selectedObject as File}
+				selectedFile={selectedFile}
 				cwd={cwd}
 				onNavigate={(file: File) => setCwd(file)}
 				onFileDoubleClick={handleFileDoubleClick}
-				onSelectFile={(file: File) => setSelectedObject(file)}
+				onSelectFile={(file: File) => {
+					setSelectedFile(file);
+					setSelectedObject(file);
+				}}
 			/>
 			<CanvasContainer>
 				<Canvas ref={canvasRef}></Canvas>

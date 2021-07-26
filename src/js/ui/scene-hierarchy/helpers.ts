@@ -8,13 +8,8 @@ import {
 	faSun,
 	faTrash,
 } from '@fortawesome/free-solid-svg-icons';
+import DefaultEntities from '../../engine/utils/default-entities';
 import GameObject from '../../engine/utils/game-object';
-import {
-	addBox,
-	addEmpty,
-	addPlane,
-	addSphere,
-} from '../../engine/utils/helpers/default-shapes';
 import SceneHierarchy from '../../engine/utils/scene-hierarchy';
 
 export const getObjectMenuItems = (
@@ -31,7 +26,7 @@ export const getObjectMenuItems = (
 				name: 'Box',
 				icon: faCube,
 				onClick() {
-					addBox(hierarchy, parent);
+					DefaultEntities.addBox(hierarchy, parent);
 				},
 			},
 			{
@@ -39,7 +34,7 @@ export const getObjectMenuItems = (
 				name: 'Sphere',
 				icon: faCircle,
 				onClick() {
-					addSphere(hierarchy, parent);
+					DefaultEntities.addSphere(hierarchy, parent);
 				},
 			},
 			{
@@ -47,7 +42,7 @@ export const getObjectMenuItems = (
 				name: 'Plane',
 				icon: faSquare,
 				onClick() {
-					addPlane(hierarchy, parent);
+					DefaultEntities.addPlane(hierarchy, parent);
 				},
 			},
 		],
@@ -76,7 +71,7 @@ export const getObjectMenuItems = (
 		name: 'Add Empty',
 		icon: faCubes,
 		onClick() {
-			addEmpty(hierarchy, parent);
+			DefaultEntities.addEmpty(hierarchy, parent);
 		},
 	},
 ];

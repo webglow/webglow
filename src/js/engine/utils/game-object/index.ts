@@ -9,7 +9,7 @@ import Color from 'engine/utils/color';
 import Material from 'engine/utils/material';
 import Script from 'engine/utils/script';
 import Behaviour from 'engine/utils/script/behaviour';
-import defaultShader from 'engine/utils/shader';
+import getDefaultShader from 'engine/utils/shader';
 import { mat4, vec3 } from 'gl-matrix';
 import { IGeometry } from '../../standard/geometry';
 import { IGameObjectJSON, IGameObjectParams } from './types';
@@ -90,7 +90,7 @@ export default class GameObject {
 		}
 
 		if (material) {
-			gameObject.addMaterial(material.shader);
+			gameObject.addMaterial(new Material(material.shader, material.params));
 		}
 
 		gameObject.scripts = scripts.map((scriptJson) => {
@@ -112,8 +112,8 @@ export default class GameObject {
 		this.mesh = new Mesh(this, geometry);
 	}
 
-	addMaterial(shader = defaultShader) {
-		this.material = new Material(shader);
+	addMaterial(material: Material) {
+		this.material = material;
 
 		this.material.attach(this, this.mesh.attribLocations);
 	}

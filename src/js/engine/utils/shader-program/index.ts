@@ -72,6 +72,9 @@ export default class ShaderProgram {
 			case UniformType.t_uint:
 				EngineGlobals.gl.uniform1ui(uniformLocation, value);
 				break;
+			case UniformType.t_bool:
+				EngineGlobals.gl.uniform1f(uniformLocation, value);
+				break;
 			case UniformType.t_float:
 				EngineGlobals.gl.uniform1f(uniformLocation, value);
 				break;

@@ -1,4 +1,5 @@
 export enum UniformType {
+	t_bool = 't_bool',
 	t_float = 't_float',
 	t_vec3 = 't_vec3',
 	t_color = 't_color',

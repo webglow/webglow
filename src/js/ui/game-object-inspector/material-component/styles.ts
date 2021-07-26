@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Input, SmallText } from '../../../../styles/common';
 import { pxToRem } from '../../../../styles/helpers';
+import TextInput from '../../text-input';
 
 export const Wrapper = styled.div``;
 
@@ -15,3 +16,5 @@ export const ParamsList = styled.div`
 export const ParamName = styled(SmallText)``;
 
 export const ParamControl = styled(Input)``;
+
+export const TextParamControl = styled(TextInput)``;

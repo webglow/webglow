@@ -12,6 +12,7 @@ import StairsShape from './shapes/stairs-shape';
 import StickShape from './shapes/stick-shape';
 import TShape from './shapes/t-shape';
 import Shape from './shapes';
+import Material from '../../engine/utils/material';
 
 export default class Tetris extends Scene {
 	collisionDetector: CollisionDetector;
@@ -66,7 +67,7 @@ export default class Tetris extends Scene {
 			})
 		);
 
-		ground.addMaterial();
+		ground.addMaterial(new Material());
 
 		ground.transform.translate([0, -20, 0]);
 

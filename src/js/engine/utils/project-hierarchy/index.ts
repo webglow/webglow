@@ -1,6 +1,6 @@
 import File from 'engine/utils/project-hierarchy/file';
 import Script from 'engine/utils/script';
-import defaultShader from 'engine/utils/shader';
+import getDefaultShader from 'engine/utils/shader';
 import Tetris from '../../../scenes/tetris/scene';
 import { FileType, IFileJSON, IProjectJSON } from './types';
 
@@ -58,7 +58,7 @@ export function getTestHierarchy() {
 		new File('main-scene', FileType.Scene, new Tetris().toJSON())
 	);
 	hierarchy.root.addChild(
-		new File('default-shader', FileType.Shader, defaultShader)
+		new File('default-shader', FileType.Shader, getDefaultShader())
 	);
 	hierarchy.root.addChild(folder);
 
@@ -66,7 +66,9 @@ export function getTestHierarchy() {
 		new File('another-script', FileType.Script, new Script('another-script'))
 	);
 
-	folder.addChild(new File('another-shader', FileType.Shader, defaultShader));
+	folder.addChild(
+		new File('another-shader', FileType.Shader, getDefaultShader())
+	);
 
 	return hierarchy;
 }

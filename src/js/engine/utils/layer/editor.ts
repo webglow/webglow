@@ -24,7 +24,7 @@ export default class EditorLayer implements ILayer {
 	draw() {
 		this.renderer.render(
 			this.editorCamera.camera.mProjection,
-			this.editorCamera.transform.position,
+			this.editorCamera.transform._position,
 			this.editorCamera.transform.viewMatrix
 		);
 	}

@@ -22,7 +22,7 @@ export default class RuntimeLayer implements ILayer {
 
 		this.renderer.render(
 			this.mainCamera.camera.mProjection,
-			this.mainCamera.transform.position,
+			this.mainCamera.transform._position,
 			this.mainCamera.transform.viewMatrix
 		);
 	}

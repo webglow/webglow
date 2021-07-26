@@ -11,12 +11,12 @@ export default class Plane implements IGeometry {
 	config: IPlaneConfig;
 	heightMap: Array<number>;
 
-	constructor(
-		config: IPlaneConfig
-	) {
+	constructor(config: IPlaneConfig) {
 		this.heightMap =
 			config.heightMap ||
-			new Array((config.widthSegments + 1) * (config.lengthSegments + 1)).fill(0);
+			new Array((config.widthSegments + 1) * (config.lengthSegments + 1)).fill(
+				0
+			);
 		this.config = config;
 	}
 
@@ -36,8 +36,9 @@ export default class Plane implements IGeometry {
 		const positions = [];
 		const normals = [];
 		const textureCoords = [];
-		const segmentWidth = this.config.width * MF/ this.config.widthSegments;
-		const segmentLength = this.config.length * MF / this.config.lengthSegments;
+		const segmentWidth = (this.config.width * MF) / this.config.widthSegments;
+		const segmentLength =
+			(this.config.length * MF) / this.config.lengthSegments;
 
 		for (let i = 0; i < this.config.widthSegments; i++) {
 			for (let j = 0; j < this.config.lengthSegments; j++) {

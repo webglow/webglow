@@ -46,8 +46,8 @@ export default class DefaultEntities {
 
 		sphere.addMesh(
 			new Sphere({
-				widthSegments: 10,
-				heightSegments: 10,
+				widthSegments: 30,
+				heightSegments: 30,
 				radius: 1,
 			})
 		);

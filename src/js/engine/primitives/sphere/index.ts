@@ -68,7 +68,7 @@ export default class Sphere implements IGeometry {
 				);
 				const p01 = this.getPoint(
 					i,
-					j,
+					j + 1,
 					this.config.widthSegments,
 					this.config.heightSegments
 				);

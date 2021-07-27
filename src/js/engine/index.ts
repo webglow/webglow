@@ -67,7 +67,7 @@ export default class Engine {
 		// document.body.appendChild(this.stats.dom);
 
 		EngineGlobals.gl.clearColor(
-			...new Color('#000000').toNormalizedVec3(),
+			...new Color('#3592C4').toNormalizedVec3(),
 			1.0
 		);
 

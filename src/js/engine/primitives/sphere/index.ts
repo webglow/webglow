@@ -1,7 +1,6 @@
 import { vec2, vec3 } from 'gl-matrix';
 import { getSegment } from 'engine/primitives/helpers';
 import { ISphereConfig } from './types';
-import { MF } from '../../utils/constants';
 import { IGeometry } from '../../standard/geometry';
 
 export default class Sphere implements IGeometry {
@@ -15,9 +14,9 @@ export default class Sphere implements IGeometry {
 		const longitude = ((i % width) / width) * 2 * Math.PI;
 		const latitude = (j / height) * Math.PI;
 		const point = [
-			this.config.radius * MF * Math.sin(latitude) * Math.cos(longitude),
-			this.config.radius * MF * Math.sin(latitude) * Math.sin(longitude),
-			this.config.radius * MF * Math.cos(latitude),
+			this.config.radius * Math.sin(latitude) * Math.cos(longitude),
+			this.config.radius * Math.sin(latitude) * Math.sin(longitude),
+			this.config.radius * Math.cos(latitude),
 		];
 
 		return point as vec3;

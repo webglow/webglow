@@ -1,5 +1,4 @@
 import { vec3 } from 'gl-matrix';
-import { MF } from 'engine/utils/constants';
 import {
 	getSegment,
 	getTextureCoordsForSegment,
@@ -36,9 +35,8 @@ export default class Plane implements IGeometry {
 		const positions = [];
 		const normals = [];
 		const textureCoords = [];
-		const segmentWidth = (this.config.width * MF) / this.config.widthSegments;
-		const segmentLength =
-			(this.config.length * MF) / this.config.lengthSegments;
+		const segmentWidth = this.config.width / this.config.widthSegments;
+		const segmentLength = this.config.length / this.config.lengthSegments;
 
 		for (let i = 0; i < this.config.widthSegments; i++) {
 			for (let j = 0; j < this.config.lengthSegments; j++) {

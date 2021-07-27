@@ -59,8 +59,8 @@ export default class Camera {
 					this.mProjection,
 					this.fieldOfView,
 					EngineGlobals.canvas.clientWidth / EngineGlobals.canvas.clientHeight,
-					1,
-					undefined
+					0.01,
+					1000
 				);
 				break;
 		}

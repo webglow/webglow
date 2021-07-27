@@ -1,4 +1,3 @@
-import { MF } from 'engine/utils/constants';
 import { Space } from 'engine/utils/enums';
 import GameObject from 'engine/utils/game-object';
 import { getEuler } from 'engine/utils/helpers';
@@ -46,7 +45,7 @@ export default class Transform {
 	}
 
 	get position() {
-		return vec3.scale(vec3.create(), this._position, 1 / MF);
+		return vec3.clone(this._position);
 	}
 
 	get rotation() {
@@ -54,17 +53,15 @@ export default class Transform {
 	}
 
 	get quatRotation() {
-		return quat.fromValues(
-			...(this._rotation as [number, number, number, number])
-		);
+		return quat.clone(this._rotation);
 	}
 
 	get scale() {
-		return vec3.fromValues(...(this._scale as [number, number, number]));
+		return vec3.clone(this._scale);
 	}
 
 	set position(newValue: vec3) {
-		this._position = vec3.scale(vec3.create(), newValue, MF);
+		this._position = vec3.clone(newValue);
 
 		this.onChange();
 	}
@@ -82,11 +79,7 @@ export default class Transform {
 	}
 
 	translate(translation: vec3) {
-		vec3.add(
-			this._position,
-			this._position,
-			vec3.scale(vec3.create(), translation, MF)
-		);
+		vec3.add(this._position, this._position, translation);
 
 		this.onChange();
 	}

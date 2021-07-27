@@ -4,6 +4,7 @@ import {
 	faCube,
 	faCubes,
 	faDatabase,
+	faExclamationTriangle,
 	faLightbulb,
 	faSquare,
 	faSun,
@@ -52,6 +53,14 @@ export const getObjectMenuItems = (
 				icon: faDatabase,
 				onClick() {
 					DefaultEntities.addCylinder(hierarchy, parent);
+				},
+			},
+			{
+				id: 'add-cone',
+				name: 'Cone',
+				icon: faExclamationTriangle,
+				onClick() {
+					DefaultEntities.addCone(hierarchy, parent);
 				},
 			},
 		],

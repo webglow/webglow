@@ -1,4 +1,5 @@
 import Box from '../../primitives/box';
+import Cone from '../../primitives/cone';
 import Cylinder from '../../primitives/cylinder';
 import Plane from '../../primitives/plane';
 import Sphere from '../../primitives/sphere';
@@ -71,6 +72,19 @@ export default class DefaultEntities {
 				height: 2,
 			}),
 			'Cylinder',
+			parent
+		);
+	}
+
+	static addCone(hierarchy: SceneHierarchy, parent?: GameObject) {
+		DefaultEntities.add3dObject(
+			hierarchy,
+			new Cone({
+				segments: 30,
+				radius: 1,
+				height: 2,
+			}),
+			'Cone',
 			parent
 		);
 	}

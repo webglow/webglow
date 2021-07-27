@@ -3,6 +3,7 @@ import {
 	faClone,
 	faCube,
 	faCubes,
+	faDatabase,
 	faLightbulb,
 	faSquare,
 	faSun,
@@ -43,6 +44,14 @@ export const getObjectMenuItems = (
 				icon: faSquare,
 				onClick() {
 					DefaultEntities.addPlane(hierarchy, parent);
+				},
+			},
+			{
+				id: 'add-cylinder',
+				name: 'Cylinder',
+				icon: faDatabase,
+				onClick() {
+					DefaultEntities.addCylinder(hierarchy, parent);
 				},
 			},
 		],

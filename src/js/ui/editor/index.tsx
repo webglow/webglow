@@ -17,7 +17,6 @@ import File from '../../engine/utils/project-hierarchy/file';
 import ProjectHierarchy, {
 	getTestHierarchy,
 } from '../../engine/utils/project-hierarchy';
-import SceneHierarchy from '../../engine/utils/scene-hierarchy';
 import Engine from '../../engine';
 import { ISceneJSON } from '../../engine/standard/scene/types';
 import Scene from '../../engine/standard/scene';
@@ -59,6 +58,20 @@ export default function Editor({ className }: IProps) {
 	}, [projectHierarchy]);
 
 	useEffect(() => {
+		if (!engine) {
+			return;
+		}
+
+		const scene = (projectHierarchy.root.content as File[]).find(
+			(file) => file.type === FileType.Scene
+		);
+
+		if (scene) {
+			openScene(scene);
+		}
+	}, [engine]);
+
+	useEffect(() => {
 		if (!canvasRef.current || engine || !project) {
 			return;
 		}
@@ -66,7 +79,9 @@ export default function Editor({ className }: IProps) {
 		const _engine = new Engine(canvasRef.current);
 
 		if (project.hierarchy) {
-			setProjectHierarchy(ProjectHierarchy.fromJSON(project.hierarchy));
+			const hierarchy = ProjectHierarchy.fromJSON(project.hierarchy);
+
+			setProjectHierarchy(hierarchy);
 		} else {
 			setProjectHierarchy(new ProjectHierarchy());
 		}

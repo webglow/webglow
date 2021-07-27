@@ -1,65 +1,78 @@
 import Box from '../../primitives/box';
+import Cylinder from '../../primitives/cylinder';
 import Plane from '../../primitives/plane';
 import Sphere from '../../primitives/sphere';
+import { IGeometry } from '../../standard/geometry';
 import GameObject from '../game-object';
 import Material from '../material';
 import SceneHierarchy from '../scene-hierarchy';
 
 export default class DefaultEntities {
-	static addBox(hierarchy: SceneHierarchy, parent?: GameObject) {
-		const box = new GameObject();
-		box.addMesh(new Box({ size: [1, 1, 1] }));
-		box.addMaterial(new Material());
+	static add3dObject(
+		hierarchy: SceneHierarchy,
+		geometry: IGeometry,
+		type: string,
+		parent?: GameObject
+	) {
+		const gameObject = new GameObject();
+		gameObject.addMesh(geometry);
+		gameObject.addMaterial(new Material());
 
 		if (parent) {
-			box.setParent(parent);
+			gameObject.setParent(parent);
 		}
 
-		hierarchy.addObject(box);
-		hierarchy.rename(box, `Box (${box.id})`);
+		hierarchy.addObject(gameObject);
+		hierarchy.rename(gameObject, `${type} (${gameObject.id})`);
+	}
+
+	static addBox(hierarchy: SceneHierarchy, parent?: GameObject) {
+		DefaultEntities.add3dObject(
+			hierarchy,
+			new Box({ size: [1, 1, 1] }),
+			'Box',
+			parent
+		);
 	}
 
 	static addPlane(hierarchy: SceneHierarchy, parent?: GameObject) {
-		const plane = new GameObject();
-		plane.id = `Plane (${plane.id})`;
-		plane.addMesh(
+		DefaultEntities.add3dObject(
+			hierarchy,
 			new Plane({
 				width: 50,
 				length: 50,
 				widthSegments: 1,
 				lengthSegments: 1,
-			})
+			}),
+			'Plane',
+			parent
 		);
-
-		plane.addMaterial(new Material());
-
-		if (parent) {
-			plane.setParent(parent);
-		}
-
-		hierarchy.addObject(plane);
-		hierarchy.rename(plane, `Plane (${plane.id})`);
 	}
 
 	static addSphere(hierarchy: SceneHierarchy, parent?: GameObject) {
-		const sphere = new GameObject();
-
-		sphere.addMesh(
+		DefaultEntities.add3dObject(
+			hierarchy,
 			new Sphere({
 				widthSegments: 30,
 				heightSegments: 30,
 				radius: 1,
-			})
+			}),
+			'Sphere',
+			parent
 		);
+	}
 
-		sphere.addMaterial(new Material());
-
-		if (parent) {
-			sphere.setParent(parent);
-		}
-
-		hierarchy.addObject(sphere);
-		hierarchy.rename(sphere, `Sphere (${sphere.id})`);
+	static addCylinder(hierarchy: SceneHierarchy, parent?: GameObject) {
+		DefaultEntities.add3dObject(
+			hierarchy,
+			new Cylinder({
+				segments: 30,
+				radius: 1,
+				height: 2,
+			}),
+			'Cylinder',
+			parent
+		);
 	}
 
 	static addEmpty(hierarchy: SceneHierarchy, parent?: GameObject) {

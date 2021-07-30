@@ -34,6 +34,7 @@ export const SelectableArea = styled(TextWithIcon)<ITitleProps>`
 	cursor: pointer;
 	padding: ${pxToRem(5)}rem;
 	font-size: ${pxToRem(15)}rem;
+	flex-grow: 1;
 	border-radius: 3px;
 	transition: background 0.2s ease-in-out;
 

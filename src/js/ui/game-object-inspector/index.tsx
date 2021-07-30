@@ -119,7 +119,7 @@ export default function GameObjectInspector({
 		<Wrapper className={className}>
 			<Section>
 				<StyledObjectNameEditor
-					name={selectedObject.id}
+					name={selectedObject.displayName}
 					onChange={(newName) => onNameChange(selectedObject, newName)}
 				/>
 			</Section>

@@ -34,7 +34,7 @@ export default function SceneHierarchyNodeUI({
 					<IconWrapper>
 						<FontAwesomeIcon icon={faCubes} />
 					</IconWrapper>
-					<Text>{node.id}</Text>
+					<Text>{node.displayName}</Text>
 				</SelectableArea>
 				{node.children.length ? (
 					<CollapseButton

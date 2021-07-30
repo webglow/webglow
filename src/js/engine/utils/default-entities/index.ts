@@ -1,8 +1,3 @@
-import Box from '../../geometry/box';
-import Cone from '../../geometry/cone';
-import Cylinder from '../../geometry/cylinder';
-import Plane from '../../geometry/plane';
-import Sphere from '../../geometry/sphere';
 import EngineGlobals from '../../globals';
 import Geometry from '../../standard/geometry';
 import GameObject from '../game-object';
@@ -16,7 +11,7 @@ export default class DefaultEntities {
 		type: string,
 		parent?: GameObject
 	) {
-		const gameObject = new GameObject();
+		const gameObject = new GameObject({ displayName: type });
 		gameObject.addMesh(geometry);
 		gameObject.addMaterial(new Material());
 
@@ -25,7 +20,6 @@ export default class DefaultEntities {
 		}
 
 		hierarchy.addObject(gameObject);
-		hierarchy.rename(gameObject, `${type} (${gameObject.id})`);
 	}
 
 	static addBox(hierarchy: SceneHierarchy, parent?: GameObject) {
@@ -81,6 +75,5 @@ export default class DefaultEntities {
 		}
 
 		hierarchy.addObject(gameObject);
-		hierarchy.rename(gameObject, `GameObject (${gameObject.id})`);
 	}
 }

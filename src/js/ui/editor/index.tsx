@@ -127,7 +127,7 @@ export default function Editor({ className }: IProps) {
 		const geometries = (file.content as Model).generate();
 
 		geometries.forEach((geometry) => {
-			const gameObject = new GameObject();
+			const gameObject = new GameObject({ displayName: geometry.name });
 
 			gameObject.addMesh(geometry);
 			gameObject.addMaterial(new Material());
@@ -210,7 +210,7 @@ export default function Editor({ className }: IProps) {
 			<StyledInspector
 				selectedObject={selectedObject}
 				onNameChange={(node, newName) => {
-					activeScene?.hierarchy.rename(node, newName);
+					node.rename(newName);
 					forceUpdate();
 				}}
 			/>

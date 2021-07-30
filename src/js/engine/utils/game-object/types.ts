@@ -8,11 +8,13 @@ import { IMaterialJSON } from '../material/types';
 export interface IGameObjectParams {
 	TransformType?: typeof Transform;
 	isRoot?: boolean;
+	displayName?: string;
 }
 
 export interface IGameObjectJSON {
 	transform: ITransformJSON;
 	scripts: IScriptJSON[];
+	displayName: string;
 	isRoot?: boolean;
 	mesh?: IMeshJSON;
 	material?: IMaterialJSON;

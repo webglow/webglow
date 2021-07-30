@@ -26,15 +26,18 @@ export default class GameObject {
 
 	isRoot: boolean;
 	id: string;
+	displayName: string;
 	parent: GameObject;
 	children: GameObject[];
 
 	constructor({
 		TransformType = Transform,
 		isRoot = false,
+		displayName = 'GameObject',
 	}: IGameObjectParams = {}) {
 		this.transform = new TransformType(this);
 
+		this.displayName = displayName;
 		this.scripts = [];
 		this.isRoot = isRoot;
 		this.children = [];
@@ -46,6 +49,7 @@ export default class GameObject {
 			transform: this.transform.toJSON(),
 			scripts: this.scripts.map((script) => script.toJSON()),
 			mesh: this.mesh?.toJSON(),
+			displayName: this.displayName,
 			isRoot: this.isRoot,
 			material: this.material?.toJSON(),
 			light: this.light?.toJSON(),
@@ -61,12 +65,13 @@ export default class GameObject {
 		mesh,
 		isRoot,
 		material,
+		displayName,
 		light,
 		camera,
 		id,
 		children,
 	}: IGameObjectJSON): GameObject {
-		const gameObject = new GameObject();
+		const gameObject = new GameObject({ displayName });
 		gameObject.isRoot = isRoot;
 		gameObject.id = id;
 		gameObject.transform = Transform.fromJSON(gameObject, transform);
@@ -172,6 +177,10 @@ export default class GameObject {
 	addChild(child: GameObject) {
 		child.parent = this;
 		this.children.push(this);
+	}
+
+	rename(newName: string) {
+		this.displayName = newName || 'GameObject';
 	}
 
 	updateMatrix(mProjection: mat4, viewWorldPosition: vec3, pov: mat4) {

@@ -85,16 +85,6 @@ export default class SceneHierarchy {
 			.forEach(callback);
 	}
 
-	rename(node: GameObject, newId: string) {
-		if (this.nodes[newId]) {
-			newId = `${newId} (${uuidv4()})`;
-		}
-
-		delete this.nodes[node.id];
-		node.id = newId;
-		this.nodes[newId] = node;
-	}
-
 	removeParent(id: string) {
 		this.nodes[id].parent = null;
 

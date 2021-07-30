@@ -23,9 +23,7 @@ import Scene from '../../engine/standard/scene';
 import { IProject } from '../project-card/types';
 import { API_URL } from '../constants';
 import { FileType } from '../../engine/utils/project-hierarchy/types';
-import Geometry from '../../engine/standard/geometry';
 import Material from '../../engine/utils/material';
-import EngineGlobals from '../../engine/globals';
 import Model from '../../engine/utils/model';
 
 export default function Editor({ className }: IProps) {
@@ -123,7 +121,7 @@ export default function Editor({ className }: IProps) {
 	};
 
 	const addModel = (file: File) => {
-		const parent = new GameObject();
+		const parent = new GameObject({ displayName: file.name });
 		const geometries = (file.content as Model).generate();
 
 		geometries.forEach((geometry) => {

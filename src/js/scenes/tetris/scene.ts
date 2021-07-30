@@ -24,16 +24,18 @@ export default class Tetris extends Scene {
 		super();
 
 		this.collisionDetector = new CollisionDetector(this.hierarchy);
-		const pointLight = new GameObject();
+		const pointLight = new GameObject({ displayName: 'Point Light' });
 		pointLight.addLight({
 			type: LightType.Point,
 			intensity: 1,
 			color: new Color('#ffffff'),
 		});
 
-		this.hierarchy.addObject(pointLight, 'pointLight');
+		this.hierarchy.addObject(pointLight);
 
-		const directionalLight = new GameObject();
+		const directionalLight = new GameObject({
+			displayName: 'Directional Light',
+		});
 		directionalLight.addLight({
 			type: LightType.Directional,
 			intensity: 0.5,
@@ -41,7 +43,7 @@ export default class Tetris extends Scene {
 		});
 		directionalLight.transform.rotate([-90, 0, 0]);
 
-		this.hierarchy.addObject(directionalLight, 'directionalLight');
+		this.hierarchy.addObject(directionalLight);
 
 		this.shapes = [TShape, LShape, StairsShape, StickShape, CubeShape];
 		this.setup();
@@ -56,7 +58,7 @@ export default class Tetris extends Scene {
 	}
 
 	setup() {
-		const ground = new GameObject();
+		const ground = new GameObject({ displayName: 'Ground' });
 		ground.addMesh(
 			new Plane({
 				width: 500,
@@ -70,7 +72,7 @@ export default class Tetris extends Scene {
 
 		ground.transform.translate([0, -20, 0]);
 
-		this.hierarchy.addObject(ground, 'ground');
+		this.hierarchy.addObject(ground);
 
 		this.randomShape = this.getRandomShape();
 		this.randomShape.parent.transform.translate([0, 3, 0]);
@@ -78,7 +80,7 @@ export default class Tetris extends Scene {
 		this.randomShape.parent.addScript(randomShapeScript);
 		randomShapeScript.assign(this.randomShape.parent);
 
-		this.hierarchy.addObject(this.randomShape.parent, 'shape');
+		this.hierarchy.addObject(this.randomShape.parent);
 
 		document.addEventListener('keydown', (event) => {
 			if (event.code === 'Space') {

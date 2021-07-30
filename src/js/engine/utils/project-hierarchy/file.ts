@@ -42,6 +42,16 @@ export default class File {
 		file.parent = this;
 	}
 
+	removeChild(file: File) {
+		if (this.type !== FileType.Folder) {
+			return;
+		}
+
+		(this.content as File[]).splice((this.content as File[]).indexOf(file), 1);
+
+		file.parent = null;
+	}
+
 	getExtension(type: FileType) {
 		switch (type) {
 			case FileType.Script:

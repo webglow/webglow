@@ -19,12 +19,12 @@ export default class Shape {
 	}
 
 	setupStructure(size: number) {
-		this.parent = new GameObject();
+		this.parent = new GameObject({ displayName: 'Random Shape' });
 
-		this.b1 = new GameObject();
-		this.b2 = new GameObject();
-		this.b3 = new GameObject();
-		this.b4 = new GameObject();
+		this.b1 = new GameObject({ displayName: 'Box 1' });
+		this.b2 = new GameObject({ displayName: 'Box 2' });
+		this.b3 = new GameObject({ displayName: 'Box 3' });
+		this.b4 = new GameObject({ displayName: 'Box 4' });
 		this.b1.addMesh(
 			new Box({
 				size: [size, size, size],

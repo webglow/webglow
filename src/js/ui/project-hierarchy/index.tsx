@@ -7,7 +7,7 @@ import { Wrapper, Title, Contents, DropZone, DropZoneActive } from './styles';
 import Breadcrumbs from '../breadcrumbs';
 import ContextMenu from '../context-menu';
 import { IContextMenuItem } from '../context-menu/types';
-import { getCreateFileItems } from './helpers';
+import { getCreateFileItems, getFileActionItems } from './helpers';
 import ProjectHierarchyNode from '../project-hierarchy-node';
 import { FileType } from '../../engine/utils/project-hierarchy/types';
 import { useForceUpdate } from '../common/hooks';
@@ -74,12 +74,20 @@ export default function ProjectHierarchyUI({
 					const { files } = event.dataTransfer;
 
 					Array.from(files).forEach((file) => {
+						const fileNameParts = file.name.split('.');
+						const extension = fileNameParts.pop();
+						const fileName = fileNameParts.join('.');
+
+						if (extension !== 'obj') {
+							return;
+						}
+
 						const reader = new FileReader();
 
 						reader.onload = function (e: ProgressEvent<FileReader>) {
 							cwd.addChild(
 								new File(
-									file.name,
+									fileName,
 									FileType.Model,
 									new Model(e.target.result as string)
 								)
@@ -98,6 +106,12 @@ export default function ProjectHierarchyUI({
 							<ProjectHierarchyNode
 								file={file}
 								selected={file === selectedFile}
+								onContextMenu={(event) =>
+									openContextMenu(event, [
+										...getFileActionItems(cwd, file),
+										...getCreateFileItems(cwd),
+									])
+								}
 								onRename={(newFileName: string) => {
 									if (newFileName) {
 										file.name = newFileName;

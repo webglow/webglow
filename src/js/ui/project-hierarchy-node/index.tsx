@@ -11,6 +11,7 @@ export default function ProjectHierarchyNode({
 	onClick,
 	onRename,
 	onDoubleClick,
+	onContextMenu,
 	file,
 }: IProps) {
 	const [isRenaming, setIsRenaming] = useState(false);
@@ -30,6 +31,7 @@ export default function ProjectHierarchyNode({
 		<Wrapper
 			className={className}
 			selected={selected}
+			onContextMenu={onContextMenu}
 			key={file.name}
 			onClick={onClick}
 			title={`${file.name}${file.extension}`}

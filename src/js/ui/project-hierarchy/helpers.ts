@@ -4,9 +4,22 @@ import {
 	faFolder,
 	faGlobeAmericas,
 	faPalette,
+	faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import DefaultFiles from '../../engine/utils/project-hierarchy/default-files';
 import File from '../../engine/utils/project-hierarchy/file';
+
+export const getFileActionItems = (cwd: File, file: File) => [
+	{
+		id: 'remove-file',
+		name: 'Remove',
+		icon: faTrash,
+		onClick() {
+			cwd.removeChild(file);
+		},
+		hasSeparator: true,
+	},
+];
 
 export const getCreateFileItems = (cwd: File) => [
 	{

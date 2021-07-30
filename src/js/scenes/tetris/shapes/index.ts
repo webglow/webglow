@@ -1,5 +1,5 @@
-import Box from 'engine/primitives/box';
-import { IBoxConfig } from 'engine/primitives/box/types';
+import Box from 'engine/geometry/box';
+import { IBoxConfig } from 'engine/geometry/box/types';
 import GameObject from 'engine/utils/game-object';
 import { vec3 } from 'gl-matrix';
 import Material from '../../../engine/utils/material';

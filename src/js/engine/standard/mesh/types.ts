@@ -1,6 +1,5 @@
+import { IGeometryJSON } from '../geometry/types';
+
 export interface IMeshJSON {
-	name: string;
-	positions: number[];
-	normals: number[];
-	textureCoords: number[];
+	geometryId: string;
 }

@@ -2,15 +2,19 @@ import { vec3 } from 'gl-matrix';
 import {
 	getSegment,
 	getTextureCoordsForSegment,
-} from 'engine/primitives/helpers';
+} from 'engine/geometry/helpers';
 import { IBoxConfig } from './types';
-import { IGeometry } from '../../standard/geometry';
+import Geometry from '../../standard/geometry';
 
-export default class Box implements IGeometry {
+export default class Box extends Geometry {
 	config: IBoxConfig;
 
 	constructor(config: IBoxConfig) {
+		super();
+
 		this.config = config;
+		this.name = 'Box';
+		this.id = 'Box';
 	}
 
 	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {
@@ -28,7 +32,7 @@ export default class Box implements IGeometry {
 	// prettier-ignore
 	/* eslint-disable array-bracket-spacing */
 	/* eslint-disable no-multi-spaces */
-	getGeometry() {
+	construct() {
 		const halfSize = vec3.scale(vec3.create(), this.config.size, 1 / 2);
 		const p000 = [-halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
 		const p100 = [ halfSize[0], -halfSize[1], -halfSize[2]] as vec3;
@@ -39,8 +43,7 @@ export default class Box implements IGeometry {
 		const p111 = [ halfSize[0],  halfSize[1],  halfSize[2]] as vec3;
 		const p011 = [-halfSize[0],  halfSize[1],  halfSize[2]] as vec3;
 
-		return {
-			positions: [
+		this.positions = new Float32Array([
 			// bottom
 			...getSegment(p000, p001, p101, p100),
 
@@ -58,24 +61,25 @@ export default class Box implements IGeometry {
 
 			// back
 			...getSegment(p110, p010, p000, p100),
-			],
-			normals: [
-				...this.getNormalsForSegment(p000, p001, p101),
-				...this.getNormalsForSegment(p001, p011, p111),
-				...this.getNormalsForSegment(p111, p011, p010),
-				...this.getNormalsForSegment(p010, p011, p001),
-				...this.getNormalsForSegment(p111, p110, p100),
-				...this.getNormalsForSegment(p010, p000, p100),
-			],
-			textureCoords: [
-				...getTextureCoordsForSegment(),
-				...getTextureCoordsForSegment(),
-				...getTextureCoordsForSegment(),
-				...getTextureCoordsForSegment(),
-				...getTextureCoordsForSegment(),
-				...getTextureCoordsForSegment(),
-			]
-		};
+		]);
+
+		this.normals = new Float32Array([
+			...this.getNormalsForSegment(p000, p001, p101),
+			...this.getNormalsForSegment(p001, p011, p111),
+			...this.getNormalsForSegment(p111, p011, p010),
+			...this.getNormalsForSegment(p010, p011, p001),
+			...this.getNormalsForSegment(p111, p110, p100),
+			...this.getNormalsForSegment(p010, p000, p100),
+		]);
+
+		this.textureCoords = new Float32Array([
+			...getTextureCoordsForSegment(),
+			...getTextureCoordsForSegment(),
+			...getTextureCoordsForSegment(),
+			...getTextureCoordsForSegment(),
+			...getTextureCoordsForSegment(),
+			...getTextureCoordsForSegment(),
+		]);
 	}
 	/* eslint-enable array-bracket-spacing */
 	/* eslint-enable no-multi-spaces */

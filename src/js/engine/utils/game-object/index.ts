@@ -9,9 +9,8 @@ import Color from 'engine/utils/color';
 import Material from 'engine/utils/material';
 import Script from 'engine/utils/script';
 import Behaviour from 'engine/utils/script/behaviour';
-import getDefaultShader from 'engine/utils/shader';
 import { mat4, vec3 } from 'gl-matrix';
-import { IGeometry } from '../../standard/geometry';
+import Geometry from '../../standard/geometry';
 import { IGameObjectJSON, IGameObjectParams } from './types';
 
 export default class GameObject {
@@ -108,7 +107,7 @@ export default class GameObject {
 		return gameObject;
 	}
 
-	addMesh(geometry: IGeometry) {
+	addMesh(geometry: Geometry) {
 		this.mesh = new Mesh(this, geometry);
 	}
 

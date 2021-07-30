@@ -1,4 +1,4 @@
-import Box from 'engine/primitives/box';
+import Box from 'engine/geometry/box';
 
 export default class SkyBox extends Box {
 	constructor(gl, scene, config) {

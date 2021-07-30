@@ -2,21 +2,25 @@ import { vec3 } from 'gl-matrix';
 import {
 	getSegment,
 	getTextureCoordsForSegment,
-} from 'engine/primitives/helpers';
+} from 'engine/geometry/helpers';
 import { IPlaneConfig } from './types';
-import { IGeometry } from '../../standard/geometry';
+import Geometry from '../../standard/geometry';
 
-export default class Plane implements IGeometry {
+export default class Plane extends Geometry {
 	config: IPlaneConfig;
 	heightMap: Array<number>;
 
 	constructor(config: IPlaneConfig) {
+		super();
+
 		this.heightMap =
 			config.heightMap ||
 			new Array((config.widthSegments + 1) * (config.lengthSegments + 1)).fill(
 				0
 			);
 		this.config = config;
+		this.name = 'Plane';
+		this.id = 'Plane';
 	}
 
 	getNormalsForSegment(p00: vec3, p01: vec3, p10: vec3) {
@@ -31,7 +35,7 @@ export default class Plane implements IGeometry {
 		return [...n, ...n, ...n, ...n, ...n, ...n];
 	}
 
-	getGeometry() {
+	construct() {
 		const positions = [];
 		const normals = [];
 		const textureCoords = [];
@@ -71,10 +75,8 @@ export default class Plane implements IGeometry {
 			}
 		}
 
-		return {
-			positions: positions.flat(),
-			normals: normals.flat(),
-			textureCoords: textureCoords.flat(),
-		};
+		this.positions = new Float32Array(positions.flat());
+		this.normals = new Float32Array(normals.flat());
+		this.textureCoords = new Float32Array(textureCoords.flat());
 	}
 }

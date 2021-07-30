@@ -2,30 +2,20 @@ import EngineGlobals from 'engine/globals';
 import { IMeshJSON } from 'engine/standard/mesh/types';
 import GameObject from 'engine/utils/game-object';
 import VAO from 'engine/utils/vao';
-import { IGeometry } from '../geometry';
+import Geometry from '../geometry';
 
 export default class Mesh {
 	attribLocations: {
 		[key: string]: number;
 	};
 
-	name: string;
 	vao: VAO;
 	gameObject: GameObject;
 	texture: WebGLTexture;
 
-	positions: Float32Array;
-	normals: Float32Array;
-	textureCoords: Float32Array;
+	geometry: Geometry;
 
-	constructor(
-		gameObject: GameObject,
-		geometry: IGeometry | null,
-		name?: string,
-		positions?: number[],
-		normals?: number[],
-		textureCoords?: number[]
-	) {
+	constructor(gameObject: GameObject, geometry: Geometry) {
 		this.attribLocations = {
 			aPosition: 0,
 			aNormal: 1,
@@ -37,56 +27,22 @@ export default class Mesh {
 
 		this.setupAttributes();
 
-		if (name) {
-			this.name = name;
-		}
+		this.geometry = geometry;
+		this.geometry.construct();
 
-		if (geometry) {
-			this.constructGeometry(geometry);
-			this.name = geometry.constructor.name;
-		} else if (positions && normals && textureCoords) {
-			this.setGeometry(positions, normals, textureCoords);
-		} else {
-			throw new Error('Mesh: Invalid constructor parameters');
-		}
+		this.setPositions();
+		this.setNormals();
+		this.setTextureCoords();
 	}
 
 	toJSON(): IMeshJSON {
 		return {
-			name: this.name,
-			positions: Array.from(this.positions),
-			normals: Array.from(this.normals),
-			textureCoords: Array.from(this.textureCoords),
+			geometryId: this.geometry.id,
 		};
 	}
 
-	static fromJSON(
-		gameObject: GameObject,
-		{ name, positions, normals, textureCoords }: IMeshJSON
-	) {
-		return new Mesh(gameObject, null, name, positions, normals, textureCoords);
-	}
-
-	constructGeometry(geometry: IGeometry) {
-		const geometryData = geometry.getGeometry();
-
-		this.positions = new Float32Array(geometryData.positions);
-		this.normals = new Float32Array(geometryData.normals);
-		this.textureCoords = new Float32Array(geometryData.textureCoords);
-
-		this.setPositions(this.positions);
-		this.setNormals(this.normals);
-		this.setTextureCoords(this.textureCoords);
-	}
-
-	setGeometry(positions: number[], normals: number[], textureCoords: number[]) {
-		this.positions = new Float32Array(positions);
-		this.normals = new Float32Array(normals);
-		this.textureCoords = new Float32Array(textureCoords);
-
-		this.setPositions(this.positions);
-		this.setNormals(this.normals);
-		this.setTextureCoords(this.textureCoords);
+	static fromJSON(gameObject: GameObject, { geometryId }: IMeshJSON) {
+		return new Mesh(gameObject, EngineGlobals.geometryPool.get(geometryId));
 	}
 
 	setupAttributes() {
@@ -95,23 +51,23 @@ export default class Mesh {
 		this.vao.setAttribute('aTextureCoord', 2, EngineGlobals.gl.FLOAT);
 	}
 
-	setPositions(positions: Float32Array) {
-		this.vao.setBufferData('aPosition', positions);
+	setPositions() {
+		this.vao.setBufferData('aPosition', this.geometry.positions);
 	}
 
-	setNormals(normals: Float32Array) {
-		this.vao.setBufferData('aNormal', normals);
+	setNormals() {
+		this.vao.setBufferData('aNormal', this.geometry.normals);
 	}
 
-	setTextureCoords(textureCoords: Float32Array) {
-		this.vao.setBufferData('aTextureCoord', textureCoords);
+	setTextureCoords() {
+		this.vao.setBufferData('aTextureCoord', this.geometry.textureCoords);
 	}
 
 	draw() {
 		EngineGlobals.gl.drawArrays(
 			EngineGlobals.gl.TRIANGLES,
 			0,
-			this.positions.length / 3
+			this.geometry.positions.length / 3
 		);
 	}
 }

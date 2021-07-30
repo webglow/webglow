@@ -23,6 +23,10 @@ import Scene from '../../engine/standard/scene';
 import { IProject } from '../project-card/types';
 import { API_URL } from '../constants';
 import { FileType } from '../../engine/utils/project-hierarchy/types';
+import Geometry from '../../engine/standard/geometry';
+import Material from '../../engine/utils/material';
+import EngineGlobals from '../../engine/globals';
+import Model from '../../engine/utils/model';
 
 export default function Editor({ className }: IProps) {
 	const canvasRef = useRef();
@@ -89,7 +93,8 @@ export default function Editor({ className }: IProps) {
 		setEngine(_engine);
 
 		return () => {
-			_engine.cleanup();
+			// TODO: Doesn't work with hot reload. Roll back for production
+			// _engine.cleanup();
 		};
 	}, [canvasRef.current, project]);
 
@@ -100,6 +105,9 @@ export default function Editor({ className }: IProps) {
 				break;
 			case FileType.Scene:
 				openScene(file);
+				break;
+			case FileType.Model:
+				addModel(file);
 				break;
 			default:
 				break;
@@ -112,6 +120,24 @@ export default function Editor({ className }: IProps) {
 		setActiveScene(scene);
 		setSceneFile(file);
 		engine.start();
+	};
+
+	const addModel = (file: File) => {
+		const parent = new GameObject();
+		const geometries = (file.content as Model).generate();
+
+		geometries.forEach((geometry) => {
+			const gameObject = new GameObject();
+
+			gameObject.addMesh(geometry);
+			gameObject.addMaterial(new Material());
+
+			gameObject.setParent(parent);
+		});
+
+		activeScene?.hierarchy.addObject(parent);
+
+		forceUpdate();
 	};
 
 	const saveProject = () => {

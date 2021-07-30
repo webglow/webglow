@@ -1,8 +1,11 @@
+import GeometryPool from './utils/geometry-pool';
+
 let instance: EngineGlobals = null;
 
 class EngineGlobals {
 	gl: WebGL2RenderingContext;
 	canvas: HTMLCanvasElement;
+	geometryPool: GeometryPool;
 
 	constructor(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement) {
 		if (!instance) {
@@ -11,6 +14,7 @@ class EngineGlobals {
 
 		this.gl = gl;
 		this.canvas = canvas;
+		this.geometryPool = new GeometryPool();
 
 		return instance;
 	}
@@ -29,6 +33,10 @@ class EngineGlobals {
 
 	static get canvas() {
 		return instance.canvas;
+	}
+
+	static get geometryPool() {
+		return instance.geometryPool;
 	}
 }
 

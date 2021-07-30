@@ -3,6 +3,7 @@ import {
 	faFolder,
 	faGlobeAmericas,
 	faPalette,
+	faTh,
 } from '@fortawesome/free-solid-svg-icons';
 import { FileType } from 'engine/utils/project-hierarchy/types';
 
@@ -16,6 +17,8 @@ export const getIconByFileType = (type: FileType) => {
 			return faPalette;
 		case FileType.Scene:
 			return faGlobeAmericas;
+		case FileType.Model:
+			return faTh;
 		default:
 			break;
 	}

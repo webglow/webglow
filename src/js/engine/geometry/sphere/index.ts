@@ -1,13 +1,17 @@
 import { vec2, vec3 } from 'gl-matrix';
-import { getSegment } from 'engine/primitives/helpers';
+import { getSegment } from 'engine/geometry/helpers';
 import { ISphereConfig } from './types';
-import { IGeometry } from '../../standard/geometry';
+import Geometry from '../../standard/geometry';
 
-export default class Sphere implements IGeometry {
+export default class Sphere extends Geometry {
 	config: ISphereConfig;
 
 	constructor(config: ISphereConfig) {
+		super();
+
 		this.config = config;
+		this.name = 'Sphere';
+		this.id = 'Sphere';
 	}
 
 	getPoint(i: number, j: number, width: number, height: number): vec3 {
@@ -47,7 +51,7 @@ export default class Sphere implements IGeometry {
 		return [...a, ...d, ...c, ...a, ...c, ...b];
 	}
 
-	getGeometry() {
+	construct() {
 		const positions = [];
 		const normals = [];
 		const textureCoords = [];
@@ -100,10 +104,8 @@ export default class Sphere implements IGeometry {
 			}
 		}
 
-		return {
-			positions: positions.flat(),
-			normals: normals.flat(),
-			textureCoords: textureCoords.flat(),
-		};
+		this.positions = new Float32Array(positions.flat());
+		this.normals = new Float32Array(normals.flat());
+		this.textureCoords = new Float32Array(textureCoords.flat());
 	}
 }

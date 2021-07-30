@@ -2,9 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { MouseEvent, useState } from 'react';
 import { faSitemap } from '@fortawesome/free-solid-svg-icons';
 import ContextMenu from '../context-menu';
-import { NodeList, Title, Wrapper } from './styles';
+import { NodeList, StyledNode, Title, Wrapper } from './styles';
 import { IProps } from './types';
-import SceneHierarchyNodeUI from '../scene-hierarchy-node';
 import { getGameObjectActionsMenuItems, getObjectMenuItems } from './helpers';
 import { IContextMenuItem } from '../context-menu/types';
 import GameObject from '../../engine/utils/game-object';
@@ -50,7 +49,7 @@ export default function SceneHierarchyUI({
 			{hierarchy && (
 				<NodeList>
 					{hierarchy.root.children.map((node) => (
-						<SceneHierarchyNodeUI
+						<StyledNode
 							key={node.id}
 							node={node}
 							onSelectNode={(n) => onSelectNode(n)}

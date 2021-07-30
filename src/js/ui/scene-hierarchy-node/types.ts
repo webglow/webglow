@@ -12,3 +12,7 @@ export interface IProps extends IComponentProps {
 export interface ITitleProps {
 	selected: boolean;
 }
+
+export interface ICollapseButtonProps {
+	collapsed: boolean;
+}

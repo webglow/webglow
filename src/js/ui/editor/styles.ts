@@ -46,12 +46,14 @@ export const NoActiveCamera = styled.div`
 export const StyledProjectHierarchy = styled(ProjectHierarchyUI)`
 	grid-row: 3 / 4;
 	border-top: 1px solid var(--black);
+	overflow: auto;
 `;
 
 export const StyledSceneHierarchy = styled(SceneHierarchyUI)`
 	grid-row: 1 / 4;
 	min-width: 0;
 	border-right: 1px solid var(--black);
+	overflow: auto;
 `;
 
 export const StyledInspector = styled(Inspector)`
@@ -59,4 +61,5 @@ export const StyledInspector = styled(Inspector)`
 	grid-column: 3;
 	min-width: 0;
 	border-left: 1px solid var(--black);
+	overflow: auto;
 `;

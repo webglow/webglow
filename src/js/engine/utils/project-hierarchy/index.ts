@@ -2,6 +2,8 @@ import File from 'engine/utils/project-hierarchy/file';
 import Script from 'engine/utils/script';
 import getDefaultShader from 'engine/utils/shader';
 import Tetris from '../../../scenes/tetris/scene';
+import Model from '../model';
+import { IModelJSON } from '../model/types';
 import { FileType, IFileJSON, IProjectJSON } from './types';
 
 export default class ProjectHierarchy {
@@ -31,6 +33,15 @@ export default class ProjectHierarchy {
 
 					childFile.parent = file;
 				});
+			} else if (fileJson.type === FileType.Model) {
+				file = new File(
+					fileJson.name,
+					fileJson.type,
+					new Model(
+						(fileJson.content as IModelJSON).obj,
+						(fileJson.content as IModelJSON).id
+					)
+				);
 			} else {
 				file = new File(fileJson.name, fileJson.type, fileJson.content);
 			}

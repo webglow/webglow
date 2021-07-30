@@ -131,7 +131,7 @@ export default function GameObjectInspector({
 			</Section>
 			{selectedObject.mesh && (
 				<Section>
-					<MeshComponent meshName={selectedObject.mesh.name} />
+					<MeshComponent meshName={selectedObject.mesh.geometry.name} />
 				</Section>
 			)}
 			{selectedObject.material && (

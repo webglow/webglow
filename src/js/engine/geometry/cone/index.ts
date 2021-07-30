@@ -1,12 +1,16 @@
 import { vec3 } from 'gl-matrix';
-import { IGeometry } from '../../standard/geometry';
+import Geometry from '../../standard/geometry';
 import { IConeConfig } from './types';
 
-export default class Cone implements IGeometry {
+export default class Cone extends Geometry {
 	config: IConeConfig;
 
 	constructor(config: IConeConfig) {
+		super();
+
 		this.config = config;
+		this.name = 'Cone';
+		this.id = 'Cone';
 	}
 
 	getPoint(i: number, radius: number, y: number, segments: number): vec3 {
@@ -17,7 +21,7 @@ export default class Cone implements IGeometry {
 		];
 	}
 
-	getGeometry() {
+	construct() {
 		const positions = [];
 		const normals = [];
 		const textureCoords: number[] = [];
@@ -48,10 +52,8 @@ export default class Cone implements IGeometry {
 			normals.push([...[0, -1, 0], ...[0, -1, 0], ...[0, -1, 0]]);
 		}
 
-		return {
-			positions: positions.flat(),
-			normals: normals.flat(),
-			textureCoords,
-		};
+		this.positions = new Float32Array(positions.flat());
+		this.normals = new Float32Array(normals.flat());
+		this.textureCoords = new Float32Array(textureCoords.flat());
 	}
 }

@@ -1,4 +1,4 @@
-import Plane from '../lib/primitives/plane';
+import Plane from '../lib/geometry/plane';
 import Scene from '../lib/standard/scene';
 import SkyBox from '../lib/standard/skybox';
 import DirectionalLight from '../lib/standard/light/directional';

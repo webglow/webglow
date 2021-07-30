@@ -1,10 +1,6 @@
 import GameObject from 'engine/utils/game-object';
 import { IGameObjectJSON } from 'engine/utils/game-object/types';
 import { v4 as uuidv4 } from 'uuid';
-import Box from '../../primitives/box';
-import Plane from '../../primitives/plane';
-import Sphere from '../../primitives/sphere';
-import Material from '../material';
 
 export default class SceneHierarchy {
 	root: GameObject;

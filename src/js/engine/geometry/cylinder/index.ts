@@ -1,13 +1,17 @@
 import { vec3 } from 'gl-matrix';
-import { IGeometry } from '../../standard/geometry';
+import Geometry from '../../standard/geometry';
 import { getSegment } from '../helpers';
 import { ICylinderConfig } from './types';
 
-export default class Cylinder implements IGeometry {
+export default class Cylinder extends Geometry {
 	config: ICylinderConfig;
 
 	constructor(config: ICylinderConfig) {
+		super();
+
 		this.config = config;
+		this.name = 'Cylinder';
+		this.id = 'Cylinder';
 	}
 
 	getPoint(i: number, radius: number, y: number, segments: number): vec3 {
@@ -27,7 +31,7 @@ export default class Cylinder implements IGeometry {
 		return [...nA, ...nD, ...nC, ...nA, ...nC, ...nB];
 	}
 
-	getGeometry() {
+	construct() {
 		const positions = [];
 		const normals = [];
 		const textureCoords: number[] = [];
@@ -72,10 +76,8 @@ export default class Cylinder implements IGeometry {
 			normals.push([...[0, -1, 0], ...[0, -1, 0], ...[0, -1, 0]]);
 		}
 
-		return {
-			positions: positions.flat(),
-			normals: normals.flat(),
-			textureCoords,
-		};
+		this.positions = new Float32Array(positions.flat());
+		this.normals = new Float32Array(normals.flat());
+		this.textureCoords = new Float32Array(textureCoords.flat());
 	}
 }

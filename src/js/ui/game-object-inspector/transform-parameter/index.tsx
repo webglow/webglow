@@ -16,7 +16,7 @@ export default function TransformParameter({ name, onChange, value }: IProps) {
 				<ParamComponentValue
 					type="number"
 					onChange={(newValue) => {
-						onChange([newValue ? parseInt(newValue) : 0, value[1], value[2]]);
+						onChange([newValue ? parseFloat(newValue) : 0, value[1], value[2]]);
 					}}
 					value={value[0]}
 				/>
@@ -24,7 +24,7 @@ export default function TransformParameter({ name, onChange, value }: IProps) {
 				<ParamComponentValue
 					type="number"
 					onChange={(newValue) => {
-						onChange([value[0], newValue ? parseInt(newValue) : 0, value[2]]);
+						onChange([value[0], newValue ? parseFloat(newValue) : 0, value[2]]);
 					}}
 					value={value[1]}
 				/>
@@ -32,7 +32,7 @@ export default function TransformParameter({ name, onChange, value }: IProps) {
 				<ParamComponentValue
 					type="number"
 					onChange={(newValue) => {
-						onChange([value[0], value[1], newValue ? parseInt(newValue) : 0]);
+						onChange([value[0], value[1], newValue ? parseFloat(newValue) : 0]);
 					}}
 					value={value[2]}
 				/>

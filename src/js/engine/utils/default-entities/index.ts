@@ -1,9 +1,10 @@
-import Box from '../../primitives/box';
-import Cone from '../../primitives/cone';
-import Cylinder from '../../primitives/cylinder';
-import Plane from '../../primitives/plane';
-import Sphere from '../../primitives/sphere';
-import { IGeometry } from '../../standard/geometry';
+import Box from '../../geometry/box';
+import Cone from '../../geometry/cone';
+import Cylinder from '../../geometry/cylinder';
+import Plane from '../../geometry/plane';
+import Sphere from '../../geometry/sphere';
+import EngineGlobals from '../../globals';
+import Geometry from '../../standard/geometry';
 import GameObject from '../game-object';
 import Material from '../material';
 import SceneHierarchy from '../scene-hierarchy';
@@ -11,7 +12,7 @@ import SceneHierarchy from '../scene-hierarchy';
 export default class DefaultEntities {
 	static add3dObject(
 		hierarchy: SceneHierarchy,
-		geometry: IGeometry,
+		geometry: Geometry,
 		type: string,
 		parent?: GameObject
 	) {
@@ -30,7 +31,7 @@ export default class DefaultEntities {
 	static addBox(hierarchy: SceneHierarchy, parent?: GameObject) {
 		DefaultEntities.add3dObject(
 			hierarchy,
-			new Box({ size: [1, 1, 1] }),
+			EngineGlobals.geometryPool.get('Box'),
 			'Box',
 			parent
 		);
@@ -39,12 +40,7 @@ export default class DefaultEntities {
 	static addPlane(hierarchy: SceneHierarchy, parent?: GameObject) {
 		DefaultEntities.add3dObject(
 			hierarchy,
-			new Plane({
-				width: 50,
-				length: 50,
-				widthSegments: 1,
-				lengthSegments: 1,
-			}),
+			EngineGlobals.geometryPool.get('Plane'),
 			'Plane',
 			parent
 		);
@@ -53,11 +49,7 @@ export default class DefaultEntities {
 	static addSphere(hierarchy: SceneHierarchy, parent?: GameObject) {
 		DefaultEntities.add3dObject(
 			hierarchy,
-			new Sphere({
-				widthSegments: 30,
-				heightSegments: 30,
-				radius: 1,
-			}),
+			EngineGlobals.geometryPool.get('Sphere'),
 			'Sphere',
 			parent
 		);
@@ -66,11 +58,7 @@ export default class DefaultEntities {
 	static addCylinder(hierarchy: SceneHierarchy, parent?: GameObject) {
 		DefaultEntities.add3dObject(
 			hierarchy,
-			new Cylinder({
-				segments: 30,
-				radius: 1,
-				height: 2,
-			}),
+			EngineGlobals.geometryPool.get('Cylinder'),
 			'Cylinder',
 			parent
 		);
@@ -79,11 +67,7 @@ export default class DefaultEntities {
 	static addCone(hierarchy: SceneHierarchy, parent?: GameObject) {
 		DefaultEntities.add3dObject(
 			hierarchy,
-			new Cone({
-				segments: 30,
-				radius: 1,
-				height: 2,
-			}),
+			EngineGlobals.geometryPool.get('Cone'),
 			'Cone',
 			parent
 		);

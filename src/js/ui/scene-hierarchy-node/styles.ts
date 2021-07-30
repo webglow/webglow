@@ -1,18 +1,41 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import SceneHierarchyNodeUI from '.';
-import { TextWithIcon } from '../../../styles/common';
+import { Button, TextWithIcon } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
-import { ITitleProps } from './types';
+import { ICollapseButtonProps, ITitleProps } from './types';
+
+export const Node = styled.div`
+	user-select: none;
+	display: flex;
+`;
 
 export const Wrapper = styled.div``;
 
-export const Node = styled(TextWithIcon)<ITitleProps>`
+export const CollapseButton = styled(Button)<ICollapseButtonProps>`
+	background: var(--grey);
+	color: var(--white);
+	padding: ${pxToRem(5)}rem ${pxToRem(5)}rem;
+
+	& > svg {
+		transition: transform 0.2s ease-in-out;
+	}
+
+	${(props) =>
+		!props.collapsed &&
+		css`
+			& > svg {
+				transform: rotate(90deg);
+			}
+		`}
+`;
+
+export const SelectableArea = styled(TextWithIcon)<ITitleProps>`
+	min-width: 0;
 	cursor: pointer;
 	padding: ${pxToRem(5)}rem;
 	font-size: ${pxToRem(15)}rem;
 	border-radius: 3px;
 	transition: background 0.2s ease-in-out;
-	user-select: none;
 
 	&:hover {
 		background: var(--dark-dark-grey);

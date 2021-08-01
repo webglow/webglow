@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { hot } from 'react-hot-loader/root';
 import {
 	BrowserRouter as Router,
+	Redirect,
 	Route,
 	Switch,
 	useHistory,
@@ -36,6 +37,7 @@ const Main = () => {
 				<StyledNavbar onNewProject={() => setNewProjectModalOpen(true)} />
 
 				<Switch>
+					<Route exact path="/" render={() => <Redirect to="/explore" />} />
 					<Route path="/projects/:id">
 						<StyledEditor />
 					</Route>

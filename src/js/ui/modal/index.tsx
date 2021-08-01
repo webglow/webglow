@@ -13,6 +13,8 @@ import {
 export default function Modal({
 	className,
 	children,
+	minWidth,
+	minHeight,
 	title,
 	footer,
 	...modalProps
@@ -28,7 +30,7 @@ export default function Modal({
 			{...modalProps}
 		>
 			<Fade in={modalProps.open}>
-				<Body>
+				<Body minHeight={minHeight} minWidth={minWidth}>
 					{title && <Title>{title}</Title>}
 					<Content>{children}</Content>
 					<Footer>{footer}</Footer>

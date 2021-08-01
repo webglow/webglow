@@ -15,6 +15,8 @@ import AddComponent from './add-component';
 import { GameObjectComponents } from './add-component/types';
 import CameraComponent from './camera-component';
 import MeshRendererComponent from './mesh-renderer-component';
+import EngineGlobals from '../../engine/globals';
+import Material from '../../engine/utils/material';
 
 export default function GameObjectInspector({
 	className,
@@ -87,6 +89,14 @@ export default function GameObjectInspector({
 		forceUpdate();
 	};
 
+	const onMaterialChange = (materialId: string) => {
+		selectedObject.meshRenderer.material = EngineGlobals.materialPool.getMaterialById(
+			materialId
+		);
+
+		forceUpdate();
+	};
+
 	const addComponent = (type: GameObjectComponents) => {
 		switch (type) {
 			case GameObjectComponents.Light:
@@ -130,7 +140,10 @@ export default function GameObjectInspector({
 			)}
 			{selectedObject.meshRenderer && (
 				<Section>
-					<MeshRendererComponent meshRenderer={selectedObject.meshRenderer} />
+					<MeshRendererComponent
+						meshRenderer={selectedObject.meshRenderer}
+						onMaterialChange={onMaterialChange}
+					/>
 				</Section>
 			)}
 			{selectedObject.light && (

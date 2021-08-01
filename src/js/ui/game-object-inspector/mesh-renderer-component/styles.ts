@@ -18,4 +18,10 @@ export const MaterialName = styled.div`
 	background: var(--black);
 	padding: ${pxToRem(2)}rem ${pxToRem(4)}rem;
 	border-radius: 3px;
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+
+	&:hover {
+		background: var(--light-grey);
+	}
 `;

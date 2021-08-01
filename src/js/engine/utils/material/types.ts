@@ -1,4 +1,4 @@
-import { UniformType } from '../shader-program/types';
+import { UniformType } from '../shader/types';
 
 export interface IMaterialParam {
 	displayName: string;

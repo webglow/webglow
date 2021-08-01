@@ -1,4 +1,4 @@
-import React, { DragEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { DragEvent, MouseEvent, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolder } from '@fortawesome/free-solid-svg-icons';
 import File from 'engine/utils/project-hierarchy/file';
@@ -108,13 +108,13 @@ export default function ProjectHierarchyUI({
 								selected={file === selectedFile}
 								onContextMenu={(event) =>
 									openContextMenu(event, [
-										...getFileActionItems(cwd, file),
+										...getFileActionItems(file),
 										...getCreateFileItems(cwd),
 									])
 								}
 								onRename={(newFileName: string) => {
 									if (newFileName) {
-										file.name = newFileName;
+										file.rename(newFileName);
 									}
 								}}
 								key={file.name}

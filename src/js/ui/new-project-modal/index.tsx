@@ -16,14 +16,16 @@ export default function NewProjectModal({
 	className,
 	onCancel,
 	onCreate,
-	...modalProps
+	onClose,
+	open,
 }: IProps) {
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	return (
 		<Modal
 			className={className}
-			{...modalProps}
+			onClose={onClose}
+			open={open}
 			title="Create New Project"
 			footer={
 				<Footer>

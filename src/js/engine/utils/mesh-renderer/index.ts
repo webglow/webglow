@@ -5,7 +5,7 @@ import { LightType } from '../../standard/light/types';
 import GameObject from '../game-object';
 import Material from '../material';
 import Shader from '../shader';
-import { UniformType } from '../shader-program/types';
+import { UniformType } from '../shader/types';
 import VAO from '../vao';
 import { IMeshRendererJSON } from './types';
 
@@ -18,7 +18,10 @@ export default class MeshRenderer {
 	material: Material;
 	gameObject: GameObject;
 
-	constructor(gameObject: GameObject, material: Material = Material.default()) {
+	constructor(
+		gameObject: GameObject,
+		material: Material = EngineGlobals.materialPool.getMaterialById('default')
+	) {
 		this.vao = new VAO(Shader.defaultAttribLocations());
 
 		this.gameObject = gameObject;
@@ -41,10 +44,18 @@ export default class MeshRenderer {
 		if (materialId === 'default') {
 			return new MeshRenderer(gameObject);
 		}
+
+		const material = EngineGlobals.materialPool.getMaterialById(materialId);
+
+		if (!material) {
+			return;
+		}
+
+		return new MeshRenderer(gameObject, material);
 	}
 
 	setWorldViewProjection(mWorldViewProjection: mat4) {
-		this.material.shaderProgram.setUniform(
+		this.material.shader.setUniform(
 			UniformType.t_mat4,
 			'uWorldViewProjection',
 			mWorldViewProjection
@@ -52,15 +63,11 @@ export default class MeshRenderer {
 	}
 
 	setWorld(mWorld: mat4) {
-		this.material.shaderProgram.setUniform(
-			UniformType.t_mat4,
-			'uWorld',
-			mWorld
-		);
+		this.material.shader.setUniform(UniformType.t_mat4, 'uWorld', mWorld);
 	}
 
 	setWorldInverseTranspose(mWorldInverseTranspose: mat4) {
-		this.material.shaderProgram.setUniform(
+		this.material.shader.setUniform(
 			UniformType.t_mat4,
 			'uWorldInverseTranspose',
 			mWorldInverseTranspose
@@ -68,7 +75,7 @@ export default class MeshRenderer {
 	}
 
 	setViewWorldPosition(vViewWorldPosition: vec3) {
-		this.material.shaderProgram.setUniform(
+		this.material.shader.setUniform(
 			UniformType.t_vec3,
 			'uViewWorldPosition',
 			vViewWorldPosition
@@ -87,12 +94,12 @@ export default class MeshRenderer {
 				? 'uPointLightNumber'
 				: 'uDirectionalLightNumber';
 
-		this.material.shaderProgram.setUniform(UniformType.t_mat3, matKey, [
+		this.material.shader.setUniform(UniformType.t_mat3, matKey, [
 			new Float32Array(lightSources.map((l) => l.toMat3Array()).flat()),
 			0,
 			lightSources.length * 3 * 3,
 		]);
-		this.material.shaderProgram.setUniform(
+		this.material.shader.setUniform(
 			UniformType.t_uint,
 			numKey,
 			lightSources.length

@@ -2,8 +2,10 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GameObject from 'engine/utils/game-object';
 import React from 'react';
-import FileInspector from '../file-inspector';
+import File from '../../engine/utils/project-hierarchy/file';
+import { FileType } from '../../engine/utils/project-hierarchy/types';
 import GameObjectInspector from '../game-object-inspector';
+import MaterialInspector from '../material-inspector';
 import { Title, Wrapper } from './styles';
 import { IProps } from './types';
 
@@ -22,7 +24,10 @@ export default function Inspector({
 			);
 		}
 		if (selectedObject instanceof File) {
-			return <FileInspector file={selectedObject} />;
+			switch (selectedObject.type) {
+				case FileType.Material:
+					return <MaterialInspector file={selectedObject} />;
+			}
 		}
 		return null;
 	};

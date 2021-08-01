@@ -1,4 +1,5 @@
 import Scene from '../../standard/scene';
+import Material from '../material';
 import Script from '../script';
 import Shader from '../shader';
 import File from './file';
@@ -31,6 +32,15 @@ export default class DefaultFiles {
 		const scene = new Scene().toJSON();
 
 		const file = new File(name, FileType.Scene, JSON.stringify(scene));
+
+		return file;
+	}
+
+	static createMaterial(name: string) {
+		const material = new Material(Shader.default(), name);
+		material.displayName = name;
+
+		const file = new File(name, FileType.Material, JSON.stringify(material));
 
 		return file;
 	}

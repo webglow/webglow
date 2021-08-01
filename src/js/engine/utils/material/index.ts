@@ -1,7 +1,6 @@
 import EngineGlobals from 'engine/globals';
 import { v4 as uuidv4 } from 'uuid';
-import ShaderProgram from 'engine/utils/shader-program';
-import { UniformType } from 'engine/utils/shader-program/types';
+import { UniformType } from 'engine/utils/shader/types';
 import Shader from 'engine/utils/shader';
 import { IMaterialJSON, IMaterialParam } from './types';
 
@@ -11,38 +10,34 @@ export default class Material {
 	uniforms: { [key: string]: WebGLUniformLocation };
 	program: WebGLProgram;
 	texture: WebGLTexture;
-	shaderProgram: ShaderProgram;
 	shader: Shader;
 	params: IMaterialParam[];
 
 	constructor(
 		shader: Shader,
 		displayName: string,
+		id: string = uuidv4(),
 		params: IMaterialParam[] = shader.params.map((param) => ({
 			displayName: param.displayName,
 			key: param.key,
 			type: param.type,
 			value: param.defaultValue,
-		})),
-		id: string = uuidv4()
+		}))
 	) {
 		this.id = id;
 		this.displayName = displayName;
 		this.shader = shader;
 		this.params = params;
 
-		this.shaderProgram = new ShaderProgram(
-			'default',
-			this.shader.vertex,
-			this.shader.fragment,
-			Shader.defaultAttribLocations()
-		);
-
 		this.setUniforms(this.params);
 	}
 
 	static default() {
-		return new Material(Shader.default(), 'default');
+		return new Material(Shader.default(), 'default', 'default');
+	}
+
+	static fromJSON({ id, displayName, shaderId, params }: IMaterialJSON) {
+		return new Material(Shader.default(), displayName, id, params);
 	}
 
 	toJSON(): IMaterialJSON {
@@ -56,7 +51,7 @@ export default class Material {
 
 	setUniforms(params: IMaterialParam[]) {
 		params.forEach((param) => {
-			this.shaderProgram.setUniform(param.type, param.key, param.value);
+			this.shader.setUniform(param.type, param.key, param.value);
 		});
 	}
 
@@ -68,11 +63,11 @@ export default class Material {
 		}
 
 		param.value = newValue;
-		this.shaderProgram.setUniform(param.type, param.key, newValue);
+		this.shader.setUniform(param.type, param.key, newValue);
 	}
 
 	setTexture(textureUnit: number) {
-		this.shaderProgram.setUniform(UniformType.t_int, 'uTexture', textureUnit);
+		this.shader.setUniform(UniformType.t_int, 'uTexture', textureUnit);
 	}
 
 	setupColor(color: number[]) {

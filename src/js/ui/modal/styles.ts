@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Header } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import theme from '../../../styles/theme';
+import { IModalBodyProps } from './types';
 
 export const StyledModal = styled(Modal)``;
 
@@ -15,7 +16,7 @@ export const Title = styled(Header)`
 	border-bottom: 1px solid var(--black);
 `;
 
-export const Body = styled.div`
+export const Body = styled.div<IModalBodyProps>`
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -25,8 +26,8 @@ export const Body = styled.div`
 	display: flex;
 	flex-flow: column;
 	color: var(--white);
-	min-width: ${pxToRem(300)}rem;
-	min-height: ${pxToRem(200)}rem;
+	min-width: ${({ minWidth = 300 }) => pxToRem(minWidth)}rem;
+	min-height: ${({ minHeight = 200 }) => pxToRem(minHeight)}rem;
 	box-shadow: ${theme.boxShadows.strong};
 `;
 

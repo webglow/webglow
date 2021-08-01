@@ -25,8 +25,16 @@ export default class File {
 		this.children = children;
 		this.extension = this.getExtension(type);
 
-		if (type === FileType.Model) {
-			EngineGlobals.geometryPool.geometryFromFile(this);
+		this.registerPoolItem();
+	}
+
+	registerPoolItem() {
+		switch (this.type) {
+			case FileType.Model:
+				EngineGlobals.geometryPool.geometryFromFile(this);
+				return;
+			case FileType.Material:
+				EngineGlobals.materialPool.materialFromFile(this);
 		}
 	}
 
@@ -59,9 +67,54 @@ export default class File {
 			return;
 		}
 
+		const { fileName } = file.name.match(
+			/^(?<fileName>.*?)(\((?<number>\d+)\))?$/
+		).groups;
+
+		const fileNameRegex = new RegExp(
+			`^${fileName}\\s*(\\((?<number>\\d+)\\))?$`
+		);
+		const numbers = this.children
+			.filter((f) => fileNameRegex.test(f.name))
+			.map((f) => parseInt(f.name.match(fileNameRegex).groups?.number));
+
+		if (numbers) {
+			const max = Math.max(...numbers.filter((n) => !isNaN(n)));
+			if (max > -Infinity) {
+				file.rename(`${fileName} (${max + 1})`);
+			} else {
+				file.rename(`${fileName} (1)`);
+			}
+		}
+
 		this.children.push(file);
 
 		file.parent = this;
+	}
+
+	rename(newName: string) {
+		this.name = newName;
+
+		switch (this.type) {
+			case FileType.Material:
+				this.content = JSON.stringify({
+					...JSON.parse(this.content),
+					displayName: newName,
+				});
+				EngineGlobals.materialPool.renameMaterial(this.id, newName);
+				break;
+		}
+	}
+
+	remove() {
+		if (this.parent) {
+			this.parent.children.splice(this.parent.children.indexOf(this), 1);
+			this.parent = null;
+		}
+
+		if (this.type === FileType.Model) {
+			EngineGlobals.geometryPool.removeByFileId(this.id);
+		}
 	}
 
 	removeChild(file: File) {
@@ -81,7 +134,7 @@ export default class File {
 			case FileType.Shader:
 				return '.shader';
 			case FileType.Material:
-				return '.mat';
+				return '.mtl';
 			default:
 				return '';
 		}

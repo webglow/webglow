@@ -3,13 +3,13 @@ import Cone from '../../geometry/cone';
 import Cylinder from '../../geometry/cylinder';
 import Plane from '../../geometry/plane';
 import Sphere from '../../geometry/sphere';
-import Geometry from '../../standard/geometry';
 import Model from '../model';
 import File from '../project-hierarchy/file';
-import { PoolItem } from './types';
+import {FileType} from '../project-hierarchy/types';
+import { IPoolItem } from './types';
 
 export default class GeometryPool {
-	pool: PoolItem[] = [
+	pool: IPoolItem[] = [
 		{
 			id: 'Box',
 			geometry: new Box({ size: [1, 1, 1] }),
@@ -50,15 +50,29 @@ export default class GeometryPool {
 	];
 
 	geometryFromFile(file: File) {
+		if (file.type !== FileType.Model) {
+			return;
+		}
+
 		const geometries = Model.fromJSON(JSON.parse(file.content)).generate();
 
 		geometries.forEach((geometry) => {
+			if (this.get(geometry.id)) {
+				return;
+			}
+
 			this.pool.push({
 				geometry,
 				fileId: file.id,
 				id: geometry.id,
 			});
 		});
+	}
+
+	removeByFileId(id: string) {
+		this.pool
+			.filter((item) => item.fileId === id)
+			.forEach((item) => this.pool.splice(this.pool.indexOf(item), 1));
 	}
 
 	get(id: string) {

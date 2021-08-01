@@ -1,5 +1,7 @@
 import GeometryPool from './utils/geometry-pool';
+import MaterialPool from './utils/material-pool';
 import ProjectHierarchy from './utils/project-hierarchy';
+import ShaderPool from './utils/shader-pool';
 
 let instance: EngineGlobals = null;
 
@@ -8,6 +10,8 @@ class EngineGlobals {
 	projectHierarchy: ProjectHierarchy;
 	canvas: HTMLCanvasElement;
 	geometryPool: GeometryPool;
+	materialPool: MaterialPool;
+	shaderPool: ShaderPool;
 
 	constructor(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement) {
 		if (!instance) {
@@ -17,6 +21,8 @@ class EngineGlobals {
 		this.gl = gl;
 		this.canvas = canvas;
 		this.geometryPool = new GeometryPool();
+		this.shaderPool = new ShaderPool();
+		this.materialPool = new MaterialPool();
 
 		return instance;
 	}
@@ -39,6 +45,14 @@ class EngineGlobals {
 
 	static get geometryPool() {
 		return instance.geometryPool;
+	}
+
+	static get materialPool() {
+		return instance.materialPool;
+	}
+
+	static get shaderPool() {
+		return instance.shaderPool;
 	}
 }
 

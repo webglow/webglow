@@ -53,9 +53,7 @@ const Main = () => {
 						setNewProjectModalOpen(false);
 						createProject(project);
 					}}
-				>
-					<div>Hello</div>
-				</NewProjectModal>
+				/>
 			</Wrapper>
 		</StylesProvider>
 	);

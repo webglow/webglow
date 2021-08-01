@@ -187,7 +187,7 @@ export default class Model {
 		for (let i = 0; i < lines.length; i++) {
 			if (/^\s*g\s+/.test(lines[i])) {
 				const groupName =
-					lines[i].match(/^\s*g\s+(?<groupName>.*)$/).groups.groupName ||
+					lines[i].match(/^\s*g\s+(?<groupName>.*)/).groups.groupName ||
 					'default';
 
 				if (groupName !== currentGroup.name) {
@@ -214,7 +214,7 @@ export default class Model {
 			}
 
 			if (/^\s*s\s+/.test(lines[i])) {
-				const { smooth } = lines[i].match(/^\s*s\s+(?<smooth>.*)$/).groups;
+				const { smooth } = lines[i].match(/^\s*s\s+(?<smooth>.*)/).groups;
 
 				if (smooth !== 'off') {
 					currentGroup.smooth = true;
@@ -224,7 +224,7 @@ export default class Model {
 			if (/^\s*v\s+/.test(lines[i])) {
 				parsedObj.vertices.push(
 					lines[i]
-						.match(/^\s*v\s+(?<coords>.*)$/)
+						.match(/^\s*v\s+(?<coords>.*)/)
 						.groups.coords.trim()
 						.split(/\s+/)
 						.map((str) => parseFloat(str))
@@ -234,7 +234,7 @@ export default class Model {
 			if (/^\s*vn\s+/.test(lines[i])) {
 				parsedObj.normals.push(
 					lines[i]
-						.match(/^\s*vn\s+(?<coords>.*)$/)
+						.match(/^\s*vn\s+(?<coords>.*)/)
 						.groups.coords.trim()
 						.split(/\s+/)
 						.map((str) => parseFloat(str))
@@ -244,7 +244,7 @@ export default class Model {
 			if (/^\s*f\s+/.test(lines[i])) {
 				currentGroup.polygons.push(
 					lines[i]
-						.match(/^\s*f\s+(?<faces>.*)$/)
+						.match(/^\s*f\s+(?<faces>.*)/)
 						.groups.faces.trim()
 						.split(/\s+/)
 				);

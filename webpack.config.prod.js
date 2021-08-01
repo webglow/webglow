@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 	mode: 'production',
@@ -44,4 +45,9 @@ module.exports = {
 			engine: path.resolve(__dirname, 'src', 'js', 'engine'),
 		},
 	},
+	plugins: [
+		new webpack.DefinePlugin({
+			API_URL: JSON.stringify('http://webglow-api.herokuapp.com'),
+		}),
+	],
 };

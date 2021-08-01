@@ -47,7 +47,7 @@ module.exports = {
 	},
 	plugins: [
 		new webpack.DefinePlugin({
-			API_URL: JSON.stringify('http://webglow-api.herokuapp.com'),
+			API_URL: JSON.stringify('http://api.webglow.xyz'),
 		}),
 	],
 };

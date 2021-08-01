@@ -1,5 +1,4 @@
 import { UniformType } from '../shader-program/types';
-import { IShader } from '../shader/types';
 
 export interface IMaterialParam {
 	displayName: string;
@@ -9,6 +8,8 @@ export interface IMaterialParam {
 }
 
 export interface IMaterialJSON {
-	shader: IShader;
+	id: string;
+	displayName: string;
+	shaderId: string;
 	params: IMaterialParam[];
 }

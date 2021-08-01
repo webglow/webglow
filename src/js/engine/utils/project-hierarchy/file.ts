@@ -1,35 +1,57 @@
-import { FileType, FileContent } from './types';
+import { v4 as uuidv4 } from 'uuid';
+import EngineGlobals from '../../globals';
+import { FileType, IFileJSON } from './types';
 
 export default class File {
+	id: string;
 	type: FileType;
 	extension: string;
 	name: string;
 	parent: File;
-	content: FileContent;
+	children?: File[];
+	content: string;
 
-	constructor(name: string, type: FileType, content: FileContent) {
+	constructor(
+		name: string,
+		type: FileType,
+		content: string,
+		children?: File[],
+		id: string = uuidv4()
+	) {
+		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.content = content;
+		this.children = children;
 		this.extension = this.getExtension(type);
+
+		if (type === FileType.Model) {
+			EngineGlobals.geometryPool.geometryFromFile(this);
+		}
 	}
 
-	toJSON(): any {
-		let contentJSON;
-
-		if ('toJSON' in this.content) {
-			contentJSON = this.content.toJSON();
-		} else if (this.content instanceof Array) {
-			contentJSON = this.content.map((file: File) => file.toJSON());
-		} else {
-			contentJSON = this.content;
-		}
-
+	toJSON(): IFileJSON {
 		return {
+			id: this.id,
 			name: this.name,
 			type: this.type,
-			content: contentJSON,
+			content: this.content,
+			children: this.children?.map((file: File) => file.toJSON()),
 		};
+	}
+
+	static fromJSON({ id, name, type, content, children }: IFileJSON) {
+		const file = new File(name, type, content, [], id);
+
+		children?.forEach((child: IFileJSON) => {
+			const childFile = File.fromJSON(child);
+
+			file.children.push(childFile);
+
+			childFile.parent = file;
+		});
+
+		return file;
 	}
 
 	addChild(file: File) {
@@ -37,7 +59,7 @@ export default class File {
 			return;
 		}
 
-		(this.content as File[]).push(file);
+		this.children.push(file);
 
 		file.parent = this;
 	}
@@ -47,7 +69,7 @@ export default class File {
 			return;
 		}
 
-		(this.content as File[]).splice((this.content as File[]).indexOf(file), 1);
+		this.children.splice(this.children.indexOf(file), 1);
 
 		file.parent = null;
 	}

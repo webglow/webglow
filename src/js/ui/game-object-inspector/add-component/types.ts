@@ -8,6 +8,6 @@ export enum GameObjectComponents {
 	Light,
 	Camera,
 	Mesh,
-	Material,
+	MeshRenderer,
 	Script,
 }

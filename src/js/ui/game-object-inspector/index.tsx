@@ -14,7 +14,7 @@ import { useForceUpdate } from '../common/hooks';
 import AddComponent from './add-component';
 import { GameObjectComponents } from './add-component/types';
 import CameraComponent from './camera-component';
-import MaterialComponent from './material-component';
+import MeshRendererComponent from './mesh-renderer-component';
 
 export default function GameObjectInspector({
 	className,
@@ -87,12 +87,6 @@ export default function GameObjectInspector({
 		forceUpdate();
 	};
 
-	const onMaterialChange = (key: string, newValue: any) => {
-		selectedObject.material.setParamValue(key, newValue);
-
-		forceUpdate();
-	};
-
 	const addComponent = (type: GameObjectComponents) => {
 		switch (type) {
 			case GameObjectComponents.Light:
@@ -105,7 +99,7 @@ export default function GameObjectInspector({
 				break;
 			case GameObjectComponents.Script:
 				break;
-			case GameObjectComponents.Material:
+			case GameObjectComponents.MeshRenderer:
 				break;
 			default:
 				console.error('Unknown component type: ', type);
@@ -134,12 +128,9 @@ export default function GameObjectInspector({
 					<MeshComponent meshName={selectedObject.mesh.geometry.name} />
 				</Section>
 			)}
-			{selectedObject.material && (
+			{selectedObject.meshRenderer && (
 				<Section>
-					<MaterialComponent
-						material={selectedObject.material}
-						onParamChange={onMaterialChange}
-					/>
+					<MeshRendererComponent meshRenderer={selectedObject.meshRenderer} />
 				</Section>
 			)}
 			{selectedObject.light && (

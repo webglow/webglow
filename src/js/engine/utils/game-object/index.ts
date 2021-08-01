@@ -6,21 +6,20 @@ import { ILightConfig, LightType } from 'engine/standard/light/types';
 import Mesh from 'engine/standard/mesh';
 import Transform from 'engine/standard/transform';
 import Color from 'engine/utils/color';
-import Material from 'engine/utils/material';
 import Script from 'engine/utils/script';
 import Behaviour from 'engine/utils/script/behaviour';
-import { mat4, vec3 } from 'gl-matrix';
 import Geometry from '../../standard/geometry';
+import MeshRenderer from '../mesh-renderer';
 import { IGameObjectJSON, IGameObjectParams } from './types';
 
 export default class GameObject {
 	transform: Transform;
 	scripts: Script[];
 	mesh: Mesh;
+	meshRenderer: MeshRenderer;
 	light: Light;
 	rigidBody: RigidBody;
 	collider: Collider;
-	material: Material;
 	camera: Camera;
 	behaviour: Behaviour[];
 
@@ -49,9 +48,9 @@ export default class GameObject {
 			transform: this.transform.toJSON(),
 			scripts: this.scripts.map((script) => script.toJSON()),
 			mesh: this.mesh?.toJSON(),
+			meshRenderer: this.meshRenderer?.toJSON(),
 			displayName: this.displayName,
 			isRoot: this.isRoot,
-			material: this.material?.toJSON(),
 			light: this.light?.toJSON(),
 			camera: this.camera?.toJSON(),
 			id: this.id,
@@ -63,8 +62,8 @@ export default class GameObject {
 		transform,
 		scripts,
 		mesh,
+		meshRenderer,
 		isRoot,
-		material,
 		displayName,
 		light,
 		camera,
@@ -85,16 +84,15 @@ export default class GameObject {
 			});
 		}
 
-		if (mesh) {
-			gameObject.mesh = Mesh.fromJSON(gameObject, mesh);
+		if (mesh && meshRenderer) {
+			gameObject.mesh = Mesh.fromJSON(mesh);
+			gameObject.addMeshRenderer(
+				MeshRenderer.fromJSON(gameObject, meshRenderer)
+			);
 		}
 
 		if (camera) {
 			gameObject.addCamera();
-		}
-
-		if (material) {
-			gameObject.addMaterial(new Material(material.shader, material.params));
 		}
 
 		gameObject.scripts = scripts.map((scriptJson) => {
@@ -113,27 +111,25 @@ export default class GameObject {
 	}
 
 	addMesh(geometry: Geometry) {
-		this.mesh = new Mesh(this, geometry);
+		this.mesh = new Mesh(geometry);
+
+		this.addMeshRenderer();
 	}
 
-	addMaterial(material: Material) {
-		this.material = material;
-
-		this.material.attach(this, this.mesh.attribLocations);
+	addMeshRenderer(meshRenderer: MeshRenderer = new MeshRenderer(this)) {
+		this.meshRenderer = meshRenderer;
 	}
 
 	addScript(script: Script) {
 		this.scripts.push(script);
 	}
 
-	addLight(
-		config: ILightConfig = {
-			intensity: 1,
-			color: new Color('#ffffff'),
-			type: LightType.Directional,
-		}
-	) {
-		this.light = new Light(this, config);
+	addLight({
+		intensity = 1,
+		color = new Color('#ffffff'),
+		type = LightType.Directional,
+	} = {}) {
+		this.light = new Light(this, { intensity, color, type });
 	}
 
 	addBehaviour(CustomBehaviour: typeof Behaviour) {
@@ -181,48 +177,5 @@ export default class GameObject {
 
 	rename(newName: string) {
 		this.displayName = newName || 'GameObject';
-	}
-
-	updateMatrix(mProjection: mat4, viewWorldPosition: vec3, pov: mat4) {
-		const world = this.updateWorldMatrix(viewWorldPosition);
-
-		const worldViewProjection = this.transform.getWorldViewProjection(
-			world,
-			mProjection,
-			pov
-		);
-
-		this.material.shaderController.setWorldViewProjection(worldViewProjection);
-
-		return worldViewProjection;
-	}
-
-	updateWorldMatrix(viewWorldPosition: vec3) {
-		const world = this.transform.getWorld();
-
-		const worldInverseTranspose = mat4.create();
-
-		mat4.transpose(
-			worldInverseTranspose,
-			mat4.invert(worldInverseTranspose, world)
-		);
-
-		this.material.shaderController.setWorld(world);
-		this.material.shaderController.setWorldInverseTranspose(
-			worldInverseTranspose
-		);
-		this.material.shaderController.setViewWorldPosition(viewWorldPosition);
-
-		return world;
-	}
-
-	draw(mProjection: mat4, viewWorldPosition: vec3, pov: mat4) {
-		this.mesh.vao.bind();
-
-		this.material.bindTexture();
-
-		this.updateMatrix(mProjection, viewWorldPosition, pov);
-
-		this.mesh.draw();
 	}
 }

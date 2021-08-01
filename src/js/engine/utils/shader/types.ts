@@ -7,8 +7,10 @@ export interface IShaderParam {
 	defaultValue: any;
 }
 
-export interface IShader {
-	params?: IShaderParam[];
+export interface IShaderJSON {
+	id: string;
+	displayName: string;
+	params: IShaderParam[];
 	vertex: string;
 	fragment: string;
 }

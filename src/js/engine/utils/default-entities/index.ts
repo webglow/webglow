@@ -1,7 +1,7 @@
 import EngineGlobals from '../../globals';
 import Geometry from '../../standard/geometry';
+import { LightType } from '../../standard/light/types';
 import GameObject from '../game-object';
-import Material from '../material';
 import SceneHierarchy from '../scene-hierarchy';
 
 export default class DefaultEntities {
@@ -13,7 +13,6 @@ export default class DefaultEntities {
 	) {
 		const gameObject = new GameObject({ displayName: type });
 		gameObject.addMesh(geometry);
-		gameObject.addMaterial(new Material());
 
 		if (parent) {
 			gameObject.setParent(parent);
@@ -69,6 +68,28 @@ export default class DefaultEntities {
 
 	static addEmpty(hierarchy: SceneHierarchy, parent?: GameObject) {
 		const gameObject = new GameObject();
+
+		if (parent) {
+			gameObject.setParent(parent);
+		}
+
+		hierarchy.addObject(gameObject);
+	}
+
+	static addPointLight(hierarchy: SceneHierarchy, parent?: GameObject) {
+		const gameObject = new GameObject({ displayName: 'Point Light' });
+		gameObject.addLight({ type: LightType.Point });
+
+		if (parent) {
+			gameObject.setParent(parent);
+		}
+
+		hierarchy.addObject(gameObject);
+	}
+
+	static addDirectionalLight(hierarchy: SceneHierarchy, parent?: GameObject) {
+		const gameObject = new GameObject({ displayName: 'Directional Light' });
+		gameObject.addLight({ type: LightType.Directional });
 
 		if (parent) {
 			gameObject.setParent(parent);

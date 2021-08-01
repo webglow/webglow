@@ -1,8 +1,7 @@
 import { vec3 } from 'gl-matrix';
 import { v4 as uuidv4 } from 'uuid';
-import EngineGlobals from '../../globals';
 import Geometry from '../../standard/geometry';
-import { IParsedObj, IPolygonGroup } from './types';
+import { IModelJSON, IParsedObj, IPolygonGroup } from './types';
 
 export default class Model {
 	id: string;
@@ -13,15 +12,17 @@ export default class Model {
 		this.obj = _obj;
 		this.id = id || uuidv4();
 		this.geometries = [];
-
-		EngineGlobals.geometryPool?.registerModel(this.id, this);
 	}
 
-	toJSON() {
+	toJSON(): IModelJSON {
 		return {
 			obj: this.obj,
 			id: this.id,
 		};
+	}
+
+	static fromJSON({ id, obj }: IModelJSON) {
+		return new Model(obj, id);
 	}
 
 	genSmoothNormals(verticesData: Array<number[]>, polygonGroup: IPolygonGroup) {

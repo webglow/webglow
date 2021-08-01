@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
 	faCamera,
 	faCode,
+	faEye,
 	faLightbulb,
 	faPalette,
 	faTh,
@@ -34,9 +35,9 @@ export default function AddComponent({ className, onAddComponent }: IProps) {
 			icon: faTh,
 		},
 		{
-			key: GameObjectComponents.Material,
-			name: 'Material',
-			icon: faPalette,
+			key: GameObjectComponents.MeshRenderer,
+			name: 'Mesh Renderer',
+			icon: faEye,
 		},
 		{
 			key: GameObjectComponents.Script,

@@ -74,13 +74,17 @@ export const getObjectMenuItems = (
 				id: 'add-directional',
 				name: 'Directional',
 				icon: faSun,
-				onClick() {},
+				onClick() {
+					DefaultEntities.addDirectionalLight(hierarchy, parent);
+				},
 			},
 			{
 				id: 'add-point',
 				name: 'Point',
 				icon: faLightbulb,
-				onClick() {},
+				onClick() {
+					DefaultEntities.addPointLight(hierarchy, parent);
+				},
 			},
 		],
 	},

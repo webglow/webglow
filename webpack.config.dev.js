@@ -1,4 +1,10 @@
 const path = require('path');
+const webpack = require('webpack');
+
+const API_URL = {
+	development: JSON.stringify('http://localhost:3000'),
+	production: JSON.stringify('http://webglow-api.herokuapp.com'),
+};
 
 module.exports = {
 	mode: 'development',
@@ -55,4 +61,9 @@ module.exports = {
 		open: true,
 		port: 9000,
 	},
+	plugins: [
+		new webpack.DefinePlugin({
+			API_URL: API_URL[process.env.NODE_ENV || 'development'],
+		}),
+	],
 };

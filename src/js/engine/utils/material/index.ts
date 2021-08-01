@@ -1,55 +1,57 @@
 import EngineGlobals from 'engine/globals';
-import GameObject from 'engine/utils/game-object';
+import { v4 as uuidv4 } from 'uuid';
 import ShaderProgram from 'engine/utils/shader-program';
 import { UniformType } from 'engine/utils/shader-program/types';
-import { IShader } from 'engine/utils/shader/types';
-import getDefaultShader from '../shader';
-import ShaderController from '../shader-controller';
-import { IMaterialParam } from './types';
+import Shader from 'engine/utils/shader';
+import { IMaterialJSON, IMaterialParam } from './types';
 
 export default class Material {
+	id: string;
+	displayName: string;
 	uniforms: { [key: string]: WebGLUniformLocation };
 	program: WebGLProgram;
 	texture: WebGLTexture;
 	shaderProgram: ShaderProgram;
-	shaderController: ShaderController;
-	shader: IShader;
-	gameObject: GameObject;
+	shader: Shader;
 	params: IMaterialParam[];
 
 	constructor(
-		shader: IShader = getDefaultShader(),
+		shader: Shader,
+		displayName: string,
 		params: IMaterialParam[] = shader.params.map((param) => ({
 			displayName: param.displayName,
 			key: param.key,
 			type: param.type,
 			value: param.defaultValue,
-		}))
+		})),
+		id: string = uuidv4()
 	) {
+		this.id = id;
+		this.displayName = displayName;
 		this.shader = shader;
-
 		this.params = params;
-	}
 
-	toJSON() {
-		return {
-			shader: this.shader,
-			params: this.params,
-		};
-	}
-
-	attach(gameObject: GameObject, attribLocations: { [key: string]: number }) {
-		this.gameObject = gameObject;
 		this.shaderProgram = new ShaderProgram(
 			'default',
 			this.shader.vertex,
 			this.shader.fragment,
-			attribLocations
+			Shader.defaultAttribLocations()
 		);
 
-		this.shaderController = new ShaderController(this.shaderProgram);
-
 		this.setUniforms(this.params);
+	}
+
+	static default() {
+		return new Material(Shader.default(), 'default');
+	}
+
+	toJSON(): IMaterialJSON {
+		return {
+			id: this.id,
+			displayName: this.displayName,
+			shaderId: this.shader.id,
+			params: this.params,
+		};
 	}
 
 	setUniforms(params: IMaterialParam[]) {

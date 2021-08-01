@@ -5,75 +5,69 @@ import Plane from '../../geometry/plane';
 import Sphere from '../../geometry/sphere';
 import Geometry from '../../standard/geometry';
 import Model from '../model';
+import File from '../project-hierarchy/file';
+import { PoolItem } from './types';
 
 export default class GeometryPool {
-	pool: { [key: string]: Geometry } = {};
-	models: { [key: string]: Model } = {};
+	pool: PoolItem[] = [
+		{
+			id: 'Box',
+			geometry: new Box({ size: [1, 1, 1] }),
+		},
+		{
+			id: 'Cone',
+			geometry: new Cone({
+				segments: 30,
+				radius: 1,
+				height: 2,
+			}),
+		},
+		{
+			id: 'Plane',
+			geometry: new Plane({
+				width: 50,
+				length: 50,
+				widthSegments: 1,
+				lengthSegments: 1,
+			}),
+		},
+		{
+			id: 'Sphere',
+			geometry: new Sphere({
+				widthSegments: 30,
+				heightSegments: 30,
+				radius: 1,
+			}),
+		},
+		{
+			id: 'Cylinder',
+			geometry: new Cylinder({
+				segments: 30,
+				radius: 1,
+				height: 2,
+			}),
+		},
+	];
 
-	getModelGeometry(id: string) {
-		const { modelId, groupName } = id.match(
-			/(?<modelId>.*)<(?<groupName>.*)>/
-		).groups;
+	geometryFromFile(file: File) {
+		const geometries = Model.fromJSON(JSON.parse(file.content)).generate();
 
-		if (this.models[modelId]) {
-			return this.models[modelId].findById(id);
-		}
-
-		return Geometry.emtpy(id, groupName);
+		geometries.forEach((geometry) => {
+			this.pool.push({
+				geometry,
+				fileId: file.id,
+				id: geometry.id,
+			});
+		});
 	}
 
 	get(id: string) {
-		if (this.pool[id]) {
-			return this.pool[id];
-		}
-
-		let item: Geometry;
-
-		switch (id) {
-			case 'Box':
-				item = new Box({ size: [1, 1, 1] });
-				break;
-			case 'Cone':
-				item = new Cone({
-					segments: 30,
-					radius: 1,
-					height: 2,
-				});
-				break;
-			case 'Plane':
-				item = new Plane({
-					width: 50,
-					length: 50,
-					widthSegments: 1,
-					lengthSegments: 1,
-				});
-				break;
-			case 'Sphere':
-				item = new Sphere({
-					widthSegments: 30,
-					heightSegments: 30,
-					radius: 1,
-				});
-				break;
-			case 'Cylinder':
-				item = new Cylinder({
-					segments: 30,
-					radius: 1,
-					height: 2,
-				});
-				break;
-			default:
-				item = this.getModelGeometry(id);
-
-				break;
-		}
-
-		this.pool[id] = item;
-
-		return item;
+		return this.pool.find((item) => item.id === id)?.geometry;
 	}
 
-	registerModel(id: string, model: Model) {
-		this.models[id] = model;
+	getByFileId(id: string) {
+		return this.pool
+			.filter((item) => item.fileId === id)
+			.map((item) => item.geometry);
 	}
 }

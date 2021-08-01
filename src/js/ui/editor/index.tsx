@@ -18,13 +18,10 @@ import ProjectHierarchy, {
 	getTestHierarchy,
 } from '../../engine/utils/project-hierarchy';
 import Engine from '../../engine';
-import { ISceneJSON } from '../../engine/standard/scene/types';
 import Scene from '../../engine/standard/scene';
 import { IProject } from '../project-card/types';
-import { API_URL } from '../constants';
 import { FileType } from '../../engine/utils/project-hierarchy/types';
-import Material from '../../engine/utils/material';
-import Model from '../../engine/utils/model';
+import EngineGlobals from '../../engine/globals';
 
 export default function Editor({ className }: IProps) {
 	const canvasRef = useRef();
@@ -46,7 +43,7 @@ export default function Editor({ className }: IProps) {
 	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
-		fetch(`${API_URL}projects/${id}`)
+		fetch(`${API_URL}/projects/${id}`)
 			.then((response) => response.json())
 			.then((_project) => setProject(_project));
 	}, [id]);
@@ -64,7 +61,7 @@ export default function Editor({ className }: IProps) {
 			return;
 		}
 
-		const scene = (projectHierarchy.root.content as File[]).find(
+		const scene = projectHierarchy.root.children.find(
 			(file) => file.type === FileType.Scene
 		);
 
@@ -80,15 +77,14 @@ export default function Editor({ className }: IProps) {
 
 		const _engine = new Engine(canvasRef.current);
 
-		if (project.hierarchy) {
-			const hierarchy = ProjectHierarchy.fromJSON(project.hierarchy);
+		let hierarchy = new ProjectHierarchy();
 
-			setProjectHierarchy(hierarchy);
-		} else {
-			setProjectHierarchy(new ProjectHierarchy());
+		if (project.hierarchy) {
+			hierarchy = ProjectHierarchy.fromJSON(project.hierarchy);
 		}
 
 		setEngine(_engine);
+		setProjectHierarchy(hierarchy);
 
 		return () => {
 			// TODO: Doesn't work with hot reload. Roll back for production
@@ -113,7 +109,7 @@ export default function Editor({ className }: IProps) {
 	};
 
 	const openScene = (file: File) => {
-		const scene = Scene.fromJSON(file.content as ISceneJSON);
+		const scene = Scene.fromJSON(JSON.parse(file.content));
 		engine.setActiveScene(scene);
 		setActiveScene(scene);
 		setSceneFile(file);
@@ -122,13 +118,12 @@ export default function Editor({ className }: IProps) {
 
 	const addModel = (file: File) => {
 		const parent = new GameObject({ displayName: file.name });
-		const geometries = (file.content as Model).generate();
+		const geometries = EngineGlobals.geometryPool.getByFileId(file.id);
 
 		geometries.forEach((geometry) => {
 			const gameObject = new GameObject({ displayName: geometry.name });
 
 			gameObject.addMesh(geometry);
-			gameObject.addMaterial(new Material());
 
 			gameObject.setParent(parent);
 		});
@@ -140,11 +135,11 @@ export default function Editor({ className }: IProps) {
 
 	const saveProject = () => {
 		if (activeScene) {
-			sceneFile.content = activeScene.toJSON();
+			sceneFile.content = JSON.stringify(activeScene.toJSON());
 		}
 
 		const data = JSON.stringify({ hierarchy: projectHierarchy.toJSON() });
-		fetch(`${API_URL}projects/${project._id}`, {
+		fetch(`${API_URL}/projects/${project._id}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -178,7 +173,7 @@ export default function Editor({ className }: IProps) {
 					const data = JSON.stringify({
 						hierarchy: getTestHierarchy().toJSON(),
 					});
-					fetch(`${API_URL}projects/${project._id}`, {
+					fetch(`${API_URL}/projects/${project._id}`, {
 						method: 'PUT',
 						headers: {
 							'Content-Type': 'application/json',

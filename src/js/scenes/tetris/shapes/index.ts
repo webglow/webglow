@@ -1,8 +1,6 @@
 import Box from 'engine/geometry/box';
-import { IBoxConfig } from 'engine/geometry/box/types';
 import GameObject from 'engine/utils/game-object';
 import { vec3 } from 'gl-matrix';
-import Material from '../../../engine/utils/material';
 
 export default class Shape {
 	velocity: vec3;
@@ -45,11 +43,6 @@ export default class Shape {
 				size: [size, size, size],
 			})
 		);
-
-		this.b1.addMaterial(new Material());
-		this.b2.addMaterial(new Material());
-		this.b3.addMaterial(new Material());
-		this.b4.addMaterial(new Material());
 
 		this.b1.setParent(this.parent);
 		this.b2.setParent(this.parent);

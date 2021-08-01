@@ -68,8 +68,6 @@ export default class Tetris extends Scene {
 			})
 		);
 
-		ground.addMaterial(new Material());
-
 		ground.transform.translate([0, -20, 0]);
 
 		this.hierarchy.addObject(ground);

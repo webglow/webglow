@@ -4,7 +4,6 @@ import { resizeCanvasToDisplaySize } from 'engine/utils/helpers';
 import EditorLayer from 'engine/utils/layer/editor';
 import { ILayer } from 'engine/utils/layer';
 import RuntimeLayer from 'engine/utils/layer/runtime';
-import { cloneDeep } from 'lodash';
 import Color from 'engine/utils/color';
 import EngineGlobals from './globals';
 import Renderer from './utils/renderer';

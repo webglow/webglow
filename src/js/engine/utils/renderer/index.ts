@@ -12,7 +12,7 @@ export default class Renderer {
 	}
 
 	updateLight() {
-		this.scene.hierarchy.forEachMaterialNode((gameObject: GameObject) => {
+		this.scene.hierarchy.forEachDrawableNode(({ meshRenderer }: GameObject) => {
 			const directionalLights = this.scene.hierarchy.nodesArray
 				.filter((go) => go.light && go.light.type === LightType.Directional)
 				.map((lightObject) => lightObject.light);
@@ -20,14 +20,8 @@ export default class Renderer {
 				.filter((go) => go.light && go.light.type === LightType.Point)
 				.map((lightObject) => lightObject.light);
 
-			gameObject.material.shaderController.setLights(
-				LightType.Directional,
-				directionalLights
-			);
-			gameObject.material.shaderController.setLights(
-				LightType.Point,
-				pointLights
-			);
+			meshRenderer.setLights(LightType.Directional, directionalLights);
+			meshRenderer.setLights(LightType.Point, pointLights);
 		});
 	}
 
@@ -36,8 +30,8 @@ export default class Renderer {
 		// gameObject with mesh is moved
 		this.updateLight();
 
-		this.scene.hierarchy.forEachDrawableNode((gameObject: GameObject) => {
-			gameObject.draw(mProjection, viewWorldPosition, viewMatrix);
+		this.scene.hierarchy.forEachDrawableNode(({ meshRenderer }: GameObject) => {
+			meshRenderer.render(mProjection, viewWorldPosition, viewMatrix);
 		});
 	}
 

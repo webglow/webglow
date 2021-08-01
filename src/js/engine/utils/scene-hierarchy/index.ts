@@ -63,13 +63,7 @@ export default class SceneHierarchy {
 
 	forEachDrawableNode(callback: (node: GameObject) => void) {
 		this.nodesArray
-			.filter((gameObject) => gameObject.material && gameObject.mesh)
-			.forEach(callback);
-	}
-
-	forEachMaterialNode(callback: (node: GameObject) => void) {
-		this.nodesArray
-			.filter((gameObject) => gameObject.material)
+			.filter((gameObject) => gameObject.meshRenderer && gameObject.mesh)
 			.forEach(callback);
 	}
 

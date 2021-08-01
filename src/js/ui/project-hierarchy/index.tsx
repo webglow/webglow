@@ -89,7 +89,7 @@ export default function ProjectHierarchyUI({
 								new File(
 									fileName,
 									FileType.Model,
-									new Model(e.target.result as string)
+									JSON.stringify(new Model(e.target.result as string).toJSON())
 								)
 							);
 
@@ -102,7 +102,7 @@ export default function ProjectHierarchyUI({
 			>
 				<Contents>
 					{cwd &&
-						(cwd.content as File[]).map((file) => (
+						cwd.children.map((file) => (
 							<ProjectHierarchyNode
 								file={file}
 								selected={file === selectedFile}

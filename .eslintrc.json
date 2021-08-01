@@ -50,6 +50,8 @@
     "no-restricted-globals": "off",
     "no-new-func": "off",
     "no-shadow": "off",
+	"default-case": "off",
+	"no-case-declarations": "off",
     "@typescript-eslint/no-shadow": "error",
     "lines-between-class-members": [
       "error",
@@ -63,6 +65,7 @@
     "indent": "off"
   },
   "globals": {
+	"API_URL": "readonly",
     "Module": "readonly",
     "dat": "readonly",
     "Stats": "readonly",

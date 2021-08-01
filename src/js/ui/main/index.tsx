@@ -7,7 +7,6 @@ import {
 	Switch,
 	useHistory,
 } from 'react-router-dom';
-import { API_URL } from '../constants';
 import NewProjectModal from '../new-project-modal';
 import {
 	Wrapper,
@@ -22,7 +21,7 @@ const Main = () => {
 	const [newProjectModalOpen, setNewProjectModalOpen] = useState(false);
 
 	const createProject = (project: INewProject) => {
-		fetch(`${API_URL}projects`, {
+		fetch(`${API_URL}/projects`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(project),

@@ -1,9 +1,11 @@
 import GeometryPool from './utils/geometry-pool';
+import ProjectHierarchy from './utils/project-hierarchy';
 
 let instance: EngineGlobals = null;
 
 class EngineGlobals {
 	gl: WebGL2RenderingContext;
+	projectHierarchy: ProjectHierarchy;
 	canvas: HTMLCanvasElement;
 	geometryPool: GeometryPool;
 

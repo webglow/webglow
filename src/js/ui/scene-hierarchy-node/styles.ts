@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import SceneHierarchyNodeUI from '.';
 import { Button, TextWithIcon } from '../../../styles/common';
 import { pxToRem } from '../../../styles/helpers';
 import { ICollapseButtonProps, ITitleProps } from './types';
@@ -9,7 +8,12 @@ export const Node = styled.div`
 	display: flex;
 `;
 
-export const Wrapper = styled.div``;
+export const Wrapper = styled.div`
+	& > & {
+		margin-left: ${pxToRem(10)}rem;
+		margin-top: ${pxToRem(5)}rem;
+	}
+`;
 
 export const CollapseButton = styled(Button)<ICollapseButtonProps>`
 	background: var(--grey);
@@ -62,8 +66,4 @@ export const Text = styled.div`
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-`;
-
-export const StyledHierarchyNode = styled(SceneHierarchyNodeUI)`
-	margin-left: ${pxToRem(10)}rem;
 `;

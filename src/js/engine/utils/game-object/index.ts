@@ -2,12 +2,14 @@ import Collider from 'engine/physics/collider';
 import RigidBody from 'engine/physics/rigidbody';
 import Camera from 'engine/standard/camera';
 import Light from 'engine/standard/light';
-import { ILightConfig, LightType } from 'engine/standard/light/types';
+import { LightType } from 'engine/standard/light/types';
 import Mesh from 'engine/standard/mesh';
 import Transform from 'engine/standard/transform';
 import Color from 'engine/utils/color';
 import Script from 'engine/utils/script';
 import Behaviour from 'engine/utils/script/behaviour';
+import { makeAutoObservable } from 'mobx';
+import { v4 as uuidv4 } from 'uuid';
 import Geometry from '../../standard/geometry';
 import MeshRenderer from '../mesh-renderer';
 import { IGameObjectJSON, IGameObjectParams } from './types';
@@ -30,17 +32,24 @@ export default class GameObject {
 	children: GameObject[];
 
 	constructor({
-		TransformType = Transform,
 		isRoot = false,
 		displayName = 'GameObject',
 	}: IGameObjectParams = {}) {
-		this.transform = new TransformType(this);
+		this.transform = new Transform(this);
 
 		this.displayName = displayName;
 		this.scripts = [];
 		this.isRoot = isRoot;
 		this.children = [];
 		this.behaviour = [];
+		this.mesh = null;
+		this.meshRenderer = null;
+		this.light = null;
+		this.camera = null;
+		this.parent = null;
+		this.id = uuidv4();
+
+		makeAutoObservable(this);
 	}
 
 	toJSON(): IGameObjectJSON {

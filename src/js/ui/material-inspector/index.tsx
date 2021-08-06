@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { faTint } from '@fortawesome/free-solid-svg-icons';
+import { observer } from 'mobx-react';
 import { IProps } from './types';
 import {
 	ParamControl,
@@ -15,11 +16,9 @@ import { UniformType } from '../../engine/utils/shader/types';
 import ComponentTitle from '../game-object-inspector/component-title';
 import EngineGlobals from '../../engine/globals';
 import Material from '../../engine/utils/material';
-import { useForceUpdate } from '../common/hooks';
 
-export default function MaterialInspector({ className, file }: IProps) {
+const MaterialInspector = observer(({ className, file }: IProps) => {
 	const [material, setMaterial] = useState<Material>();
-	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
 		if (!file) {
@@ -27,13 +26,11 @@ export default function MaterialInspector({ className, file }: IProps) {
 		}
 
 		setMaterial(EngineGlobals.materialPool.getMaterialByFileId(file.id));
-	}, [file]);
+	}, [file.content]);
 
 	const updateMaterialParam = (param: { [key: string]: any }, value: any) => {
 		material.setParamValue(param.key, value);
 		EngineGlobals.materialPool.updateFile(material);
-
-		forceUpdate();
 	};
 
 	const getControl = (param: IMaterialParam) => {
@@ -88,4 +85,6 @@ export default function MaterialInspector({ className, file }: IProps) {
 			</ParamsList>
 		</Wrapper>
 	);
-}
+});
+
+export default MaterialInspector;

@@ -1,3 +1,4 @@
+import { runInAction } from 'mobx';
 import Material from '../material';
 import File from '../project-hierarchy/file';
 import { FileType } from '../project-hierarchy/types';
@@ -32,7 +33,9 @@ export default class MaterialPool {
 			return;
 		}
 
-		poolItem.file.content = JSON.stringify(material.toJSON());
+		runInAction(() => {
+			poolItem.file.content = JSON.stringify(material.toJSON());
+		});
 	}
 
 	renameMaterial(fileId: string, newName: string) {

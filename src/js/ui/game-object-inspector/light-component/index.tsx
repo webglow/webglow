@@ -1,5 +1,6 @@
 import React from 'react';
 import { faLightbulb } from '@fortawesome/free-solid-svg-icons';
+import { observer } from 'mobx-react';
 import { IProps } from './types';
 import {
 	ParamName,
@@ -12,12 +13,8 @@ import {
 import { LightType } from '../../../engine/standard/light/types';
 import ComponentTitle from '../component-title';
 
-export default function LightComponent({
-	className,
-	light: { intensity, type, color },
-	onChange,
-}: IProps) {
-	return (
+const LightComponent = observer(
+	({ className, light: { intensity, type, color }, onChange }: IProps) => (
 		<Wrapper className={className}>
 			<ComponentTitle icon={faLightbulb} title="Light" />
 
@@ -50,5 +47,7 @@ export default function LightComponent({
 				/>
 			</Settings>
 		</Wrapper>
-	);
-}
+	)
+);
+
+export default LightComponent;

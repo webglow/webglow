@@ -1,13 +1,10 @@
-import { vec3 } from 'gl-matrix';
+import { quat, vec3 } from 'gl-matrix';
 
 export interface ITransformInfo {
 	position: vec3;
-	rotation: vec3;
+	rotation: quat;
+	eulerRotation: vec3;
 	scale: vec3;
-}
-
-export interface ISubscriber {
-	[key: string]: (info: ITransformInfo) => void;
 }
 
 export interface ITransformJSON {

@@ -2,15 +2,15 @@ import { Space } from 'engine/utils/enums';
 import GameObject from 'engine/utils/game-object';
 import { getEuler } from 'engine/utils/helpers';
 import { mat4, quat, vec3 } from 'gl-matrix';
-import { v4 as uuidv4 } from 'uuid';
-import { ISubscriber, ITransformInfo, ITransformJSON } from './types';
+import { makeAutoObservable, makeObservable, observable } from 'mobx';
+import { ITransformInfo, ITransformJSON } from './types';
 
 export default class Transform {
-	_position: vec3;
-	_rotation: quat;
-	_scale: vec3;
+	position: vec3;
+	rotation: quat;
+	_eulerRotation: vec3;
+	scale: vec3;
 
-	subscribers: ISubscriber;
 	gameObject: GameObject;
 
 	constructor(
@@ -21,19 +21,25 @@ export default class Transform {
 			scale = vec3.fromValues(1, 1, 1),
 		} = {}
 	) {
-		this._position = position;
-		this._rotation = rotation;
-		this._scale = scale;
+		this.position = position;
+		this.rotation = rotation;
+		this._eulerRotation = getEuler(this.rotation);
+		this.scale = scale;
 		this.gameObject = gameObject;
 
-		this.subscribers = {};
+		makeObservable(this, {
+			position: observable,
+			rotation: observable,
+			scale: observable,
+			gameObject: observable.ref,
+		});
 	}
 
 	toJSON(): ITransformJSON {
 		return {
-			position: Array.from(this._position) as [number, number, number],
-			rotation: Array.from(this._rotation) as [number, number, number, number],
-			scale: Array.from(this._scale) as [number, number, number],
+			position: Array.from(this.position) as [number, number, number],
+			rotation: Array.from(this.rotation) as [number, number, number, number],
+			scale: Array.from(this.scale) as [number, number, number],
 		};
 	}
 
@@ -44,44 +50,18 @@ export default class Transform {
 		return new Transform(gameObject, { position, rotation, scale });
 	}
 
-	get position() {
-		return vec3.clone(this._position);
+	get eulerRotation() {
+		return this._eulerRotation as [number, number, number];
 	}
 
-	get rotation() {
-		return getEuler(this._rotation) as [number, number, number];
-	}
+	set eulerRotation(newValue: [number, number, number]) {
+		quat.fromEuler(this.rotation, ...newValue);
 
-	get quatRotation() {
-		return quat.clone(this._rotation);
-	}
-
-	get scale() {
-		return vec3.clone(this._scale);
-	}
-
-	set position(newValue: vec3) {
-		this._position = vec3.clone(newValue);
-
-		this.onChange();
-	}
-
-	set rotation(newValue: [number, number, number]) {
-		quat.fromEuler(this._rotation, ...newValue);
-
-		this.onChange();
-	}
-
-	set scale(newValue: vec3) {
-		this._scale = newValue;
-
-		this.onChange();
+		vec3.copy(this._eulerRotation, newValue);
 	}
 
 	translate(translation: vec3) {
-		vec3.add(this._position, this._position, translation);
-
-		this.onChange();
+		vec3.add(this.position, this.position, translation);
 	}
 
 	rotate(eulerAngles: [number, number, number], space = Space.Local) {
@@ -89,22 +69,21 @@ export default class Transform {
 
 		switch (space) {
 			case Space.Local:
-				quat.mul(this._rotation, this._rotation, quatRotation);
+				quat.mul(this.rotation, this.rotation, quatRotation);
 				break;
 			case Space.World:
-				quat.mul(this._rotation, quatRotation, this._rotation);
+				quat.mul(this.rotation, quatRotation, this.rotation);
 				break;
 			default:
 				break;
 		}
-
-		this.onChange();
 	}
 
 	get transform(): ITransformInfo {
 		return {
 			position: this.position,
 			rotation: this.rotation,
+			eulerRotation: this.eulerRotation,
 			scale: this.scale,
 		};
 	}
@@ -139,29 +118,10 @@ export default class Transform {
 
 	getLocal(): mat4 {
 		const local = mat4.identity(mat4.create());
-		mat4.translate(local, local, this._position);
-		mat4.multiply(local, local, mat4.fromQuat(mat4.create(), this._rotation));
-		mat4.scale(local, local, this._scale);
+		mat4.translate(local, local, this.position);
+		mat4.multiply(local, local, mat4.fromQuat(mat4.create(), this.rotation));
+		mat4.scale(local, local, this.scale);
 
 		return local;
-	}
-
-	subscribe(callback: (info: ITransformInfo) => void) {
-		const id = uuidv4();
-		this.subscribers[id] = callback;
-
-		return id;
-	}
-
-	unsubscribe(id: string) {
-		delete this.subscribers[id];
-	}
-
-	onChange() {
-		const info = this.transform;
-
-		Object.keys(this.subscribers).forEach((key) => {
-			this.subscribers[key](info);
-		});
 	}
 }

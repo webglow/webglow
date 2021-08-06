@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
 import EngineGlobals from '../../globals';
 import { FileType, IFileJSON } from './types';
@@ -26,6 +27,8 @@ export default class File {
 		this.extension = this.getExtension(type);
 
 		this.registerPoolItem();
+
+		makeAutoObservable(this);
 	}
 
 	registerPoolItem() {

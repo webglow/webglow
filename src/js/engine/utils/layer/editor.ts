@@ -15,7 +15,7 @@ export default class EditorLayer implements ILayer {
 	setCamera() {
 		this.editorCamera = new GameObject();
 		this.editorCamera.transform.position = vec3.fromValues(0, 10, 10);
-		this.editorCamera.transform.rotation = [-45, 0, 0];
+		this.editorCamera.transform.eulerRotation = [-45, 0, 0];
 		this.editorCamera.addBehaviour(EditorCameraMovement);
 		this.editorCamera.addCamera();
 		this.editorCamera.behaviour[0].start();
@@ -24,7 +24,7 @@ export default class EditorLayer implements ILayer {
 	draw() {
 		this.renderer.render(
 			this.editorCamera.camera.mProjection,
-			this.editorCamera.transform._position,
+			this.editorCamera.transform.position,
 			this.editorCamera.transform.viewMatrix
 		);
 	}

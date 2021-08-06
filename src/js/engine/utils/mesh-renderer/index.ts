@@ -1,4 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix';
+import {makeAutoObservable} from 'mobx';
 import EngineGlobals from '../../globals';
 import Light from '../../standard/light';
 import { LightType } from '../../standard/light/types';
@@ -32,6 +33,8 @@ export default class MeshRenderer {
 		this.setPositions();
 		this.setNormals();
 		this.setTextureCoords();
+
+		makeAutoObservable(this);
 	}
 
 	toJSON(): IMeshRendererJSON {

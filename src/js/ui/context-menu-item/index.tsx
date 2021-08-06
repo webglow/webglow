@@ -13,6 +13,8 @@ export default function ContextMenuItem({
 	icon,
 	onClick,
 }: IProps) {
+	const [closeTimeout, setCloseTimeout] = useState<number>();
+	const [openTimeout, setOpenTimeout] = useState<number>();
 	const [isSubmenuVisible, setIsSubmenuVisible] = useState(false);
 
 	return (
@@ -20,10 +22,30 @@ export default function ContextMenuItem({
 			className={className}
 			onClick={(event: React.MouseEvent) => onClick && onClick(event)}
 			onMouseEnter={(event: React.MouseEvent) => {
-				setIsSubmenuVisible(true);
+				if (closeTimeout) {
+					clearTimeout(closeTimeout);
+					setCloseTimeout(null);
+				} else {
+					setOpenTimeout(
+						setTimeout(() => {
+							setIsSubmenuVisible(true);
+							setOpenTimeout(null);
+						}, 300)
+					);
+				}
 			}}
 			onMouseLeave={(event: React.MouseEvent) => {
-				setIsSubmenuVisible(false);
+				if (openTimeout) {
+					clearTimeout(openTimeout);
+					setOpenTimeout(null);
+				} else {
+					setCloseTimeout(
+						setTimeout(() => {
+							setIsSubmenuVisible(false);
+							setCloseTimeout(null);
+						}, 300)
+					);
+				}
 			}}
 		>
 			<IconWrapper>

@@ -1,6 +1,7 @@
 import Color from 'engine/utils/color';
 import GameObject from 'engine/utils/game-object';
 import { mat3, vec3 } from 'gl-matrix';
+import { makeAutoObservable } from 'mobx';
 import { ILightConfig, ILightJSON, LightType } from './types';
 
 export default class Light {
@@ -17,6 +18,8 @@ export default class Light {
 		this.intensity = intensity;
 		this.color = color;
 		this.type = type;
+
+		makeAutoObservable(this);
 	}
 
 	toJSON(): ILightJSON {
@@ -44,7 +47,7 @@ export default class Light {
 
 		// prettier-ignore
 		return mat3.fromValues(
-			...this.gameObject.transform._position as [number, number, number],
+			...this.gameObject.transform.position as [number, number, number],
 			this.intensity, 0, 0,
 			...this.color.toNormalizedVec3()
 		);

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
+import { observer } from 'mobx-react';
 import { IProps } from './types';
 import {
 	Canvas,
@@ -11,7 +12,6 @@ import {
 	StyledSceneHierarchy,
 	Wrapper,
 } from './styles';
-import { useForceUpdate } from '../common/hooks';
 import GameObject from '../../engine/utils/game-object';
 import File from '../../engine/utils/project-hierarchy/file';
 import ProjectHierarchy, {
@@ -23,7 +23,7 @@ import { IProject } from '../project-card/types';
 import { FileType } from '../../engine/utils/project-hierarchy/types';
 import EngineGlobals from '../../engine/globals';
 
-export default function Editor({ className }: IProps) {
+const Editor = observer(({ className }: IProps) => {
 	const canvasRef = useRef();
 	const { id } = useParams<{ id: string }>();
 	const [cwd, setCwd] = useState<File>(null);
@@ -39,8 +39,6 @@ export default function Editor({ className }: IProps) {
 	);
 	const [selectedObject, setSelectedObject] = useState<GameObject | File>(null);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-	const forceUpdate = useForceUpdate();
 
 	useEffect(() => {
 		fetch(`${API_URL}/projects/${id}`)
@@ -129,8 +127,6 @@ export default function Editor({ className }: IProps) {
 		});
 
 		activeScene?.hierarchy.addObject(parent);
-
-		forceUpdate();
 	};
 
 	const saveProject = () => {
@@ -204,9 +200,10 @@ export default function Editor({ className }: IProps) {
 				selectedObject={selectedObject}
 				onNameChange={(node, newName) => {
 					node.rename(newName);
-					forceUpdate();
 				}}
 			/>
 		</Wrapper>
 	);
-}
+});
+
+export default Editor;

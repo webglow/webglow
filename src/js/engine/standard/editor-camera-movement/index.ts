@@ -54,7 +54,7 @@ export default class EditorCameraMovement extends Behaviour {
 			const direction = vec3.transformQuat(
 				vec3.create(),
 				vec3.scale(vec3.create(), this.direction, this.speed),
-				this.gameObject.transform.quatRotation
+				this.gameObject.transform.rotation
 			);
 			this.gameObject.transform.translate(direction);
 		}

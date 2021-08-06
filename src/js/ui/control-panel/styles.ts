@@ -19,9 +19,3 @@ export const SaveButton = styled(Button)`
 	background: var(--green);
 	color: var(--dark-grey);
 `;
-
-export const TestHierarchyButton = styled(Button)`
-	background: var(--blue);
-	color: var(--dark-grey);
-	margin-left: ${pxToRem(5)}rem;
-`;

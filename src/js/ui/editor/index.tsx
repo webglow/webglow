@@ -84,6 +84,19 @@ const Editor = observer(({ className }: IProps) => {
 		setEngine(_engine);
 		setProjectHierarchy(hierarchy);
 
+		(window as any).testHierarchy = () => {
+			const data = JSON.stringify({
+				hierarchy: getTestHierarchy().toJSON(),
+			});
+			fetch(`${API_URL}/projects/${project._id}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: data,
+			});
+		};
+
 		return () => {
 			// TODO: Doesn't work with hot reload. Roll back for production
 			// _engine.cleanup();
@@ -164,18 +177,6 @@ const Editor = observer(({ className }: IProps) => {
 				}}
 				onSaveClick={() => {
 					saveProject();
-				}}
-				onTestHierarchyClick={() => {
-					const data = JSON.stringify({
-						hierarchy: getTestHierarchy().toJSON(),
-					});
-					fetch(`${API_URL}/projects/${project._id}`, {
-						method: 'PUT',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: data,
-					});
 				}}
 			/>
 

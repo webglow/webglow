@@ -81,8 +81,9 @@ export default class File {
 			.filter((f) => fileNameRegex.test(f.name))
 			.map((f) => parseInt(f.name.match(fileNameRegex).groups?.number));
 
-		if (numbers) {
+		if (numbers.length) {
 			const max = Math.max(...numbers.filter((n) => !isNaN(n)));
+
 			if (max > -Infinity) {
 				file.rename(`${fileName} (${max + 1})`);
 			} else {

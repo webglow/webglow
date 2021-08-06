@@ -48,6 +48,7 @@ module.exports = {
 	plugins: [
 		new webpack.DefinePlugin({
 			API_URL: JSON.stringify('http://api.webglow.xyz'),
+			IS_DEV: false,
 		}),
 	],
 };

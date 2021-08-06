@@ -98,8 +98,9 @@ const Editor = observer(({ className }: IProps) => {
 		};
 
 		return () => {
-			// TODO: Doesn't work with hot reload. Roll back for production
-			// _engine.cleanup();
+			if (!IS_DEV) {
+				_engine.cleanup();
+			}
 		};
 	}, [canvasRef.current, project]);
 

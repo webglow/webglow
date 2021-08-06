@@ -66,6 +66,7 @@
   },
   "globals": {
 	"API_URL": "readonly",
+	"IS_DEV": "readonly",
     "Module": "readonly",
     "dat": "readonly",
     "Stats": "readonly",

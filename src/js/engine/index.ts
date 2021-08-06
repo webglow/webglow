@@ -96,6 +96,10 @@ export default class Engine {
 	}
 
 	draw(now: number) {
+		if (!EngineGlobals.getInstance()) {
+			return;
+		}
+
 		if (!this.activeScene) {
 			return;
 		}

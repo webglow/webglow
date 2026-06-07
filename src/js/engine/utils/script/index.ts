@@ -1,58 +1,38 @@
-import upperFirst from 'lodash/upperFirst';
-import camelCase from 'lodash/camelCase';
 import Behaviour from 'engine/utils/script/behaviour';
 import GameObject from 'engine/utils/game-object';
 import { IScriptJSON } from 'engine/utils/script/types';
-import { getDefaultText } from './helpers';
+import { camelCase, startCase } from 'lodash';
+import File from '../project-hierarchy/file';
+import EngineGlobals from '../../globals';
 
 export default class Script {
+	file: File;
 	behaviour: Behaviour;
-	name: string;
-	className: string;
-	text: string;
 	gameObject: GameObject;
 
-	constructor(name: string, behaviour?: Behaviour) {
-		this.name = name;
-		this.className = upperFirst(camelCase(name));
-		this.text = getDefaultText(this.className);
-		this.behaviour = behaviour;
+	constructor(gameObject: GameObject, file: File) {
+		this.gameObject = gameObject;
+		this.file = file;
+
+		this.parse();
 	}
 
 	toJSON(): IScriptJSON {
 		return {
-			name: this.name,
-			text: this.text,
+			fileId: this.file.id,
 		};
 	}
 
-	static fromJSON({ name, text }: IScriptJSON): Script {
-		const script = new Script(name);
-		script.text = text;
+	static fromJSON(gameObject: GameObject, { fileId }: IScriptJSON): Script {
+		const file = EngineGlobals.projectHierarchy.getFileById(fileId);
+		const script = new Script(gameObject, file);
 
 		return script;
 	}
 
-	assign(gameObject: GameObject) {
-		this.gameObject = gameObject;
-
-		if (!this.behaviour) {
-			this.parse();
-		}
-	}
-
 	parse() {
-		this.behaviour = new (new Function(
-			'Behaviour',
-			`${this.text}; return ${this.className}`
-		)(Behaviour))(this.gameObject);
-	}
-
-	setText(newText: string) {
-		this.text = newText;
-
-		if (this.gameObject) {
-			this.parse();
-		}
+		this.behaviour = new (new Function('Behaviour', this.file.content)(
+			Behaviour
+		))(this.gameObject);
 	}
 }

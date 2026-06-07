@@ -21,6 +21,16 @@ export default class EditorLayer implements ILayer {
 		this.editorCamera.behaviour[0].start();
 	}
 
+	pause() {
+		(this.editorCamera
+			.behaviour[0] as EditorCameraMovement).removeEventListeners();
+	}
+
+	resume() {
+		(this.editorCamera
+			.behaviour[0] as EditorCameraMovement).setupEventListeners();
+	}
+
 	draw() {
 		this.renderer.render(
 			this.editorCamera.camera.mProjection,

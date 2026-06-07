@@ -1,15 +1,18 @@
+import { camelCase, startCase } from 'lodash';
 import Scene from '../../standard/scene';
 import Material from '../material';
-import Script from '../script';
+import { getDefaultScriptText } from '../script/helpers';
 import Shader from '../shader';
 import File from './file';
 import { FileType } from './types';
 
 export default class DefaultFiles {
 	static createScript(name: string) {
-		const script = new Script(name);
-
-		const file = new File(name, FileType.Script, JSON.stringify(script));
+		const file = new File(
+			name,
+			FileType.Script,
+			getDefaultScriptText(startCase(camelCase(name)).replace(/ /g, ''))
+		);
 
 		return file;
 	}

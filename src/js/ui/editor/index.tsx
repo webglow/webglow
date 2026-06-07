@@ -22,6 +22,7 @@ import Scene from '../../engine/standard/scene';
 import { IProject } from '../project-card/types';
 import { FileType } from '../../engine/utils/project-hierarchy/types';
 import EngineGlobals from '../../engine/globals';
+import CodeEditor from '../code-editor';
 
 const Editor = observer(({ className }: IProps) => {
 	const canvasRef = useRef();
@@ -81,6 +82,8 @@ const Editor = observer(({ className }: IProps) => {
 			hierarchy = ProjectHierarchy.fromJSON(project.hierarchy);
 		}
 
+		_engine.setProjectHierarchy(hierarchy);
+
 		setEngine(_engine);
 		setProjectHierarchy(hierarchy);
 
@@ -104,6 +107,11 @@ const Editor = observer(({ className }: IProps) => {
 		};
 	}, [canvasRef.current, project]);
 
+	const editScript = (file: File) =>
+		new CodeEditor(file.content, (newText) => {
+			file.content = newText;
+		});
+
 	const handleFileDoubleClick = (file: File) => {
 		switch (file.type) {
 			case FileType.Folder:
@@ -114,6 +122,9 @@ const Editor = observer(({ className }: IProps) => {
 				break;
 			case FileType.Model:
 				addModel(file);
+				break;
+			case FileType.Script:
+				editScript(file);
 				break;
 			default:
 				break;

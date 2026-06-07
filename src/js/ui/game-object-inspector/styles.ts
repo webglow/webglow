@@ -5,6 +5,7 @@ import ObjectNameEditorComponent from './object-name-editor-component';
 export const Wrapper = styled.div`
 	display: flex;
 	flex-flow: column;
+	flex-grow: 1;
 `;
 
 export const StyledObjectNameEditor = styled(ObjectNameEditorComponent)``;

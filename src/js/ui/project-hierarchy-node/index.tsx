@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { DragEvent, MouseEvent, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IProps } from './types';
 import { FileName, FileNameInput, Wrapper } from './styles';
@@ -27,6 +27,11 @@ export default function ProjectHierarchyNode({
 		setNewFileName(file.name);
 	};
 
+	const handleDragStart = (event: DragEvent) => {
+		event.dataTransfer.setData('fileId', file.id);
+		event.dataTransfer.setData('fileType', file.type.toString());
+	};
+
 	return (
 		<Wrapper
 			className={className}
@@ -36,6 +41,7 @@ export default function ProjectHierarchyNode({
 			onClick={onClick}
 			title={`${file.name}${file.extension}`}
 			draggable={file.type !== FileType.Folder}
+			onDragStart={handleDragStart}
 			onDoubleClick={(event: MouseEvent) => {
 				if (!isRenaming) {
 					onDoubleClick(event);

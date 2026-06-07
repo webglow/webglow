@@ -12,6 +12,7 @@ import { makeAutoObservable } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
 import Geometry from '../../standard/geometry';
 import MeshRenderer from '../mesh-renderer';
+import File from '../project-hierarchy/file';
 import { IGameObjectJSON, IGameObjectParams } from './types';
 
 export default class GameObject {
@@ -105,8 +106,7 @@ export default class GameObject {
 		}
 
 		gameObject.scripts = scripts.map((scriptJson) => {
-			const script = Script.fromJSON(scriptJson);
-			script.assign(gameObject);
+			const script = Script.fromJSON(gameObject, scriptJson);
 			return script;
 		});
 
@@ -129,8 +129,8 @@ export default class GameObject {
 		this.meshRenderer = meshRenderer;
 	}
 
-	addScript(script: Script) {
-		this.scripts.push(script);
+	addScript(file: File) {
+		this.scripts.push(new Script(this, file));
 	}
 
 	addLight({

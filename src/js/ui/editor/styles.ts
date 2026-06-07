@@ -62,4 +62,6 @@ export const StyledInspector = styled(Inspector)`
 	min-width: 0;
 	border-left: 1px solid var(--black);
 	overflow: auto;
+	display: flex;
+	flex-flow: column;
 `;

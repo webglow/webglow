@@ -20,11 +20,11 @@ import { commentKeymap } from '@codemirror/comment';
 import { rectangularSelection } from '@codemirror/rectangular-selection';
 import { lintKeymap } from '@codemirror/lint';
 import { defaultHighlightStyle } from '@codemirror/highlight';
-import { getDefaultText } from 'engine/utils/script/helpers';
+import { getDefaultScriptText } from 'engine/utils/script/helpers';
 import { darculaHighlightStyle, darculaTheme } from './darcula-theme';
 
 const {
-	text = getDefaultText('MyClass'),
+	text = getDefaultScriptText('MyClass'),
 	onCodeSave = () => {},
 } = window as any;
 

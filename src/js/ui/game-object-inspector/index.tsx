@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {DragEvent} from 'react';
 import { observer } from 'mobx-react';
 import { runInAction } from 'mobx';
 import { IProps } from './types';
@@ -15,6 +15,7 @@ import { GameObjectComponents } from './add-component/types';
 import CameraComponent from './camera-component';
 import MeshRendererComponent from './mesh-renderer-component';
 import EngineGlobals from '../../engine/globals';
+import { FileType } from '../../engine/utils/project-hierarchy/types';
 
 const GameObjectInspector = observer(
 	({ className, selectedObject, onNameChange }: IProps) => {
@@ -73,8 +74,28 @@ const GameObjectInspector = observer(
 			}
 		};
 
+		const handleFileDrop = (event: DragEvent) => {
+			event.preventDefault();
+			const fileType = parseInt(event.dataTransfer.getData('fileType'));
+
+			if (fileType === FileType.Script) {
+				const fileId = event.dataTransfer.getData('fileId');
+
+				selectedObject.addScript(
+					EngineGlobals.projectHierarchy.getFileById(fileId)
+				);
+			}
+		};
+
 		return (
-			<Wrapper className={className}>
+			<Wrapper
+				className={className}
+				onDrop={handleFileDrop}
+				onDragOver={(event) => {
+					event.preventDefault();
+					event.dataTransfer.dropEffect = 'link';
+				}}
+			>
 				<Section>
 					<StyledObjectNameEditor
 						name={selectedObject.displayName}
@@ -114,7 +135,7 @@ const GameObjectInspector = observer(
 					</Section>
 				)}
 				{selectedObject.scripts.map((script) => (
-					<Section key={script.name}>
+					<Section key={script.file.name}>
 						<ScriptSection script={script} />
 					</Section>
 				))}

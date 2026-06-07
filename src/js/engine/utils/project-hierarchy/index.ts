@@ -1,7 +1,7 @@
 import File from 'engine/utils/project-hierarchy/file';
-import Script from 'engine/utils/script';
 import Shader from 'engine/utils/shader';
 import Tetris from '../../../scenes/tetris/scene';
+import { getDefaultScriptText } from '../script/helpers';
 import { FileType, IProjectJSON } from './types';
 
 export default class ProjectHierarchy {
@@ -25,6 +25,28 @@ export default class ProjectHierarchy {
 
 		return hierarchy;
 	}
+
+	getFileById(id: string) {
+		const stack = [this.root];
+
+		while (stack.length) {
+			const file = stack.pop();
+
+			if (file.id === id) {
+				return file;
+			}
+
+			for (const child of file.children) {
+				if (child.id === id) {
+					return child;
+				}
+
+				if (child.type === FileType.Folder) {
+					stack.push(child);
+				}
+			}
+		}
+	}
 }
 
 export function getTestHierarchy() {
@@ -32,11 +54,7 @@ export function getTestHierarchy() {
 	const folder = new File('Assets', FileType.Folder, null, []);
 
 	hierarchy.root.addChild(
-		new File(
-			'my-script',
-			FileType.Script,
-			JSON.stringify(new Script('my-script').toJSON())
-		)
+		new File('My Script', FileType.Script, getDefaultScriptText('MyScript'))
 	);
 	hierarchy.root.addChild(
 		new File(
@@ -56,9 +74,9 @@ export function getTestHierarchy() {
 
 	folder.addChild(
 		new File(
-			'another-script',
+			'Another Script',
 			FileType.Script,
-			JSON.stringify(new Script('another-script'))
+			getDefaultScriptText('AnotherScript')
 		)
 	);
 

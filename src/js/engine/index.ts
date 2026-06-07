@@ -7,6 +7,7 @@ import RuntimeLayer from 'engine/utils/layer/runtime';
 import Color from 'engine/utils/color';
 import EngineGlobals from './globals';
 import Renderer from './utils/renderer';
+import ProjectHierarchy from './utils/project-hierarchy';
 
 export default class Engine {
 	canvas: HTMLCanvasElement;
@@ -14,7 +15,6 @@ export default class Engine {
 	stats: Stats;
 	activeScene: Scene;
 	frameEndTime?: number;
-	renderer: Renderer;
 	startTime?: number;
 	activeLayer: ILayer;
 	editorLayer: EditorLayer;
@@ -38,6 +38,10 @@ export default class Engine {
 
 	cleanup() {
 		EngineGlobals.cleanup();
+	}
+
+	setProjectHierarchy(projectHierarchy: ProjectHierarchy) {
+		EngineGlobals.projectHierarchy = projectHierarchy;
 	}
 
 	async setupGl() {
@@ -76,18 +80,21 @@ export default class Engine {
 
 	setActiveScene(scene: Scene) {
 		this.activeScene = scene;
-		this.renderer = new Renderer(scene);
-		this.editorLayer.renderer = this.renderer;
-		this.runtimeLayer.renderer = this.renderer;
+		this.editorLayer.renderer = new Renderer(scene);
 	}
 
 	toggleRunning() {
 		try {
 			if (!this.isRunning) {
-				// this.runtimeLayer.scene = cloneDeep(this.activeScene);
+				this.runtimeLayer.renderer = new Renderer(
+					Scene.fromJSON(this.activeScene.toJSON())
+				);
+				this.editorLayer.pause();
 				this.activeLayer = this.runtimeLayer;
 				this.runtimeLayer.setCamera();
 			} else {
+				this.runtimeLayer.renderer.destroy();
+				this.editorLayer.resume();
 				this.activeLayer = this.editorLayer;
 			}
 		} finally {

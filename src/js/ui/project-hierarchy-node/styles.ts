@@ -32,6 +32,7 @@ export const Wrapper = styled.div<IWrapperProps>`
 	transition: box-shadow 0.2s ease-in-out;
 	justify-content: center;
 	user-select: none;
+
 	${(props) =>
 		props.selected &&
 		css`

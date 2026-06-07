@@ -11,8 +11,4 @@ export const ScriptName = styled(SmallText)`
 	cursor: pointer;
 	background: var(--dark-grey);
 	transition: background 0.2s ease-in-out;
-
-	&:hover {
-		background: var(--black);
-	}
 `;

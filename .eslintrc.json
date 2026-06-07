@@ -48,6 +48,7 @@
     "keyword-spacing": "off",
     "no-unused-vars": "off",
     "no-restricted-globals": "off",
+    "no-restricted-syntax": "off",
     "no-new-func": "off",
     "no-shadow": "off",
 	"default-case": "off",

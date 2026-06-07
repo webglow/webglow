@@ -46,8 +46,12 @@ const ProjectHierarchyUI = observer(
 		const handleDragOver = (event: DragEvent) => {
 			event.stopPropagation();
 			event.preventDefault();
-			event.dataTransfer.dropEffect = 'copy';
-			setDragOver(true);
+
+			const { types } = event.dataTransfer;
+
+			if (types.includes('Files')) {
+				setDragOver(true);
+			}
 		};
 
 		const handleDrop = (event: DragEvent) => {

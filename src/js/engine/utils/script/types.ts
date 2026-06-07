@@ -1,4 +1,3 @@
 export interface IScriptJSON {
-	name: string;
-	text: string;
+	fileId: string;
 }

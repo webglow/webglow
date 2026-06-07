@@ -27,6 +27,10 @@ class EngineGlobals {
 		return instance;
 	}
 
+	static set projectHierarchy(projectHierarchy: ProjectHierarchy) {
+		instance.projectHierarchy = projectHierarchy;
+	}
+
 	static cleanup() {
 		instance = null;
 	}
@@ -37,6 +41,10 @@ class EngineGlobals {
 
 	static get gl() {
 		return instance.gl;
+	}
+
+	static get projectHierarchy() {
+		return instance.projectHierarchy;
 	}
 
 	static get canvas() {

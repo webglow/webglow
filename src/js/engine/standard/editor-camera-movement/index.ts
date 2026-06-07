@@ -13,6 +13,12 @@ export default class EditorCameraMovement extends Behaviour {
 	direction: vec3;
 	speed: number;
 
+	keyDownListener: (event: KeyboardEvent) => void;
+	keyUpListener: (event: KeyboardEvent) => void;
+	mouseDownListener: (event: MouseEvent) => void;
+	mouseMoveListener: (event: MouseEvent) => void;
+	mouseUpListener: (event: MouseEvent) => void;
+
 	start() {
 		this.movementKeys = ['KeyW', 'KeyS', 'KeyA', 'KeyD'];
 		this.movementKeysDirections = {
@@ -26,27 +32,49 @@ export default class EditorCameraMovement extends Behaviour {
 		this.isLocked = false;
 		this.direction = vec3.create();
 		this.speed = 0.1;
+
+		this.keyDownListener = (event: KeyboardEvent) => {
+			this.onKeyDown(event.code);
+		};
+		this.keyUpListener = (event: KeyboardEvent) => {
+			this.onKeyUp(event.code);
+		};
+		this.mouseDownListener = (event: MouseEvent) => {
+			EngineGlobals.canvas.requestPointerLock();
+			this.setIsLocked(true);
+		};
+		this.mouseMoveListener = (event: MouseEvent) => {
+			this.rotateCamera(event.movementX, event.movementY);
+		};
+		this.mouseUpListener = (event: MouseEvent) => {
+			document.exitPointerLock();
+			this.setIsLocked(false);
+		};
+
 		this.setupEventListeners();
 	}
 
+	destroy() {
+		this.removeEventListeners();
+	}
+
 	setupEventListeners() {
-		document.addEventListener('keydown', (event) => {
-			this.onKeyDown(event.code);
-		});
-		document.addEventListener('keyup', (event) => {
-			this.onKeyUp(event.code);
-		});
-		EngineGlobals.canvas.addEventListener('mousedown', () => {
-			EngineGlobals.canvas.requestPointerLock();
-			this.setIsLocked(true);
-		});
-		document.addEventListener('mousemove', (event: MouseEvent) => {
-			this.rotateCamera(event.movementX, event.movementY);
-		});
-		EngineGlobals.canvas.addEventListener('mouseup', () => {
-			document.exitPointerLock();
-			this.setIsLocked(false);
-		});
+		document.addEventListener('keydown', this.keyDownListener);
+		document.addEventListener('keyup', this.keyUpListener);
+		EngineGlobals.canvas.addEventListener('mousedown', this.mouseDownListener);
+		document.addEventListener('mousemove', this.mouseMoveListener);
+		EngineGlobals.canvas.addEventListener('mouseup', this.mouseUpListener);
+	}
+
+	removeEventListeners() {
+		document.removeEventListener('keydown', this.keyDownListener);
+		document.removeEventListener('keyup', this.keyUpListener);
+		EngineGlobals.canvas.removeEventListener(
+			'mousedown',
+			this.mouseDownListener
+		);
+		document.removeEventListener('mousemove', this.mouseMoveListener);
+		EngineGlobals.canvas.removeEventListener('mouseup', this.mouseUpListener);
 	}
 
 	update() {
@@ -114,7 +142,22 @@ export default class EditorCameraMovement extends Behaviour {
 			return;
 		}
 
-		this.gameObject.transform.rotate([Math.sign(-deltaY), 0, 0]);
-		this.gameObject.transform.rotate([0, Math.sign(-deltaX), 0], Space.World);
+		const deltaAngle =
+			50 *
+			Math.asin(
+				vec2.length(vec2.fromValues(deltaX, deltaY)) /
+					vec2.length(
+						vec2.fromValues(
+							EngineGlobals.canvas.clientWidth,
+							EngineGlobals.canvas.clientHeight
+						)
+					)
+			);
+
+		this.gameObject.transform.rotate([deltaAngle * Math.sign(-deltaY), 0, 0]);
+		this.gameObject.transform.rotate(
+			[0, deltaAngle * Math.sign(-deltaX), 0],
+			Space.World
+		);
 	}
 }

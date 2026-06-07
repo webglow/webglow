@@ -9,4 +9,5 @@ export default class Behaviour {
 
 	start() {}
 	update() {}
+	destroy() {}
 }

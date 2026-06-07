@@ -8,7 +8,11 @@ export default class RuntimeLayer implements ILayer {
 
 	setCamera() {
 		// find a camera on an object
-		throw new Error('No active camera');
+		this.mainCamera = this.renderer.findCamera();
+
+		if (!this.mainCamera) {
+			throw new Error('No active camera');
+		}
 	}
 
 	start() {

@@ -11,6 +11,10 @@ export default class Renderer {
 		this.scene = scene;
 	}
 
+	findCamera() {
+		return this.scene.hierarchy.nodesArray.find((n) => n.camera);
+	}
+
 	updateLight() {
 		this.scene.hierarchy.forEachDrawableNode(({ meshRenderer }: GameObject) => {
 			const directionalLights = this.scene.hierarchy.nodesArray
@@ -45,6 +49,14 @@ export default class Renderer {
 		this.scene.hierarchy.forEachScriptedNode((gameObject) => {
 			gameObject.scripts.forEach((script) => {
 				script.behaviour.start();
+			});
+		});
+	}
+
+	destroy() {
+		this.scene.hierarchy.forEachScriptedNode((gameObject) => {
+			gameObject.scripts.forEach((script) => {
+				script.behaviour.destroy();
 			});
 		});
 	}
